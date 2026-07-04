@@ -1,0 +1,298 @@
+/* Our Philosophy Page Styles */
+
+.about-page {
+  background-color: #ffffff; /* Same as homepage background */
+  color: #373737;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Common Section Container */
+.about-section {
+  width: min(100% - 40px, 1200px);
+  margin: 0 auto;
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.about-section.reverse {
+  flex-direction: row-reverse;
+}
+
+.about-content {
+  flex: 1;
+}
+
+.about-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.about-image-wrapper img {
+  width: 100%;
+  max-width: 480px;
+  height: 480px; /* Standard height for portrait images */
+  object-fit: cover;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+}
+
+/* Specific image height overrides */
+.about-section:first-of-type .about-image-wrapper img {
+  height: 360px; /* Hero image is landscape */
+}
+
+.values-image img {
+  height: 580px; /* Core values image is taller */
+}
+
+/* Typography */
+.about-title {
+  color: #0d563f; /* WLC Signature Green */
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: normal;
+  margin-bottom: 24px;
+  line-height: 1.25;
+}
+
+.about-description {
+  color: #555555;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+/* Specific Image Border Radiuses - Pronounced mockup curves */
+.img-top-left-rounded {
+  border-radius: 240px 0 0 0;
+}
+
+.img-bottom-left-rounded {
+  border-radius: 0 0 0 240px;
+}
+
+.img-bottom-right-rounded {
+  border-radius: 0 0 240px 0;
+}
+
+.img-top-right-rounded {
+  border-radius: 0 240px 0 0;
+}
+
+/* Buttons */
+.about-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-sage {
+  background-color: #0d563f; /* WLC Green */
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid #0d563f;
+  cursor: pointer;
+}
+
+.btn-sage:hover {
+  background-color: #093c2c;
+  border-color: #093c2c;
+}
+
+.btn-sage-outline {
+  background-color: transparent;
+  color: #0d563f;
+  padding: 14px 28px;
+  border-radius: 0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid #0d563f;
+  cursor: pointer;
+}
+
+.btn-sage-outline:hover {
+  background-color: #0d563f;
+  color: #ffffff;
+}
+
+/* Stats Row */
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  border-top: 1px solid #ebdcb9; /* Light gold border */
+  padding-top: 30px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  color: #bca374; /* WLC Gold */
+  font-family: Georgia, serif;
+  font-size: 36px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  color: #666666;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Core Values Section */
+.core-values-section {
+  display: block;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.value-card {
+  background-color: transparent;
+  border: 1px solid #ebdcb9; /* Light gold border */
+  padding: 30px;
+  border-radius: 0; /* Keep it clean and modern */
+}
+
+.value-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+  fill: #0d563f; /* WLC Green */
+  color: #0d563f;
+}
+
+.value-title {
+  color: #0d563f;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.value-text {
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.core-values-wrapper {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+}
+
+.values-image {
+  flex: 0 0 40%;
+}
+
+/* Message Section Quotes */
+.message-quote {
+  font-style: italic;
+  font-family: Georgia, serif;
+  color: #0d563f;
+  font-size: 18px;
+  margin-top: 20px;
+  border-left: 3px solid #bca374; /* WLC Gold border left */
+  padding-left: 20px;
+}
+
+.message-author {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #9c8458; /* WLC Gold */
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .about-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 0;
+  }
+  
+  .about-section.reverse {
+    flex-direction: column;
+  }
+  
+  .core-values-wrapper {
+    flex-direction: column;
+    gap: 40px;
+  }
+  
+  .values-image {
+    width: 100%;
+  }
+
+  .about-image-wrapper img,
+  .values-image img {
+    height: 360px !important;
+    max-width: 100%;
+  }
+
+  .about-buttons {
+    justify-content: center;
+  }
+  
+  .message-quote {
+    text-align: left;
+  }
+}
+
+@media (max-width: 767px) {
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-row {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .about-image-wrapper img,
+  .values-image img {
+    height: 280px !important;
+  }
+  
+  .img-top-left-rounded {
+    border-radius: 120px 0 0 0 !important;
+  }
+  
+  .img-bottom-left-rounded {
+    border-radius: 0 0 0 120px !important;
+  }
+  
+  .img-bottom-right-rounded {
+    border-radius: 0 0 120px 0 !important;
+  }
+  
+  .img-top-right-rounded {
+    border-radius: 0 120px 0 0 !important;
+  }
+}

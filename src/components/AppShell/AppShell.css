@@ -1,0 +1,33 @@
+/* Prevent page scrolling while the splash screen animation is active */
+body.splash-active {
+  overflow: hidden !important;
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
+/* Site content container is initially hidden and shifted down to create a slide-up reveal */
+.site-content {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+
+/* Smooth fade-in and slide-up transition when splash screen starts fading out */
+.site-content.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Instant rendering (no transition, delay, or shift) for returning session visits */
+html.splash-complete .site-content {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.splash-complete body.splash-active {
+  overflow: auto !important;
+  touch-action: auto;
+}

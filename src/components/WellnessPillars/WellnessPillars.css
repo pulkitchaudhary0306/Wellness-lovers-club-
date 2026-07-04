@@ -1,0 +1,114 @@
+.pillars-section {
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+  padding: 60px 0;
+}
+
+.pillars-header {
+  margin-bottom: 36px;
+}
+
+.pillars-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.pillars-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.pillars-wrapper {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.pillars-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: max-content;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.pillar-item-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.pillar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 48px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pillar-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--gold);
+  opacity: 0.8;
+  transition: var(--transition);
+}
+
+.pillar-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pillar-name {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--muted-text);
+  text-transform: uppercase;
+  transition: var(--transition);
+}
+
+/* Hover effects */
+.pillar-item:hover .pillar-icon {
+  color: var(--gold-dark);
+  transform: translateY(-4px) scale(1.05);
+  opacity: 1;
+}
+
+.pillar-item:hover .pillar-name {
+  color: var(--dark-brown);
+}
+
+/* Vertical dividers */
+.pillar-divider {
+  width: 1px;
+  height: 48px;
+  background-color: var(--border);
+}
+
+/* Tablet (adjust padding) */
+@media (max-width: 1024px) {
+  .pillar-item {
+    padding: 0 32px;
+  }
+}
+
+/* Mobile (allow horizontal scroll and align-left if needed, but flex wrap is better if possible or centering with scroll hint) */
+@media (max-width: 768px) {
+  .pillars-container {
+    justify-content: flex-start;
+    padding: 10px 16px;
+  }
+  
+  .pillar-item {
+    padding: 0 24px;
+  }
+  
+  .pillar-divider {
+    height: 36px;
+  }
+}

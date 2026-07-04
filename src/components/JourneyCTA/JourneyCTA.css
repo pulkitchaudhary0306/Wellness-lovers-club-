@@ -1,0 +1,156 @@
+.journey-section {
+  background-color: var(--background);
+}
+
+.journey-container {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Image Column */
+.journey-image-column {
+  width: 100%;
+  height: 100%;
+}
+
+.journey-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  background-color: var(--cream);
+}
+
+.journey-img {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease;
+}
+
+.journey-container:hover .journey-img {
+  transform: scale(1.03);
+}
+
+/* Content Column */
+.journey-content-column {
+  position: relative;
+  padding: 60px 48px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Background Lotus Artwork decoration */
+.journey-lotus-deco {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 160px;
+  height: 160px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.journey-lotus-deco svg {
+  width: 100%;
+  height: 100%;
+}
+
+.journey-text-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.journey-title {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  color: var(--dark-brown);
+}
+
+.journey-subtitle {
+  font-size: 1.1rem;
+  color: var(--muted-text);
+  margin-bottom: 8px;
+}
+
+.journey-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.journey-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text);
+  width: fit-content;
+}
+
+.journey-contact-item:hover {
+  color: var(--gold);
+}
+
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+}
+
+.journey-actions {
+  margin-top: 12px;
+}
+
+.journey-btn {
+  padding: 12px 28px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .journey-content-column {
+    padding: 40px;
+  }
+  .journey-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* Mobile (stack columns) */
+@media (max-width: 768px) {
+  .journey-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .journey-image-wrapper {
+    min-height: 250px;
+    aspect-ratio: 16 / 9;
+  }
+  
+  .journey-content-column {
+    padding: 36px 24px;
+  }
+  
+  .journey-title {
+    font-size: 1.8rem;
+  }
+  
+  .journey-subtitle {
+    font-size: 1rem;
+  }
+  
+  .journey-btn {
+    width: 100%;
+  }
+}

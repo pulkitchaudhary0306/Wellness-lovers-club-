@@ -1,0 +1,797 @@
+/* Membership Page Premium Stylesheet */
+
+.membership-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('/homepage/home2/spa-lounge-pool.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 1.5rem;
+}
+
+/* Forest Green to Dark Slate brand gradient mask for readability & aesthetics */
+.membership-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 86, 63, 0.88) 0%,
+    rgba(15, 23, 42, 0.94) 100%
+  );
+  z-index: 1;
+}
+
+.membership-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Glassmorphism Cards */
+.membership-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2.5rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.membership-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(188, 163, 116, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Highlighted (Most Popular) Card with gold outline */
+.membership-card.highlighted-tier {
+  background: rgba(13, 86, 63, 0.2);
+  border: 1px solid rgba(188, 163, 116, 0.8);
+  box-shadow: 0 20px 50px rgba(13, 86, 63, 0.3),
+              inset 0 0 20px rgba(188, 163, 116, 0.1);
+}
+
+.membership-card.highlighted-tier:hover {
+  background: rgba(13, 86, 63, 0.25);
+  border-color: rgba(188, 163, 116, 1);
+  box-shadow: 0 30px 60px rgba(13, 86, 63, 0.4),
+              inset 0 0 25px rgba(188, 163, 116, 0.15);
+}
+
+.membership-badge {
+  background: linear-gradient(135deg, #bca374 0%, #9c8458 100%);
+  color: #0f172a;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+}
+
+/* Editorial Card style */
+.membership-editorial-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);
+}
+
+/* Glassmorphism Auth Form Container */
+.membership-form-container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 2.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25),
+              inset 0 0 20px rgba(255, 255, 255, 0.01);
+}
+
+@media (max-width: 640px) {
+  .membership-form-container {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+}
+
+/* Feature Check Icons */
+.feature-icon-wrapper {
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 50%;
+  padding: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+}
+
+/* Brand Button Styles Override for Transparency */
+.btn-member-gold {
+  background: linear-gradient(135deg, #bca374 0%, #9c8458 100%) !important;
+  color: #0f172a !important;
+  border: none !important;
+  box-shadow: 0 8px 20px rgba(188, 163, 116, 0.2) !important;
+}
+
+.btn-member-gold:hover {
+  background: linear-gradient(135deg, #cbb58a 0%, #aa9265 100%) !important;
+  box-shadow: 0 10px 25px rgba(188, 163, 116, 0.3) !important;
+}
+
+.btn-member-glass {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-member-glass:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Glassmorphism Auth Form Overrides inside Membership Section */
+
+.membership-section label {
+  color: rgba(255, 255, 255, 0.75) !important; /* slate-200 label text */
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+.membership-section .text-slate-900,
+.membership-section .text-slate-700,
+.membership-section h2 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 26px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+}
+
+.membership-section .text-slate-500,
+.membership-section p {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  line-height: 1.5 !important;
+}
+
+.membership-section .text-blue-600 {
+  color: #bca374 !important; /* gold links for branding */
+  font-weight: 600 !important;
+}
+
+.membership-section .text-blue-600:hover {
+  color: #d1c0a0 !important;
+  text-decoration: underline !important;
+}
+
+.membership-section .border-slate-150,
+.membership-section .border-slate-200 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Dark Glassmorphic Inputs */
+.membership-section input[type="text"],
+.membership-section input[type="email"],
+.membership-section input[type="password"],
+.membership-section input[type="tel"] {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+  transition: all 0.25s ease !important;
+}
+
+.membership-section input[type="text"]::placeholder,
+.membership-section input[type="email"]::placeholder,
+.membership-section input[type="password"]::placeholder,
+.membership-section input[type="tel"]::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.membership-section input[type="text"]:hover,
+.membership-section input[type="email"]:hover,
+.membership-section input[type="password"]:hover,
+.membership-section input[type="tel"]:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.membership-section input[type="text"]:focus,
+.membership-section input[type="email"]:focus,
+.membership-section input[type="password"]:focus,
+.membership-section input[type="tel"]:focus {
+  border-color: #bca374 !important;
+  box-shadow: 0 0 0 3px rgba(188, 163, 116, 0.15) !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  outline: none !important;
+}
+
+/* Input Icon Customizations */
+.membership-section .relative.flex.items-center span.absolute.left-4 {
+  color: rgba(188, 163, 116, 0.55) !important;
+}
+
+.membership-section .relative.flex.items-center:focus-within span.absolute.left-4 {
+  color: #bca374 !important;
+}
+
+/* Password Toggle Icon Customization */
+.membership-section .relative.flex.items-center button.absolute.right-4 {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.membership-section .relative.flex.items-center button.absolute.right-4:hover {
+  color: #ffffff !important;
+}
+
+/* Submit Button Style Overrides */
+.membership-section button[type="submit"] {
+  background: linear-gradient(135deg, #bca374 0%, #9c8458 100%) !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 15px !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 24px rgba(188, 163, 116, 0.2) !important;
+  border: none !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  margin-top: 1.25rem !important;
+}
+
+.membership-section button[type="submit"]:hover {
+  background: linear-gradient(135deg, #cbb58a 0%, #aa9265 100%) !important;
+  box-shadow: 0 12px 30px rgba(188, 163, 116, 0.35) !important;
+  transform: translateY(-2px) !important;
+}
+
+.membership-section button[type="submit"]:active {
+  transform: translateY(0) !important;
+}
+
+/* Google Sign-In Button Overrides */
+.membership-section button.w-full.flex.items-center.justify-center.gap-2 {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.25s ease !important;
+}
+
+.membership-section button.w-full.flex.items-center.justify-center.gap-2:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.membership-section button.w-full.flex.items-center.justify-center.gap-2:active {
+  transform: translateY(0) !important;
+}
+
+/* Form Switcher Tabs styling */
+.membership-section .flex.gap-2.p-1\.5.bg-slate-950\/40 {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
+  padding: 4px !important;
+}
+
+.membership-section .flex.gap-2.p-1\.5.bg-slate-950\/40 button {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 600 !important;
+  padding: 8px 18px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* Checkbox alignment & style */
+.membership-section input[type="checkbox"] {
+  accent-color: #bca374 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 4px !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  cursor: pointer !important;
+}
+
+/* Divider Span Adjustments */
+.membership-section .relative.my-8 span {
+  background-color: #0d4634 !important; /* blends with the green mask overlay */
+  color: rgba(255, 255, 255, 0.5) !important;
+  padding: 0 1.25rem !important;
+  font-size: 11px !important;
+  letter-spacing: 0.05em !important;
+}
+
+.membership-section .relative.my-8 .border-t {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ==========================================================================
+   Centered Tropical Leaf Page Background & Ditto Card Design
+   ========================================================================== */
+
+.membership-section {
+  background-image: url('/images/buddha-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  padding: 4rem 1.5rem !important;
+}
+
+.membership-overlay {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Ditto Auth Card Container */
+.ditto-auth-card {
+  display: flex;
+  width: 100%;
+  max-width: 950px;
+  background: transparent;
+  border-radius: 16px;
+  overflow: visible;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 520px;
+}
+
+
+/* Left Column: Glassmorphic Editorial */
+.ditto-card-left {
+  width: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 4.5rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #ffffff;
+  border-radius: 16px 0 0 16px;
+  overflow: hidden;
+}
+
+
+.ditto-left-title {
+  font-family: Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.ditto-left-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 1.5rem;
+  font-weight: 400;
+}
+
+/* Right Column: Solid Dark Form area */
+.ditto-card-right {
+  width: 50%;
+  background: #080c09; /* Deep dark forest black */
+  padding: 3.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-radius: 0 16px 16px 0;
+  overflow: visible;
+}
+
+.ditto-form-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ditto-form-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Input Fields overrides inside ditto-card-right */
+.ditto-card-right input[type="text"],
+.ditto-card-right input[type="email"],
+.ditto-card-right input[type="password"],
+.ditto-card-right input[type="tel"] {
+  background: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1.25px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 8px !important;
+  padding-top: 8px !important;
+  font-size: 13px !important;
+  color: #ffffff !important;
+  transition: border-color 0.3s ease !important;
+  box-shadow: none !important;
+}
+
+.ditto-card-right input[type="text"]:focus,
+.ditto-card-right input[type="email"]:focus,
+.ditto-card-right input[type="password"]:focus,
+.ditto-card-right input[type="tel"]:focus {
+  border-bottom-color: #0f8554 !important;
+  box-shadow: none !important;
+}
+
+.ditto-card-right input::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Style input labels to be visible and clean above inputs */
+.ditto-card-right label.text-sm.font-medium {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 0px !important;
+}
+
+/* Hide only left-side icons */
+.ditto-card-right span.absolute.left-4 {
+  display: none !important;
+}
+
+/* Password eye button styling */
+.ditto-card-right button.absolute.right-4 {
+  color: rgba(255, 255, 255, 0.35) !important;
+  right: 0px !important;
+}
+
+.ditto-card-right button.absolute.right-4:hover {
+  color: #ffffff !important;
+}
+
+/* Preferences dropdown selector styling */
+.ditto-card-right button.preferences-dropdown-btn {
+  background: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1.25px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 8px !important;
+  padding-top: 8px !important;
+  font-size: 13px !important;
+  color: #ffffff !important;
+  width: 100% !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.ditto-card-right button.preferences-dropdown-btn:focus {
+  border-bottom-color: #0f8554 !important;
+}
+
+/* Adjust paddings for inputs when icons are hidden */
+.ditto-card-right input.pl-11 {
+  padding-left: 0px !important;
+}
+.ditto-card-right input.pr-11 {
+  padding-right: 0px !important;
+}
+
+/* Form container constraints and custom scrollbar */
+.ditto-inputs-container {
+  width: 100%;
+  overflow: visible;
+  padding-right: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.ditto-inputs-container::-webkit-scrollbar {
+  width: 4px;
+}
+.ditto-inputs-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.ditto-inputs-container::-webkit-scrollbar-thumb {
+  background: #0f8554;
+  border-radius: 4px;
+}
+
+/* Form input spacing and layout */
+.ditto-card-right .flex.flex-col.gap-2 {
+  gap: 0.25rem !important;
+}
+
+/* Grid configuration for form columns on desktop */
+.ditto-card-right .grid.grid-cols-1.md\:grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.25rem 1.5rem !important;
+}
+
+/* Submit button styling */
+.ditto-card-right button[type="submit"] {
+  background: #0f8554 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+  padding: 12px 24px !important;
+  width: 100% !important;
+  border: none !important;
+  transition: background-color 0.2s ease !important;
+  box-shadow: none !important;
+  margin-top: 1rem !important;
+  text-transform: none !important;
+  cursor: pointer !important;
+}
+
+.ditto-card-right button[type="submit"]:hover {
+  background: #0d7348 !important;
+}
+
+/* Form footer link options */
+.ditto-form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.ditto-footer-text {
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 400 !important;
+}
+
+.ditto-footer-link {
+  background: transparent !important;
+  border: none !important;
+  color: #0f8554 !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin-left: 4px !important;
+  font-size: 12px !important;
+  outline: none !important;
+}
+
+.ditto-footer-link:hover {
+  text-decoration: underline !important;
+  color: #10b981 !important;
+}
+
+/* Social Divider on the right of forms */
+.ditto-social-divider-container {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+.ditto-vertical-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  gap: 12px;
+}
+
+.ditto-vertical-divider .divider-line {
+  width: 1px;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.ditto-vertical-divider .divider-text {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.ditto-social-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ditto-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+}
+
+.ditto-social-btn:hover {
+  background-color: #f1f5f9;
+  transform: scale(1.05);
+}
+
+.ditto-social-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ditto-social-btn.fb-btn svg {
+  fill: #1877F2;
+}
+
+.ditto-social-btn.google-btn svg {
+  fill: #ea4335;
+}
+
+/* Hide original form elements */
+.ditto-card-right .relative.my-8,
+.ditto-card-right button:not([type="submit"]):not(.ditto-social-btn):not(.ditto-footer-link):not(.preferences-dropdown-btn):not(.absolute):not([aria-label]),
+.ditto-card-right .mt-8.text-center {
+  display: none !important;
+}
+
+/* Hide the redundant form title/description inside ditto-card-right (we use our own ditto-form-title) */
+.ditto-card-right .flex.flex-col.gap-2.text-center.mb-8 {
+  display: none !important;
+}
+
+/* Checkbox and Terms - using broad selector since actual HTML has px-1 extra class */
+.ditto-card-right .flex.flex-col.gap-3 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.ditto-card-right .flex.flex-col.gap-3 > label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 0.625rem !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+
+.ditto-card-right .flex.flex-col.gap-3 > label a {
+  color: #0f8554 !important;
+}
+
+.ditto-card-right input[type="checkbox"] {
+  accent-color: #0f8554 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background-color: transparent !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .ditto-auth-card {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+  }
+  
+  .ditto-card-left {
+    width: 100%;
+    padding: 3rem 2rem;
+  }
+  
+  .ditto-left-title {
+    font-size: 32px;
+  }
+  
+  .ditto-card-right {
+    width: 100%;
+    flex-direction: column;
+    padding: 2.5rem 2rem;
+  }
+  
+  .ditto-social-divider-container {
+    margin-left: 0;
+    margin-top: 2rem;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    gap: 1.5rem;
+  }
+  
+  .ditto-vertical-divider {
+    flex-direction: row;
+    width: auto;
+    height: auto;
+    gap: 10px;
+  }
+  
+  .ditto-vertical-divider .divider-line {
+    width: 30px;
+    height: 1px;
+  }
+  
+  .ditto-social-icons {
+    flex-direction: row;
+  }
+}
+
+/* Preferences checkboxes vertical layout */
+.ditto-card-right .flex.flex-col.gap-3\.5.mt-2 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+}
+
+.ditto-card-right .flex.flex-col.gap-2\.5.mt-1 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.ditto-card-right .flex.flex-col.gap-2\.5.mt-1 label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 0.625rem !important;
+}
+
+@media (max-width: 768px) {
+  .ditto-card-right .grid.grid-cols-1.md\:grid-cols-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 1.25rem !important;
+  }
+}
+
