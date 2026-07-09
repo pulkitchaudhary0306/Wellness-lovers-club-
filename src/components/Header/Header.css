@@ -14,8 +14,8 @@
 }
 
 .site-logo {
-  width: 200px;
-  height: 550px;
+  width: 220px;
+  height: 220px;
   object-fit: contain;
 }
 
@@ -116,7 +116,8 @@
   }
 
   .site-logo {
-    width: 110px;
+    width: 240px;
+    height: 240px;
   }
 
   .main-navigation {
@@ -135,11 +136,12 @@
 
 @media (max-width: 767px) {
   .logo-section {
-    height: 70px;
+    height: 90px;
   }
 
   .site-logo {
-    width: 130px;
+    width: 180px;
+    height: 180px;
   }
 
   .header-container {

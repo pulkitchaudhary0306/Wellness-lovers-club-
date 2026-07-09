@@ -86,13 +86,18 @@ export default function BenefitsPage() {
                   <span className="card-label">{b.label}</span>
                   <h3 className="card-heading">{b.title}</h3>
                   <p className="card-text">{b.desc}</p>
+                  <div className="card-actions">
+                    <Link href="/contact" className="card-btn">
+                      Read more
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="text-center" style={{ marginTop: "56px" }}>
-            <Link href="/membership" className="btn btn-primary">
+            <Link href="/membership" className="btn btn-gold">
               Become a Member Today
             </Link>
           </div>

@@ -12,12 +12,13 @@ export default function OfferingsPage() {
       title: "Wellness Retreats",
       desc: "Transformative escapes in serene, handpicked locations around the world. Reconnect with nature and your inner peace.",
       img: "/images/wellness-retreat.jpg",
-      category: "Escapes"
+      category: "Escapes",
+      link: "/offerings/wellness-retreats"
     },
     {
       title: "Spa Experiences",
       desc: "Curated therapies, mineral baths, and custom bodywork designed by premier therapists to restore vitality and release tension.",
-      img: "/images/wellness-experience.jpg",
+      img: "/images/membership-spa.jpg",
       category: "Therapies"
     },
     {
@@ -29,7 +30,7 @@ export default function OfferingsPage() {
     {
       title: "Nutrition & Well-being",
       desc: "Organic cuisine, cold-pressed juice regimens, and nutritional counseling designed to nourish and detoxify your body.",
-      img: "/images/membership-spa.jpg",
+      img: "/images/wellness-experience.jpg",
       category: "Nutrition"
     },
     {
@@ -86,13 +87,18 @@ export default function OfferingsPage() {
                   <span className="card-label">{offering.category}</span>
                   <h3 className="card-heading">{offering.title}</h3>
                   <p className="card-text">{offering.desc}</p>
+                  <div className="card-actions">
+                    <Link href={offering.link || "/contact"} className="card-btn">
+                      Read more
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="text-center" style={{ marginTop: "56px" }}>
-            <Link href="/membership" className="btn btn-primary">
+            <Link href="/membership" className="btn btn-gold">
               Apply For Membership
             </Link>
           </div>

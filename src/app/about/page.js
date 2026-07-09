@@ -1,171 +1,186 @@
 import "./about.css";
 import Link from "next/link";
+import Image from "next/image";
+
+export const metadata = {
+  title: "Our Philosophy | Wellness Lovers Club",
+  description: "Learn more about the movement nurtured by GlobalSpa and the people behind Wellness Lovers Club.",
+};
 
 export default function AboutPage() {
-  return (
-    <div className="about-page">
-      {/* 1. Hero Section */}
-      <section className="about-section">
-        <div className="about-content">
-          <h1 className="about-title">
-            Conscious Living, Elevated.
-          </h1>
-          <p className="about-description">
-            Wellness Lovers Club is a premier members club for mindful living. We curate handpicked experiences, privileges, and connections that inspire your best life, helping you invest in your mind, body, and soul with intention.
-          </p>
-          <div className="about-buttons">
-            <Link href="/membership" className="btn-sage">
-              Become a Member
-            </Link>
-            <Link href="/services" className="btn-sage-outline">
-              Explore Offerings
-            </Link>
-          </div>
-        </div>
-        <div className="about-image-wrapper">
-          <img
-            src="/homepage/d30a5470622d212e7ae19d485f9e1911.jpg"
-            alt="Conscious Living"
-            className="img-top-left-rounded"
-          />
-        </div>
-      </section>
+  const leadershipTeam = [
+    {
+      role: "Founder",
+      name: "Parineeta Sethi",
+      tagline: "Founder, Wellness Lovers Club",
+      bio1: "Parineeta's journey into wellness began long before WLC — rooted in a personal quest for balance, meaning, and beauty in everyday living. She envisioned a space where like-minded individuals could come together not just to escape, but to truly transform.",
+      bio2: "Her philosophy is simple: wellness is not a luxury reserved for a few — it is a right that every conscious individual deserves access to. Through WLC, she has brought that vision to life, curating experiences that are as soulful as they are exquisite.",
+      quote: "Wellness Lovers Club was born from a deep desire to create a sanctuary — not just a membership. A place where you come not to escape your life, but to fall in love with it.",
+      img: "/homepage/home2/laurachouette.jpg"
+    },
+    {
+      role: "Founder",
+      name: "Abhinav Kaushal",
+      tagline: "Founder, Wellness Lovers Club",
+      bio1: "Abhinav brings a rare combination of entrepreneurial vision and a genuine passion for holistic living. With a background in building luxury lifestyle communities, he understood early that the modern individual was seeking more than products — they were seeking purpose.",
+      bio2: "His belief that luxury and wellness are not opposing forces, but natural companions, is the very foundation on which WLC is built. He continues to shape the club's direction — ensuring every experience carries both elegance and intention.",
+      quote: "True wellness is not about retreating from the world — it is about returning to yourself. WLC exists to make that journey effortless, beautiful, and deeply personal.",
+      img: "/homepage/Introimages/szymon-shields.jpg"
+    },
+    {
+      role: "Director",
+      name: "Vinit Pandhi",
+      tagline: "Director, Wellness Lovers Club",
+      bio1: "Vinit is the force behind WLC's world-class partnerships and brand ecosystem. With deep roots in the luxury and hospitality industry, he has spent years forging relationships with the finest wellness brands, spas, and retreat destinations across the globe.",
+      bio2: "He believes that a community is only as strong as the experiences it offers, and his relentless pursuit of excellence ensures that every WLC partnership reflects the highest standards of quality, trust, and care.",
+      quote: "We don't just partner with brands — we choose allies who share our commitment to conscious luxury. Every experience we offer is one we would choose for ourselves.",
+      img: "/homepage/Introimages/pexels-cottonbro.jpg"
+    },
+    {
+      role: "Director",
+      name: "Soumya Maheshwari",
+      tagline: "Director, Wellness Lovers Club",
+      bio1: "Soumya brings warmth, wisdom, and a deeply personal approach to wellness at WLC. Her background in mindful living, community building, and holistic health has shaped how the club connects with its members — not as a brand, but as a trusted companion on their wellness journey.",
+      bio2: "She champions the idea that every member deserves to feel seen, supported, and inspired. Under her guidance, WLC's community experiences are crafted with intention, empathy, and an unwavering belief in the power of collective wellbeing.",
+      quote: "Wellness is most powerful when it is shared. At WLC, we don't just curate experiences — we build a community where every individual feels they truly belong.",
+      img: "/homepage/Introimages/natalia-portilho.jpg"
+    }
+  ];
 
-      {/* 2. Calibration / Philosophy Detail Section */}
-      <section className="about-section reverse">
-        <div className="about-content">
-          <h2 className="about-title">
-            A Wellness Movement Nurtured by GlobalSpa
-          </h2>
-          <p className="about-description">
-            Backed by GlobalSpa — India&apos;s leading wellness and luxury lifestyle media brand — WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
+  return (
+    <div className="about-page-container">
+      {/* SECTION 1 — A WELLNESS MOVEMENT NURTURED BY GLOBALSPA */}
+      <section className="about-sec" aria-label="A Wellness Movement">
+        <div className="about-sec-content">
+          <span className="about-eyebrow">WLC · WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
+          <h1 className="about-sec-title">A Wellness Movement Nurtured by GlobalSpa</h1>
+          <p className="about-sec-desc">
+            Backed by <strong>GlobalSpa</strong> — India&apos;s leading wellness and luxury lifestyle media brand — WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
           </p>
-          <p className="about-description">
+          <p className="about-sec-desc">
             We believe that true luxury is the freedom to focus on personal well-being. WLC serves as your trusted companion, offering preferred rates, bespoke wellness itineraries, and members-only events that nurture your spiritual and physical growth.
           </p>
-          
-          <div className="stats-row">
-            <div className="stat-item">
-              <span className="stat-number">15+</span>
-              <span className="stat-label">Years of Legacy</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">5,000+</span>
-              <span className="stat-label">Members Globally</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">50+</span>
-              <span className="stat-label">Luxury Partners</span>
-            </div>
-          </div>
         </div>
-        <div className="about-image-wrapper">
-          <img
-            src="/homepage/1d8a0a0d24ef6d5d4eef7e4564b4dab8.jpg"
-            alt="GlobalSpa Legacy"
-            className="img-bottom-left-rounded"
-          />
-        </div>
-      </section>
-
-      {/* 3. Core Value Propositions Section */}
-      <section className="about-section core-values-section">
-        <div className="about-content" style={{ maxWidth: '600px' }}>
-          <h2 className="about-title">Our Core Pillars of Wellness</h2>
-          <p className="about-description">
-            Every privilege, retreat partnership, and community gathering we organize is built upon our four core pillars, designed to provide a holistic and premium experience.
-          </p>
-        </div>
-        
-        <div className="core-values-wrapper">
-          <div className="values-grid">
-            {/* Card 1: Mindful Living */}
-            <div className="value-card">
-              <svg className="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 20V10M12 10c1-2.5 3-4 6-4M12 13c-1.5-2-3.5-3-6-3" />
-                <path d="M12 10c-1-2.5-3-4-6-4" />
-              </svg>
-              <h3 className="value-title">Mindful Living</h3>
-              <p className="value-text">
-                An active alignment of your choices with personal health, conscious consumption, and inner balance.
-              </p>
-            </div>
-            
-            {/* Card 2: Privileged Access */}
-            <div className="value-card">
-              <svg className="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <h3 className="value-title">Privileged Access</h3>
-              <p className="value-text">
-                Unlocking special rates, private entries, and unique benefits across global luxury wellness properties.
-              </p>
-            </div>
-            
-            {/* Card 3: Global Community */}
-            <div className="value-card">
-              <svg className="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              <h3 className="value-title">Global Community</h3>
-              <p className="value-text">
-                Connecting you with like-minded wellness lovers, visionaries, and wellness experts worldwide.
-              </p>
-            </div>
-            
-            {/* Card 4: Curated Experiences */}
-            <div className="value-card">
-              <svg className="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-                <line x1="12" y1="22" x2="12" y2="12" />
-                <line x1="12" y1="12" x2="22" y2="8.5" />
-                <line x1="12" y1="12" x2="2" y2="8.5" />
-              </svg>
-              <h3 className="value-title">Curated Experiences</h3>
-              <p className="value-text">
-                Bespoke journeys, healing retreats, and holistic workshops curated to enrich mind, body, and soul.
-              </p>
-            </div>
-          </div>
-          
-          <div className="about-image-wrapper values-image">
-            <img
-              src="/homepage/eb9fb38adaf4e895f43ef0798cf67c3a.jpg"
-              alt="Our Pillars"
-              className="img-bottom-right-rounded"
+        <div className="about-sec-image-wrapper">
+          <div className="about-image-container">
+            <Image
+              src="/images/nurtured-by-globalspa.jpg"
+              alt="Woman meditating in a forest deck overlooking a geothermal hot spring"
+              fill
+              sizes="(max-width: 991px) 100vw, 420px"
+              priority
+              className="arch-image"
             />
           </div>
         </div>
       </section>
 
-      {/* 4. Message Section */}
-      <section className="about-section">
-        <div className="about-image-wrapper">
-          <img
-            src="/homepage/41dfe3d2198e675d587959f122ba984a.jpg"
-            alt="A Message from our Founders"
-            className="img-top-right-rounded"
-          />
+      {/* GLOBALSPA LINK BAR */}
+      <a 
+        href="https://www.globalspa.in" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="globalspa-bar"
+      >
+        <div className="globalspa-bar-text">
+          <span>GlobalSpa</span>
+          INDIA&apos;S #1 WELLNESS & LUXURY LIFESTYLE MEDIA BRAND
         </div>
-        <div className="about-content">
-          <h2 className="about-title">A Message From Our Founders</h2>
-          
-          <p className="about-description">
-            &ldquo;Wellness Lovers Club was born out of a desire to create a global sanctuary for those seeking conscious lifestyle choices. We recognized that true wellness is not just a temporary escape, but a lifelong commitment to self-care, shared with a community that supports your highest aspirations.&rdquo;
+        <div className="globalspa-bar-link">
+          VISIT GLOBALSPA.IN →
+        </div>
+      </a>
+
+      {/* STATS STRIP */}
+      <section className="stats-strip" aria-label="Wellness Statistics">
+        <div className="stat-box">
+          <div className="stat-box-num">12+</div>
+          <div className="stat-box-label">Years of Wellness Excellence</div>
+        </div>
+        <div className="stat-box">
+          <div className="stat-box-num">1,50,000+</div>
+          <div className="stat-box-label">Subscribers & Community Members</div>
+        </div>
+        <div className="stat-box">
+          <div className="stat-box-num">100+</div>
+          <div className="stat-box-label">Luxury Wellness Partners</div>
+        </div>
+      </section>
+
+      {/* SECTION 2 — CONSCIOUS LIVING, ELEVATED */}
+      <section className="about-sec cream-bg reverse" aria-label="Conscious Living Elevated">
+        <div className="about-sec-content">
+          <span className="about-eyebrow">OUR PHILOSOPHY</span>
+          <h2 className="about-sec-title">Conscious Living, Elevated.</h2>
+          <p className="about-sec-desc">
+            Wellness Lovers Club is a premier members club for mindful living. We curate handpicked experiences, privileges, and connections that inspire your best life, helping you invest in your mind, body, and soul with intention.
           </p>
-          
-          <p className="about-description">
-            &ldquo;Through our deep association with GlobalSpa, we bring the world&apos;s most trusted wellness authorities, holistic destinations, and exclusive privileges directly to you, making intentional living effortless and beautiful.&rdquo;
-          </p>
-          
-          <div className="message-quote">
-            &ldquo;We curation meaningful experiences that inspire, restore, and connect. Welcome to a higher level of mindful living.&rdquo;
-            <span className="message-author">— The Founders of Wellness Lovers Club & GlobalSpa</span>
+          <Link href="/membership" className="about-cta-btn">
+            Become a Member
+          </Link>
+        </div>
+        <div className="about-sec-image-wrapper">
+          <div className="about-image-container">
+            <Image
+              src="/images/conscious-living.jpg"
+              alt="Buddha statue reflecting in a peaceful garden pond under soft sunlight"
+              fill
+              sizes="(max-width: 991px) 100vw, 420px"
+              className="arch-image"
+            />
           </div>
+        </div>
+      </section>
+
+      {/* LEADERSHIP BANNER */}
+      <section aria-label="Leadership team">
+        <div className="leadership-header">
+          <h2 className="leadership-header-title">The People Behind WLC</h2>
+          <p className="leadership-header-subtitle">
+            United by a shared belief that wellness is not a destination, but a way of life.
+          </p>
+        </div>
+
+        {/* TEAM MEMBERS ALTERNATING GRID */}
+        {leadershipTeam.map((leader, idx) => (
+          <div className={`leader-row ${idx % 2 === 1 ? "reverse" : ""}`} key={idx}>
+            <div className="leader-content">
+              <span className="leader-role">{leader.role}</span>
+              <h3 className="leader-name">{leader.name}</h3>
+              <span className="leader-tagline">{leader.tagline}</span>
+              <p className="leader-bio">{leader.bio1}</p>
+              <p className="leader-bio">{leader.bio2}</p>
+              <div className="leader-quote-box">
+                <p className="leader-quote-text">&ldquo;{leader.quote}&rdquo;</p>
+                <div className="leader-quote-author">
+                  — {leader.name}, {leader.tagline}
+                </div>
+              </div>
+            </div>
+            <div className="leader-image-wrapper">
+              <div className="about-image-container">
+                <Image
+                  src={leader.img}
+                  alt={`${leader.name} headshot`}
+                  fill
+                  sizes="(max-width: 991px) 100vw, 420px"
+                  className="arch-image"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* BECOME A MEMBER BAR — BOTTOM OF PAGE */}
+      <section className="become-member-banner" aria-label="Membership Invitation">
+        <div className="become-member-banner-inner">
+          <div className="become-member-banner-quote">
+            &ldquo;Your wellness journey begins here.&rdquo;
+          </div>
+          <Link href="/membership" className="about-cta-btn">
+            Become a Member
+          </Link>
         </div>
       </section>
     </div>

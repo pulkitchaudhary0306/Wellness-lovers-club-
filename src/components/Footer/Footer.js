@@ -26,7 +26,7 @@ function Footer() {
               <h4 className="footer-links-title">EXPLORE</h4>
               <Link href="/">Home</Link>
               <Link href="/about">Our Philosophy</Link>
-              <Link href="/services">Offerings</Link>
+              <Link href="/offerings">Offerings</Link>
               <Link href="/destinations">Destinations</Link>
             </div>
             <div className="footer-links-col">
@@ -67,7 +67,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p className="copyright-text">
-            &copy; 2026 Wellness Lovers Club by GlobalSpa. All rights reserved.
+            &copy; 2025 Wellness Lovers Club by GlobalSpa &middot; All rights reserved &middot; wellnessloversclub.com
           </p>
         </div>
       </div>

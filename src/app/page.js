@@ -56,7 +56,7 @@ export default function HomePage() {
               <Link href="/membership" className="btn btn-green">
                 BECOME A MEMBER
               </Link>
-              <Link href="/services" className="btn btn-outline">
+              <Link href="/offerings" className="btn btn-outline">
                 EXPLORE OUR OFFERINGS
               </Link>
             </div>

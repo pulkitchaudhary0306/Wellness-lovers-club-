@@ -80,8 +80,8 @@ function Header() {
               Our Philosophy
             </Link>
             <Link
-              href="/services"
-              className={isActive("/services") ? "active-link" : ""}
+              href="/offerings"
+              className={isActive("/offerings") ? "active-link" : ""}
               onClick={closeMenu}
             >
               Offerings
