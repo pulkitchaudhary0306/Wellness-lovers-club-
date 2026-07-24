@@ -10,7 +10,7 @@ export default function MembershipBanner() {
         <div className="banner-left-image">
           <div className="banner-image-wrapper rect-image">
             <Image
-              src="/images/membership-spa.jpg"
+              src="/images/membership-spa.webp"
               alt="Premium spa therapy setup with candles and flowers"
               width={400}
               height={300}
@@ -36,7 +36,7 @@ export default function MembershipBanner() {
         <div className="banner-right-image">
           <div className="banner-image-wrapper arched-image">
             <Image
-              src="/images/membership-resort.jpg"
+              src="/images/membership-resort.webp"
               alt="Luxury resort relaxation area with arched view"
               width={400}
               height={300}

@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Loader2, Award, ArrowRight, Check } from "lucide-react";
 
 const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
+  usernameOrEmail: z.string().min(1, "Username or Email is required"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
   rememberMe: z.boolean().default(false),
 });
@@ -77,14 +77,14 @@ export default function LoginPage() {
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "", rememberMe: false },
+    defaultValues: { usernameOrEmail: "", password: "", rememberMe: false },
   });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     setApiError("");
     try {
-      await login(data.email, data.password, data.rememberMe);
+      await login(data.usernameOrEmail, data.password, data.rememberMe);
       router.push("/dashboard");
     } catch (err) {
       setApiError(err.message || "Invalid credentials. Please try again.");
@@ -98,7 +98,7 @@ export default function LoginPage() {
     return (
       <div style={{
         minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-        backgroundImage: "url('/images/buddha-bg.jpg')", backgroundSize: "cover",
+        backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
         backgroundPosition: "center", backgroundAttachment: "fixed", position: "relative",
       }}>
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)" }} />
@@ -148,7 +148,7 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: "100vh", width: "100%", position: "relative",
-      backgroundImage: "url('/images/buddha-bg.jpg')", backgroundSize: "cover",
+      backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
       backgroundPosition: "center", backgroundAttachment: "fixed",
       display: "flex", justifyContent: "center", alignItems: "center",
       padding: "3rem 1.5rem",
@@ -215,11 +215,11 @@ export default function LoginPage() {
             )}
 
             <FieldInput
-              label="Email Address"
-              type="email"
-              placeholder="e.g. aria@example.com"
-              error={errors.email?.message}
-              {...register("email")}
+              label="Username or Email Address"
+              type="text"
+              placeholder="e.g. aria@example.com or aria_username"
+              error={errors.usernameOrEmail?.message}
+              {...register("usernameOrEmail")}
             />
 
             <FieldInput

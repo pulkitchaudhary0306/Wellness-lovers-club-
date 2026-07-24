@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -74,6 +74,20 @@ function RegisterPanel({ onSwitchToLogin }) {
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: { name: "", phone: "", email: "", profession: "", companyName: "", correspondenceAddress: "", preferences: [], password: "", confirmPassword: "", agreeTerms: false, subscribeNewsletter: false },
@@ -98,7 +112,12 @@ function RegisterPanel({ onSwitchToLogin }) {
     const parts = data.name.trim().split(/\s+/);
     try {
       await signup({ ...data, firstName: parts[0] || "", lastName: parts.slice(1).join(" ") || "" });
-      router.push("/verify-otp");
+      // Redirect to payment page after successful registration
+      const params = new URLSearchParams({
+        plan: "gold",          // default plan — user can change on the payment page
+        name: data.name.trim(),
+      });
+      router.push(`/payment?${params.toString()}`);
     } catch (err) { setApiError(err.message || "Registration failed. Please try again."); }
     finally { setIsLoading(false); }
   };
@@ -119,7 +138,7 @@ function RegisterPanel({ onSwitchToLogin }) {
       </div>
 
       {/* Preferences */}
-      <div style={{ position: "relative" }}>
+      <div ref={dropdownRef} style={{ position: "relative" }}>
         <label style={{ display: "block", fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Preferences</label>
         <button type="button" onClick={() => setDropdownOpen(v => !v)} style={{ width: "100%", background: "transparent", border: "none", borderBottom: errors.preferences ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)", borderRadius: 0, padding: "8px 0", fontSize: 13, color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", outline: "none" }}>
           <span style={{ color: selectedPrefs.length === 0 ? "rgba(255,255,255,0.3)" : "#fff" }}>
@@ -177,17 +196,17 @@ function LoginPanel({ onSwitchToRegister }) {
   const { login } = useAuth();
   const router = useRouter();
   const loginSchema = z.object({
-    email: z.string().min(1, "Email required").email("Invalid email"),
+    usernameOrEmail: z.string().min(1, "Username or Email required"),
     password: z.string().min(6, "Min 6 characters"),
     rememberMe: z.boolean().default(false),
   });
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(loginSchema), defaultValues: { email: "", password: "", rememberMe: false } });
+  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(loginSchema), defaultValues: { usernameOrEmail: "", password: "", rememberMe: false } });
 
   const onSubmit = async (data) => {
     setIsLoading(true); setApiError("");
-    try { await login(data.email, data.password, data.rememberMe); router.push("/dashboard"); }
+    try { await login(data.usernameOrEmail, data.password, data.rememberMe); router.push("/dashboard"); }
     catch (err) { setApiError(err.message || "Invalid credentials."); }
     finally { setIsLoading(false); }
   };
@@ -195,7 +214,7 @@ function LoginPanel({ onSwitchToRegister }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {apiError && <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>{apiError}</div>}
-      <FieldInput label="Email Address" type="email" error={errors.email?.message} {...register("email")} />
+      <FieldInput label="Username or Email Address" type="text" error={errors.usernameOrEmail?.message} {...register("usernameOrEmail")} />
       <FieldInput label="Password" type="password" error={errors.password?.message} {...register("password")} />
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
@@ -221,7 +240,7 @@ export default function MembershipPage() {
 
   if (isAuthenticated) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundImage: "url('/images/buddha-bg.jpg')", backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)" }} />
         <div style={{ position: "relative", zIndex: 1, background: "rgba(255,255,255,0.04)", backdropFilter: "blur(24px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 24, padding: "3rem 2.5rem", maxWidth: 480, width: "90%", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
           <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(188,163,116,0.1)", border: "1px solid rgba(188,163,116,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -249,7 +268,7 @@ export default function MembershipPage() {
   return (
     <div style={{
       minHeight: "100vh", width: "100%", position: "relative",
-      backgroundImage: "url('/images/buddha-bg.jpg')", backgroundSize: "cover",
+      backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
       backgroundPosition: "center", backgroundAttachment: "fixed",
       display: "flex", justifyContent: "center", alignItems: "flex-start",
       padding: "3rem 1.5rem 4rem",

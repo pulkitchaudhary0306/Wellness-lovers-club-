@@ -10,7 +10,7 @@ export default function JourneyCTA() {
         <div className="journey-image-column">
           <div className="journey-image-wrapper">
             <Image
-              src="/images/journey-wellness.jpg"
+              src="/images/journey-wellness.webp"
               alt="Stacked zen stones on a peaceful beach at sunset"
               width={500}
               height={350}

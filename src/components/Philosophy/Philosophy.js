@@ -17,7 +17,7 @@ export default function Philosophy() {
         <div className="philosophy-image-column">
           <div className="philosophy-image-wrapper">
             <Image
-              src="/images/philosophy-resort.jpg"
+              src="/images/philosophy-resort.webp"
               alt="Luxury tropical wellness resort infinity pool"
               width={600}
               height={400}

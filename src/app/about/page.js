@@ -13,19 +13,21 @@ export default function AboutPage() {
       role: "Founder",
       name: "Parineeta Sethi",
       tagline: "Founder, Wellness Lovers Club",
-      bio1: "Parineeta's journey into wellness began long before WLC — rooted in a personal quest for balance, meaning, and beauty in everyday living. She envisioned a space where like-minded individuals could come together not just to escape, but to truly transform.",
-      bio2: "Her philosophy is simple: wellness is not a luxury reserved for a few — it is a right that every conscious individual deserves access to. Through WLC, she has brought that vision to life, curating experiences that are as soulful as they are exquisite.",
-      quote: "Wellness Lovers Club was born from a deep desire to create a sanctuary — not just a membership. A place where you come not to escape your life, but to fall in love with it.",
-      img: "/homepage/home2/laurachouette.jpg"
+      bio1: "Parineeta's journey into wellness began long before WLC - rooted in a personal quest for balance, meaning, and beauty in everyday living. She envisioned a space where like-minded individuals could come together not just to escape, but to truly transform.",
+      bio2: "Her philosophy is simple: wellness is not a luxury reserved for a few - it is a right that every conscious individual deserves access to. Through WLC, she has brought that vision to life, curating experiences that are as soulful as they are exquisite.",
+      quote: "Wellness Lovers Club was born from a deep desire to create a sanctuary - not just a membership. A place where you come not to escape your life, but to fall in love with it.",
+      img: "/founders/Parineeta Sethi.png",
+      imgPosition: "top center"
     },
     {
       role: "Founder",
       name: "Abhinav Kaushal",
       tagline: "Founder, Wellness Lovers Club",
-      bio1: "Abhinav brings a rare combination of entrepreneurial vision and a genuine passion for holistic living. With a background in building luxury lifestyle communities, he understood early that the modern individual was seeking more than products — they were seeking purpose.",
-      bio2: "His belief that luxury and wellness are not opposing forces, but natural companions, is the very foundation on which WLC is built. He continues to shape the club's direction — ensuring every experience carries both elegance and intention.",
-      quote: "True wellness is not about retreating from the world — it is about returning to yourself. WLC exists to make that journey effortless, beautiful, and deeply personal.",
-      img: "/homepage/Introimages/szymon-shields.jpg"
+      bio1: "Abhinav brings a rare combination of entrepreneurial vision and a genuine passion for holistic living. With a background in building luxury lifestyle communities, he understood early that the modern individual was seeking more than products - they were seeking purpose.",
+      bio2: "His belief that luxury and wellness are not opposing forces, but natural companions, is the very foundation on which WLC is built. He continues to shape the club's direction - ensuring every experience carries both elegance and intention.",
+      quote: "True wellness is not about retreating from the world - it is about returning to yourself. WLC exists to make that journey effortless, beautiful, and deeply personal.",
+      img: "/founders/Abhinav Kaushal.png",
+      imgPosition: "center center"
     },
     {
       role: "Director",
@@ -33,17 +35,19 @@ export default function AboutPage() {
       tagline: "Director, Wellness Lovers Club",
       bio1: "Vinit is the force behind WLC's world-class partnerships and brand ecosystem. With deep roots in the luxury and hospitality industry, he has spent years forging relationships with the finest wellness brands, spas, and retreat destinations across the globe.",
       bio2: "He believes that a community is only as strong as the experiences it offers, and his relentless pursuit of excellence ensures that every WLC partnership reflects the highest standards of quality, trust, and care.",
-      quote: "We don't just partner with brands — we choose allies who share our commitment to conscious luxury. Every experience we offer is one we would choose for ourselves.",
-      img: "/homepage/Introimages/pexels-cottonbro.jpg"
+      quote: "We don't just partner with brands - we choose allies who share our commitment to conscious luxury. Every experience we offer is one we would choose for ourselves.",
+      img: "/founders/Vinit Pandhi.jpeg",
+      imgPosition: "center center"
     },
     {
       role: "Director",
       name: "Soumya Maheshwari",
       tagline: "Director, Wellness Lovers Club",
-      bio1: "Soumya brings warmth, wisdom, and a deeply personal approach to wellness at WLC. Her background in mindful living, community building, and holistic health has shaped how the club connects with its members — not as a brand, but as a trusted companion on their wellness journey.",
-      bio2: "She champions the idea that every member deserves to feel seen, supported, and inspired. Under her guidance, WLC's community experiences are crafted with intention, empathy, and an unwavering belief in the power of collective wellbeing.",
-      quote: "Wellness is most powerful when it is shared. At WLC, we don't just curate experiences — we build a community where every individual feels they truly belong.",
-      img: "/homepage/Introimages/natalia-portilho.jpg"
+      bio1: "Soumya has been part of India's wellness and luxury lifestyle media space for several years, working closely with brands, experts, destinations, and thought leaders who are shaping the future of wellbeing. Through these experiences, he has developed a deep understanding of the many ways wellness influences how we live, work, and connect.",
+      bio2: "Soumya believes wellness is not defined by trends but by the choices we make every day. His approach is centred on creating genuine connections, encouraging thoughtful conversations, and making every member feel seen, supported, and inspired. Under his guidance, WLC continues to evolve as more than a community—it's a space where people come together to learn, grow, and embrace wellbeing in all its forms.",
+      quote: "The conversations we have, the places we discover, and the people we meet often shape our wellbeing more than we realise.",
+      img: "/founders/Soumya Maheshwari.jpeg",
+      imgPosition: "center top"
     }
   ];
 
@@ -55,7 +59,7 @@ export default function AboutPage() {
           <span className="about-eyebrow">WLC · WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
           <h1 className="about-sec-title">A Wellness Movement Nurtured by GlobalSpa</h1>
           <p className="about-sec-desc">
-            Backed by <strong>GlobalSpa</strong> — India&apos;s leading wellness and luxury lifestyle media brand — WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
+            Backed by <strong>GlobalSpa</strong> - India&apos;s leading wellness and luxury lifestyle media brand - WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
           </p>
           <p className="about-sec-desc">
             We believe that true luxury is the freedom to focus on personal well-being. WLC serves as your trusted companion, offering preferred rates, bespoke wellness itineraries, and members-only events that nurture your spiritual and physical growth.
@@ -64,7 +68,7 @@ export default function AboutPage() {
         <div className="about-sec-image-wrapper">
           <div className="about-image-container">
             <Image
-              src="/images/nurtured-by-globalspa.jpg"
+              src="/images/nurtured-by-globalspa.webp"
               alt="Woman meditating in a forest deck overlooking a geothermal hot spring"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
@@ -77,7 +81,7 @@ export default function AboutPage() {
 
       {/* GLOBALSPA LINK BAR */}
       <a 
-        href="https://www.globalspa.in" 
+        href="https://globalspaonline.com/" 
         target="_blank" 
         rel="noopener noreferrer" 
         className="globalspa-bar"
@@ -122,7 +126,7 @@ export default function AboutPage() {
         <div className="about-sec-image-wrapper">
           <div className="about-image-container">
             <Image
-              src="/images/conscious-living.jpg"
+              src="/images/conscious-living.webp"
               alt="Buddha statue reflecting in a peaceful garden pond under soft sunlight"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
@@ -153,7 +157,7 @@ export default function AboutPage() {
               <div className="leader-quote-box">
                 <p className="leader-quote-text">&ldquo;{leader.quote}&rdquo;</p>
                 <div className="leader-quote-author">
-                  — {leader.name}, {leader.tagline}
+                  {leader.name}, {leader.tagline}
                 </div>
               </div>
             </div>
@@ -165,6 +169,7 @@ export default function AboutPage() {
                   fill
                   sizes="(max-width: 991px) 100vw, 420px"
                   className="arch-image"
+                  style={{ objectPosition: leader.imgPosition || "center center" }}
                 />
               </div>
             </div>

@@ -10,40 +10,43 @@ export default function OfferingsPage() {
   const offerings = [
     {
       title: "Wellness Retreats",
-      desc: "Transformative escapes in serene, handpicked locations around the world. Reconnect with nature and your inner peace.",
-      img: "/images/wellness-retreat.jpg",
+      desc: "Immersive escapes designed to restore your mind, body and perspective.",
+      img: "/images/wellness-retreat-cabin.webp",
       category: "Escapes",
       link: "/offerings/wellness-retreats"
     },
     {
-      title: "Spa Experiences",
-      desc: "Curated therapies, mineral baths, and custom bodywork designed by premier therapists to restore vitality and release tension.",
-      img: "/images/membership-spa.jpg",
-      category: "Therapies"
+      title: "Movement & Mindfulness",
+      desc: "Move with intention. Pause with purpose. Build a healthier relationship with your body.",
+      img: "/images/movement-mindfulness-yoga.webp",
+      category: "Mindfulness",
+      link: "/offerings/movement-mindfulness"
     },
     {
-      title: "Mindfulness Programs",
-      desc: "Guided meditation sessions, sound healing, and breathwork practices tailored to quiet the mind and reduce daily stress.",
-      img: "/images/hero-wellness.jpg",
-      category: "Mindfulness"
-    },
-    {
-      title: "Nutrition & Well-being",
-      desc: "Organic cuisine, cold-pressed juice regimens, and nutritional counseling designed to nourish and detoxify your body.",
-      img: "/images/wellness-experience.jpg",
-      category: "Nutrition"
-    },
-    {
-      title: "Exclusive Events",
-      desc: "Private wellness workshops, keynote speaker dinners, and members-only wellness summits in major capital cities.",
-      img: "/images/exclusive-privileges.jpg",
+      title: "Exclusive Community Experiences",
+      desc: "Meaningful connections that inspire growth, collaboration and conscious living.",
+      img: "/images/community-experiences-lounge.webp",
       category: "Community"
+    },
+    {
+      title: "Priority Access",
+      desc: "Exclusive experiences reserved for those who choose wellness first.",
+      img: "/images/wellness-experience.webp",
+      category: "Priority"
+    },
+    {
+      title: "Spa & Holistic Healing Experiences",
+      desc: "Ancient wisdom and modern therapies curated for complete restoration.",
+      img: "/images/spa-healing-room.webp",
+      category: "Therapies",
+      link: "/offerings/spa-healing"
     },
     {
       title: "Luxury Wellness Stays",
       desc: "Preferred rates and VIP amenities at the world's most exclusive boutique wellness resorts and luxury hotels.",
-      img: "/images/membership-resort.jpg",
-      category: "Stays"
+      img: "/images/luxury-stays-cabana.webp",
+      category: "Stays",
+      link: "/offerings/luxury-stays"
     }
   ];
 
@@ -55,7 +58,7 @@ export default function OfferingsPage() {
           <span className="eyebrow">OUR SERVICES</span>
           <h1 className="inner-hero-title">Our Offerings</h1>
           <p className="inner-hero-desc">
-            Explore our curated selection of high-end wellness services, exclusive events, and premium destination privileges.
+            Explore a curated selection of wellness experiences, exclusive events, and premium lifestyle privileges designed to elevate every aspect of your wellbeing.
           </p>
         </div>
       </section>

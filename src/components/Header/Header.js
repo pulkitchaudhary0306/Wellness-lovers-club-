@@ -43,11 +43,9 @@ function Header() {
     <header className="site-header">
       <div className="logo-section">
         <Link href="/" onClick={closeMenu}>
-          <img
-            src="/logo/logo.png"
+          <img loading="lazy" src="/logo/logo.png"
             alt="Wellness Lovers Club Logo"
-            className="site-logo"
-          />
+            className="site-logo" />
         </Link>
       </div>
       <div className="navigation-section">
@@ -73,8 +71,8 @@ function Header() {
               Home
             </Link>
             <Link
-              href="/about"
-              className={isActive("/about") ? "active-link" : ""}
+              href="/our-philosophy"
+              className={isActive("/our-philosophy") ? "active-link" : ""}
               onClick={closeMenu}
             >
               Our Philosophy

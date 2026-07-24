@@ -1,211 +1,310 @@
-import { User, AuthResponse, Order, Payment, Membership } from "@/types/auth";
+/**
+ * authService.ts
+ *
+ * All authentication and user-data calls wired to the WordPress REST API.
+ * Uses:
+ *   - JWT Authentication for WP REST API plugin  → /wp-json/jwt-auth/v1/token
+ *   - Custom WP plugin endpoints                 → /wp-json/custom/v1/*
+ *   - WooCommerce (optional)                     → /wp-json/wc/v3/*
+ *
+ * ─── WordPress plugins required ────────────────────────────────────────────
+ *   1. JWT Authentication for WP REST API
+ *      https://wordpress.org/plugins/jwt-authentication-for-wp-rest-api/
+ *      Add to wp-config.php:
+ *        define('JWT_AUTH_SECRET_KEY', 'your-secret-key');
+ *        define('JWT_AUTH_CORS_ENABLE', true);
+ *
+ *   2. A custom plugin exposing /wp-json/custom/v1/* endpoints:
+ *      register, forgot-password, reset-password, verify-email,
+ *      profile (GET / PUT), orders, payments, membership, change-password
+ *
+ *   3. (Optional) WooCommerce + WC Memberships / MemberPress
+ *      for orders, payments and membership data
+ */
 
-// Future WordPress REST API or WPGraphQL configuration
-// When ready, replace the mock calls below with fetch() requests to these endpoints.
+import { User, AuthResponse, Order, Payment, Membership } from "@/types/auth";
+import { wpPost, wpGet, wpPut, WPApiError } from "@/lib/wpFetch";
+
+// ─── Endpoint map ─────────────────────────────────────────────────────────────
+
 export const WP_API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://your-wordpress-site.com",
+  BASE_URL:
+    process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://your-wordpress-site.com",
   ENDPOINTS: {
-    LOGIN: "/wp-json/custom/v1/login", // Or JWT auth: "/wp-json/jwt-auth/v1/token"
+    LOGIN: "/wp-json/jwt-auth/v1/token",
+    TOKEN_VALIDATE: "/wp-json/jwt-auth/v1/token/validate",
     REGISTER: "/wp-json/custom/v1/register",
     LOGOUT: "/wp-json/custom/v1/logout",
     FORGOT_PASSWORD: "/wp-json/custom/v1/forgot-password",
     RESET_PASSWORD: "/wp-json/custom/v1/reset-password",
     VERIFY_OTP: "/wp-json/custom/v1/verify-email",
-    PROFILE: "/wp-json/custom/v1/profile", // GET /profile, PUT /profile
+    PROFILE: "/wp-json/custom/v1/profile",
+    CHANGE_PASSWORD: "/wp-json/custom/v1/change-password",
     ORDERS: "/wp-json/custom/v1/orders",
     PAYMENTS: "/wp-json/custom/v1/payments",
     MEMBERSHIP: "/wp-json/custom/v1/membership",
-  }
+  },
 };
 
-// Mock User Data for Initial Development
-const MOCK_USER: User = {
-  id: "wlc_user_992",
-  firstName: "Aria",
-  lastName: "Sterling",
-  email: "aria.sterling@wellnesslovers.com",
-  phone: "+1 (555) 019-2834",
-  profession: "Creative Director",
-  companyName: "Zenith Design Studio",
-  country: "United States",
-  city: "San Francisco",
-  address: "482 Pine Street, Apt 3B, San Francisco, CA 94104",
-  membershipStatus: "Active",
-  membershipTier: "Premium Lotus Club",
-  avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&h=300&q=80"
-};
+// ─── WordPress response shapes ─────────────────────────────────────────────
 
-const MOCK_ORDERS: Order[] = [
-  { id: "WLC-8921", date: "June 14, 2026", status: "Completed", total: "$120.00", item: "Himalayan Sanctuary Yoga Retreat Pass" },
-  { id: "WLC-7402", date: "April 29, 2026", status: "Completed", total: "$350.00", item: "Premium Lotus Club Annual Membership" },
-  { id: "WLC-6310", date: "January 12, 2026", status: "Completed", total: "$95.00", item: "1-on-1 Mindfulness Coaching Session" }
-];
+/** Shape returned by /wp-json/jwt-auth/v1/token on success */
+interface JWTLoginResponse {
+  token: string;
+  user_email: string;
+  user_nicename: string;
+  user_display_name: string;
+  /** Extended fields returned by the custom plugin */
+  user?: Partial<User>;
+}
 
-const MOCK_PAYMENTS: Payment[] = [
-  { id: "PAY-29831", date: "June 14, 2026", amount: "$120.00", status: "Successful", method: "Stripe (Visa)" },
-  { id: "PAY-18291", date: "April 29, 2026", amount: "$350.00", status: "Successful", method: "PayPal" },
-  { id: "PAY-09281", date: "January 12, 2026", amount: "$95.00", status: "Successful", method: "Apple Pay" }
-];
+/** Shape returned by the custom register endpoint */
+interface RegisterResponse {
+  token: string;
+  refresh_token?: string;
+  user: Partial<User>;
+}
 
-const MOCK_MEMBERSHIPS: Membership[] = [
-  {
-    id: "MEM-8201",
-    tier: "Premium Lotus Club",
-    status: "Active",
-    startDate: "April 29, 2026",
-    endDate: "April 28, 2027",
-    price: "$350.00",
-    billingCycle: "Annually"
+/** Shape returned by the profile endpoint /wp-json/wp/v2/users/me */
+interface ProfileResponse extends Omit<Partial<User>, "id"> {
+  id: string | number;
+  name?: string;
+  first_name?: string;
+  last_name?: string;
+  user_email?: string;
+  avatar_url?: string;
+  avatar_urls?: Record<string, string>;
+  roles?: string[];
+  membership_status?: string;
+  membership_tier?: string;
+}
+
+// ─── Mapping helpers ──────────────────────────────────────────────────────────
+
+/**
+ * Maps a WordPress profile response (snake_case) to the front-end User shape.
+ */
+function mapProfile(raw: ProfileResponse): User {
+  const avatarUrl =
+    raw.avatarUrl ??
+    raw.avatar_url ??
+    (raw.avatar_urls ? raw.avatar_urls["96"] ?? raw.avatar_urls["48"] ?? raw.avatar_urls["24"] : undefined);
+
+  let firstName = raw.firstName ?? raw.first_name ?? "";
+  let lastName = raw.lastName ?? raw.last_name ?? "";
+  if (!firstName && raw.name) {
+    const parts = raw.name.trim().split(/\s+/);
+    firstName = parts[0] || "";
+    lastName = parts.slice(1).join(" ") || "";
   }
-];
 
-// Helper to simulate API latency
-const delay = (ms = 1200) => new Promise(resolve => setTimeout(resolve, ms));
+  const hasRole = raw.roles && raw.roles.length > 0;
+  const membershipStatus = (raw.membershipStatus ??
+    raw.membership_status ??
+    (hasRole ? "Active" : "Inactive")) as User["membershipStatus"];
+
+  return {
+    id: String(raw.id),
+    firstName,
+    lastName,
+    email: raw.email ?? raw.user_email ?? "",
+    phone: raw.phone ?? "",
+    profession: raw.profession,
+    companyName: raw.companyName,
+    country: raw.country ?? "",
+    city: raw.city,
+    address: raw.address,
+    membershipStatus,
+    membershipTier: raw.membershipTier ?? raw.membership_tier ?? "Lotus Club",
+    avatarUrl,
+  };
+}
+
+// ─── Auth Service ─────────────────────────────────────────────────────────────
 
 export const authService = {
   /**
-   * Performs user login
+   * Logs a user in via JWT Authentication plugin.
+   * POST /wp-json/jwt-auth/v1/token
    */
-  async login(email: string, password: string, rememberMe: boolean): Promise<AuthResponse> {
-    await delay();
-    
-    // Simulate invalid login for testing if email is "error@test.com"
-    if (email === "error@test.com") {
-      throw new Error("Invalid email or password. Please try again.");
-    }
+  async login(
+    username: string,
+    password: string,
+    _rememberMe: boolean
+  ): Promise<AuthResponse> {
+    const data = await wpPost<JWTLoginResponse>(
+      WP_API_CONFIG.ENDPOINTS.LOGIN,
+      { username, password },
+      { unauthenticated: true }
+    );
 
-    // Standard login behavior
+    // The JWT plugin returns minimal user info; merge with any extended fields.
+    const user: User = data.user
+      ? mapProfile(data.user as ProfileResponse)
+      : {
+          id: "",
+          firstName: data.user_nicename ?? "",
+          lastName: "",
+          email: data.user_email,
+          phone: "",
+          country: "",
+          membershipStatus: "Inactive",
+        };
+
     return {
-      user: {
-        ...MOCK_USER,
-        email: email
-      },
-      token: "mock-jwt-access-token-xxx",
-      refreshToken: rememberMe ? "mock-jwt-refresh-token-yyy" : ""
+      user,
+      token: data.token,
+      refreshToken: "",
     };
   },
 
   /**
-   * Registers a new user account
+   * Registers a new user account.
+   * POST /wp-json/custom/v1/register
    */
-  async register(userData: Partial<User> & { password?: string }): Promise<AuthResponse> {
-    await delay(1500);
-
-    if (userData.email === "exists@test.com") {
-      throw new Error("An account with this email already exists.");
-    }
-
-    const newUser: User = {
-      id: "wlc_user_" + Math.floor(Math.random() * 1000),
-      firstName: userData.firstName || "",
-      lastName: userData.lastName || "",
-      email: userData.email || "",
-      phone: userData.phone || "",
-      profession: userData.profession || "",
-      companyName: userData.companyName || "",
-      country: userData.country || "",
-      city: userData.city || "",
-      membershipStatus: "Pending",
-      avatarUrl: ""
-    };
+  async register(
+    userData: Partial<User> & { password?: string }
+  ): Promise<AuthResponse> {
+    const data = await wpPost<RegisterResponse>(
+      WP_API_CONFIG.ENDPOINTS.REGISTER,
+      userData,
+      { unauthenticated: true }
+    );
 
     return {
-      user: newUser,
-      token: "mock-jwt-access-token-xxx",
-      refreshToken: ""
+      user: mapProfile(data.user as ProfileResponse),
+      token: data.token,
+      refreshToken: data.refresh_token ?? "",
     };
   },
 
   /**
-   * Logs out the user
+   * Invalidates the token on the server (if the plugin supports it).
+   * POST /wp-json/custom/v1/logout
+   * JWT is stateless — token removal from storage is handled by AuthContext.
    */
   async logout(): Promise<void> {
-    await delay(600);
-    // Future: call POST /wp-json/custom/v1/logout to invalidate tokens
+    try {
+      await wpPost(WP_API_CONFIG.ENDPOINTS.LOGOUT, {});
+    } catch {
+      // Silently ignore server-side logout errors;
+      // local token cleanup in AuthContext is the source of truth.
+    }
   },
 
   /**
-   * Requests a password reset link
+   * Sends a password-reset email.
+   * POST /wp-json/custom/v1/forgot-password
    */
   async forgotPassword(email: string): Promise<void> {
-    await delay(1000);
-    if (email === "notfound@test.com") {
-      throw new Error("No account found with this email address.");
+    await wpPost(
+      WP_API_CONFIG.ENDPOINTS.FORGOT_PASSWORD,
+      { email },
+      { unauthenticated: true }
+    );
+  },
+
+  /**
+   * Sets a new password using the reset token from the email link.
+   * POST /wp-json/custom/v1/reset-password
+   *
+   * @param password    New password
+   * @param resetKey    Token from the reset email (read from URL in the page)
+   * @param userLogin   WP user login / email (also from URL)
+   */
+  async resetPassword(
+    password: string,
+    resetKey?: string,
+    userLogin?: string
+  ): Promise<void> {
+    await wpPost(
+      WP_API_CONFIG.ENDPOINTS.RESET_PASSWORD,
+      { password, key: resetKey, login: userLogin },
+      { unauthenticated: true }
+    );
+  },
+
+  /**
+   * Verifies a one-time OTP / email verification code.
+   * POST /wp-json/custom/v1/verify-email
+   */
+  async verifyOTP(otp: string, email?: string): Promise<void> {
+    await wpPost(
+      WP_API_CONFIG.ENDPOINTS.VERIFY_OTP,
+      { otp, email },
+      { unauthenticated: true }
+    );
+  },
+
+  /**
+   * Validates a stored JWT token against WordPress.
+   * POST /wp-json/jwt-auth/v1/token/validate
+   * Returns true when valid, false when expired / invalid.
+   */
+  async validateToken(): Promise<boolean> {
+    try {
+      await wpPost(WP_API_CONFIG.ENDPOINTS.TOKEN_VALIDATE, {});
+      return true;
+    } catch (err) {
+      if (err instanceof WPApiError && err.isUnauthorized) return false;
+      throw err;
     }
   },
 
   /**
-   * Confirms a new password using a token
-   */
-  async resetPassword(password: string): Promise<void> {
-    await delay(1200);
-  },
-
-  /**
-   * Verifies an OTP code (6 digits)
-   */
-  async verifyOTP(otp: string): Promise<void> {
-    await delay(1000);
-    if (otp !== "123456" && otp !== "111111") {
-      throw new Error("Invalid OTP code. Please enter the correct 6-digit code.");
-    }
-  },
-
-  /**
-   * Refreshes the session token
-   */
-  async refreshToken(token: string): Promise<{ token: string }> {
-    await delay(500);
-    return { token: token + "-refreshed" };
-  },
-
-  /**
-   * Fetches the user profile from the server
+   * Fetches the authenticated user's profile.
+   * GET /wp-json/custom/v1/profile
    */
   async getProfile(): Promise<User> {
-    await delay(800);
-    return MOCK_USER;
+    const data = await wpGet<ProfileResponse>(WP_API_CONFIG.ENDPOINTS.PROFILE);
+    return mapProfile(data);
   },
 
-  /**
-   * Updates profile data
-   */
   async updateProfile(profileData: Partial<User>): Promise<User> {
-    await delay(1200);
-    return {
-      ...MOCK_USER,
-      ...profileData
-    };
+    const data = await wpPut<ProfileResponse>(
+      WP_API_CONFIG.ENDPOINTS.PROFILE,
+      profileData
+    );
+    return mapProfile(data);
   },
 
   /**
-   * Changes the user's password
+   * Changes the authenticated user's password.
+   * POST /wp-json/custom/v1/change-password
    */
-  async changePassword(): Promise<void> {
-    await delay(1200);
+  async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    await wpPost(WP_API_CONFIG.ENDPOINTS.CHANGE_PASSWORD, {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
   },
 
   /**
-   * Fetches the user's orders (WooCommerce compatible)
+   * Fetches the user's order history.
+   * GET /wp-json/custom/v1/orders
+   * (WooCommerce-compatible shape; can also call /wp-json/wc/v3/orders)
    */
   async getOrders(): Promise<Order[]> {
-    await delay(800);
-    return MOCK_ORDERS;
+    return wpGet<Order[]>(WP_API_CONFIG.ENDPOINTS.ORDERS);
   },
 
   /**
-   * Fetches user's payments
+   * Fetches the user's payment history.
+   * GET /wp-json/custom/v1/payments
    */
   async getPayments(): Promise<Payment[]> {
-    await delay(800);
-    return MOCK_PAYMENTS;
+    return wpGet<Payment[]>(WP_API_CONFIG.ENDPOINTS.PAYMENTS);
   },
 
   /**
-   * Fetches user's memberships (WooCommerce Memberships / MemberPress compatible)
+   * Fetches the user's membership records.
+   * GET /wp-json/custom/v1/membership
+   * (Compatible with WooCommerce Memberships / MemberPress)
    */
   async getMemberships(): Promise<Membership[]> {
-    await delay(800);
-    return MOCK_MEMBERSHIPS;
-  }
+    return wpGet<Membership[]>(WP_API_CONFIG.ENDPOINTS.MEMBERSHIP);
+  },
 };

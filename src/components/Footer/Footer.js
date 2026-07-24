@@ -11,11 +11,9 @@ function Footer() {
           {/* Brand/Logo Column */}
           <div className="footer-brand-col">
             <Link href="/" className="footer-logo-link">
-              <img
-                src="/logo/logo.png"
+              <img loading="lazy" src="/logo/logo.png"
                 alt="Wellness Lovers Club Logo"
-                className="footer-logo-img"
-              />
+                className="footer-logo-img" />
             </Link>
 
           </div>
@@ -25,7 +23,7 @@ function Footer() {
             <div className="footer-links-col">
               <h4 className="footer-links-title">EXPLORE</h4>
               <Link href="/">Home</Link>
-              <Link href="/about">Our Philosophy</Link>
+              <Link href="/our-philosophy">Our Philosophy</Link>
               <Link href="/offerings">Offerings</Link>
               <Link href="/destinations">Destinations</Link>
             </div>
@@ -36,8 +34,8 @@ function Footer() {
             <div className="footer-links-col">
               <h4 className="footer-links-title">SUPPORT</h4>
               <Link href="/contact">Contact Us</Link>
-              <Link href="/">FAQs</Link>
-              <Link href="/">Privacy Policy</Link>
+              <Link href="/faq">FAQs</Link>
+              <Link href="/privacy-policy">Privacy Policy</Link>
             </div>
           </div>
 

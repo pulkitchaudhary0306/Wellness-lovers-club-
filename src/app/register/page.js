@@ -131,7 +131,7 @@ export default function RegisterPage() {
   return (
     <div style={{
       minHeight: "100vh", width: "100%", position: "relative",
-      backgroundImage: "url('/images/buddha-bg.jpg')", backgroundSize: "cover",
+      backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
       backgroundPosition: "center", backgroundAttachment: "fixed",
       display: "flex", justifyContent: "center", alignItems: "flex-start",
       padding: "3rem 1.5rem 4rem",

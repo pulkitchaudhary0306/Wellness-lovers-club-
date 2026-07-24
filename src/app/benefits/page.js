@@ -11,37 +11,37 @@ export default function BenefitsPage() {
     {
       title: "Preferred Partner Rates",
       desc: "Enjoy savings and VIP upgrades at our carefully selected luxury wellness resorts, spa partners, and boutique stays worldwide.",
-      img: "/images/membership-resort.jpg",
+      img: "/images/membership-resort.webp",
       label: "Rates"
     },
     {
       title: "Exclusive Invitations",
       desc: "Receive priority invitations to private wellness retreats, guest speaker events, sound healing sessions, and panel discussions.",
-      img: "/images/exclusive-privileges.jpg",
+      img: "/images/exclusive-privileges.webp",
       label: "Access"
     },
     {
       title: "Personalised Wellness Support",
       desc: "Gain access to certified wellness advisors who help customize retreat itineraries, nutrition advice, and local therapist matches.",
-      img: "/images/wellness-experience.jpg",
+      img: "/images/wellness-experience.webp",
       label: "Support"
     },
     {
       title: "Members-Only Experiences",
       desc: "Unlock rare travel opportunities and local rituals created solely for Wellness Lovers Club members.",
-      img: "/images/wellness-retreat.jpg",
+      img: "/images/wellness-retreat.webp",
       label: "Experiences"
     },
     {
       title: "Global Wellness Network",
       desc: "Connect with a community of mindful individuals, luxury wellness practitioners, and brand founders who share your values.",
-      img: "/images/hero-wellness.jpg",
+      img: "/images/hero-wellness.webp",
       label: "Network"
     },
     {
       title: "Curated Recommendations",
       desc: "Access our monthly digital journal and private concierge reviews detailing the latest wellness discoveries, therapies, and retreats.",
-      img: "/images/membership-spa.jpg",
+      img: "/images/membership-spa.webp",
       label: "Recommendations"
     }
   ];

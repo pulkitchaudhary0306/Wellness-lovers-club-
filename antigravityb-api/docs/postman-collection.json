@@ -1,0 +1,81 @@
+{
+  "info": {
+    "name": "AntigravityB CMS Headless API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/agb/v1/login",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "agb", "v1", "login"]
+            }
+          }
+        },
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"password\": \"secured_pass_99\",\n  \"phone\": \"+15550199\",\n  \"company\": \"Headless LLC\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/agb/v1/register",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "agb", "v1", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact & Newsletters",
+      "item": [
+        {
+          "name": "Submit Contact Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Inquirer\",\n  \"email\": \"test@example.com\",\n  \"message\": \"Looking to build a headless Next.js project.\",\n  \"website\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/agb/v1/contact",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "agb", "v1", "contact"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

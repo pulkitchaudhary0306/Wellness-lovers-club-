@@ -4,7 +4,7 @@
   position: relative;
   min-height: 100vh;
   width: 100%;
-  background-image: url('/homepage/home2/spa-lounge-pool.jpg');
+  background-image: url('/images/membership-spa.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -341,7 +341,7 @@
    ========================================================================== */
 
 .membership-section {
-  background-image: url('/images/buddha-bg.jpg') !important;
+  background-image: url('/images/buddha-bg.webp') !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;

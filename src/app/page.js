@@ -5,15 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 
 const heroImages = [
-  "/homepage/d30a5470622d212e7ae19d485f9e1911.jpg",
-  "/homepage/eb9fb38adaf4e895f43ef0798cf67c3a.jpg",
-  "/homepage/1d8a0a0d24ef6d5d4eef7e4564b4dab8.jpg",
-  "/homepage/41dfe3d2198e675d587959f122ba984a.jpg",
+  "/images/d30a5470622d212e7ae19d485f9e1911.webp",
+  "/images/eb9fb38adaf4e895f43ef0798cf67c3a.webp",
+  "/images/1d8a0a0d24ef6d5d4eef7e4564b4dab8.webp",
+  "/images/41dfe3d2198e675d587959f122ba984a.webp",
 ];
 
 const membershipBannerImages = {
-  spaStillLife: "/homepage/home2/fukajaz.jpg",
-  loungeDeck: "/homepage/home2/spa-lounge-pool.jpg",
+  spaStillLife: "/images/fukajaz.webp",
+  loungeDeck: "/images/membership-resort.webp",
 };
 
 export default function HomePage() {
@@ -126,7 +126,7 @@ export default function HomePage() {
         <div className="philosophy-container-wrapper">
           <div className="philosophy-content-col">
             <div className="philosophy-inner">
-              <span className="philosophy-subtitle">— OUR PHILOSOPHY —</span>
+              <span className="philosophy-subtitle">OUR PHILOSOPHY</span>
               <h2 className="philosophy-title">Conscious Living, Elevated.</h2>
               <div className="philosophy-separator"></div>
               <p className="philosophy-text" style={{ marginBottom: "20px" }}>
@@ -141,7 +141,7 @@ export default function HomePage() {
             <div className="philosophy-collage">
               <div className="philosophy-main-image-wrapper">
                 <Image
-                  src="/homepage/Introimages/natalia-portilho.jpg"
+                  src="/homepage/Introimages/natalia-portilho.webp"
                   alt="Luxury pool at wellness resort"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -151,7 +151,7 @@ export default function HomePage() {
               </div>
               <div className="philosophy-detail-image-wrapper">
                 <Image
-                  src="/homepage/Introimages/szymon-shields.jpg"
+                  src="/homepage/Introimages/szymon-shields.webp"
                   alt="Lush green palm leaves close-up"
                   fill
                   sizes="200px"
@@ -165,17 +165,20 @@ export default function HomePage() {
 
       {/* Our Offerings Grid Section */}
       <section className="offerings-section">
-        <h4 className="offerings-subtitle">— OUR OFFERINGS —</h4>
-        <h2 style={{ textAlign: "center", fontFamily: "Georgia, serif", fontWeight: "normal", fontSize: "clamp(24px, 3.2vw, 36px)", color: "#0d563f", marginBottom: "45px", marginTop: "10px" }}>
-          Three Ways We Elevate Your Wellness
+        <h4 className="offerings-subtitle">OUR OFFERINGS</h4>
+        <h2 style={{ textAlign: "center", fontFamily: "Georgia, serif", fontWeight: "normal", fontSize: "clamp(24px, 3.2vw, 36px)", color: "#0d563f", marginBottom: "20px", marginTop: "10px" }}>
+          How We Elevate Your Wellness
         </h2>
+        <p style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 45px", fontFamily: "Arial, Helvetica, sans-serif", fontSize: "16px", color: "#666666", lineHeight: "1.6", padding: "0 20px" }}>
+          Explore a curated selection of wellness experiences, exclusive events, and premium lifestyle privileges designed to elevate every aspect of your wellbeing.
+        </p>
         <div className="offerings-container">
           {/* Card 1 */}
           <div className="offering-card">
             <div className="offering-image-wrapper">
               <Image
-                src="/homepage/Introimages/pexels-cottonbro.jpg"
-                alt="Woman meditating by lake and mountains"
+                src="/images/wellness-retreat-cabin.webp"
+                alt="Wellness retreats"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
@@ -191,7 +194,7 @@ export default function HomePage() {
             <div className="offering-info">
               <h3 className="offering-title">Wellness Retreats</h3>
               <p className="offering-desc">
-                Curated escapes at premier destinations from Himalayan sanctuaries to coastal healing centres. Each retreat offers personalised programmes for deep restoration and renewal.
+                Immersive escapes designed to restore your mind, body and perspective.
               </p>
             </div>
           </div>
@@ -200,24 +203,24 @@ export default function HomePage() {
           <div className="offering-card">
             <div className="offering-image-wrapper">
               <Image
-                src="/homepage/Introimages/katie-cerami.jpg"
-                alt="Spa therapy session"
+                src="/images/movement-mindfulness-yoga.webp"
+                alt="Movement & Mindfulness"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" className="offering-badge-icon" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 21a7 7 0 0 0 7-7H5a7 7 0 0 0 7 7z" />
-                  <path d="M12 14v-4" />
-                  <path d="M12 5.5c-.8 1.5-1.5 2.5-1.5 3.5 0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5c0-1-.7-2-1.5-3.5z" fill="#ffffff" />
+                  <path d="M2 10h14c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3-2.5 1.5-2.5 3" />
+                  <path d="M8 14h12c1.5 0 2.5 1.5 2.5 3s-1 3-2.5 3-2.5-1.5-2.5-3" />
+                  <path d="M4 18h7c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3" />
                 </svg>
               </div>
             </div>
             <div className="offering-info">
               <h3 className="offering-title">Movement & Mindfulness</h3>
               <p className="offering-desc">
-                Personalised fitness and mindfulness experiences including Pilates, HIIT, yoga, meditation, breathwork, and mindful movement  designed for the modern lifestyle.
+                Move with intention. Pause with purpose. Build a healthier relationship with your body.
               </p>
             </div>
           </div>
@@ -226,8 +229,8 @@ export default function HomePage() {
           <div className="offering-card">
             <div className="offering-image-wrapper">
               <Image
-                src="/homepage/Introimages/storiesofdesign.jpg"
-                alt="Luxury outdoor dining terrace"
+                src="/images/community-experiences-lounge.webp"
+                alt="Exclusive Community Experiences"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
@@ -241,7 +244,82 @@ export default function HomePage() {
             <div className="offering-info">
               <h3 className="offering-title">Exclusive Community Experiences</h3>
               <p className="offering-desc">
-                Meaningful networking and lifestyle events that connect wellness-conscious individuals through curated gatherings, expert collaborations, and shared journeys.
+                Meaningful connections that inspire growth, collaboration and conscious living.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4 */}
+          <div className="offering-card">
+            <div className="offering-image-wrapper">
+              <Image
+                src="/images/wellness-experience.webp"
+                alt="Priority Access"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="offering-img"
+              />
+              <div className="offering-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="offering-badge-icon">
+                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                </svg>
+              </div>
+            </div>
+            <div className="offering-info">
+              <h3 className="offering-title">Priority Access</h3>
+              <p className="offering-desc">
+                Exclusive experiences reserved for those who choose wellness first.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 5 */}
+          <div className="offering-card">
+            <div className="offering-image-wrapper">
+              <Image
+                src="/images/spa-healing-room.webp"
+                alt="Spa & Holistic Healing Experiences"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="offering-img"
+              />
+              <div className="offering-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" className="offering-badge-icon" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 21a7 7 0 0 0 7-7H5a7 7 0 0 0 7 7z" />
+                  <path d="M12 14v-4" />
+                  <path d="M12 5.5c-.8 1.5-1.5 2.5-1.5 3.5 0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5c0-1-.7-2-1.5-3.5z" fill="#ffffff" />
+                </svg>
+              </div>
+            </div>
+            <div className="offering-info">
+              <h3 className="offering-title">Spa & Holistic Healing Experiences</h3>
+              <p className="offering-desc">
+                Ancient wisdom and modern therapies curated for complete restoration.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 6 */}
+          <div className="offering-card">
+            <div className="offering-image-wrapper">
+              <Image
+                src="/images/luxury-stays-cabana.webp"
+                alt="Luxury Wellness Stays"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="offering-img"
+              />
+              <div className="offering-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="offering-badge-icon">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </div>
+            </div>
+            <div className="offering-info">
+              <h3 className="offering-title">Luxury Wellness Stays</h3>
+              <p className="offering-desc">
+                Preferred rates and VIP amenities at the world's most exclusive boutique wellness resorts and luxury hotels.
               </p>
             </div>
           </div>
@@ -251,7 +329,7 @@ export default function HomePage() {
 
       {/* The Wellness Pillars Section */}
       <section className="pillars-section">
-        <h4 className="pillars-subtitle">— THE WELLNESS PILLARS —</h4>
+        <h4 className="pillars-subtitle">THE WELLNESS PILLARS</h4>
         <h2 style={{ textAlign: "center", fontFamily: "Georgia, serif", fontWeight: "normal", fontSize: "clamp(24px, 3.2vw, 36px)", color: "#0d563f", marginBottom: "35px", marginTop: "10px" }}>
           Five Dimensions of Elevated Living
         </h2>
@@ -348,7 +426,7 @@ export default function HomePage() {
 
           {/* Centre content */}
           <div className="banner-content-col">
-            <span className="banner-eyebrow">— MEMBERSHIP —</span>
+            <span className="banner-eyebrow">MEMBERSHIP</span>
 
             <h2 className="banner-title">
               A Life of Wellness Privileges.
@@ -384,7 +462,7 @@ export default function HomePage() {
       {/* Why Choose Us Section */}
       <section className="why-choose-section">
         <div className="why-choose-container">
-          <span className="why-choose-subtitle">— WHY CHOOSE US —</span>
+          <span className="why-choose-subtitle">WHY CHOOSE US</span>
           <h2 className="why-choose-title">Four Reasons WLC Stands Apart</h2>
           <div className="why-choose-grid">
             {/* Exclusive Global Offers */}
@@ -548,7 +626,7 @@ export default function HomePage() {
       <section className="journey-section">
         <div className="journey-image-col">
           <Image
-            src="/homepage/zen_stones.png"
+            src="/images/zen_stones.webp"
             alt="Stacked zen stones on a sandy beach at sunset"
             fill
             sizes="(max-width: 767px) 100vw, 35vw"

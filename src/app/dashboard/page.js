@@ -52,7 +52,7 @@ function SidebarNav({ activeTab, setActiveTab, onLogout, onClose }) {
   return (
     <>
       <div className="db-sidebar-logo">
-        <img src="/logo/logo.png" alt="WLC" />
+        <img loading="lazy" src="/logo/logo.png" alt="WLC" />
         <span className="db-sidebar-logo-badge">Club Hub</span>
       </div>
       <div className="db-nav-label">Navigation</div>
@@ -194,7 +194,7 @@ export default function DashboardPage() {
           </div>
           <div className="db-topbar-right">
             <div className="db-topbar-avatar-pill">
-              <img src={user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80"} alt="Avatar" />
+              <UserIcon size={18} style={{ marginRight: 8, opacity: 0.7 }} />
               <div>
                 <div className="db-topbar-avatar-name">{user.firstName} {user.lastName}</div>
                 <div className="db-topbar-avatar-status">{user.membershipStatus}</div>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
 
         {/* Mobile top bar */}
         <header className="db-mobile-header">
-          <img src="/logo/logo.png" alt="WLC" style={{ height: 28 }} />
+          <img loading="lazy" src="/logo/logo.png" alt="WLC" style={{ height: 28 }} />
           <button className="db-mobile-menu-btn" onClick={() => setMobileOpen(true)}>
             <Menu size={20} />
           </button>
@@ -221,7 +221,7 @@ export default function DashboardPage() {
 
                 {/* Welcome Banner */}
                 <div className="db-welcome-banner">
-                  <div className="db-welcome-bg" style={{ backgroundImage: "url('/homepage/eb9fb38adaf4e895f43ef0798cf67c3a.jpg')" }} />
+                  <div className="db-welcome-bg" style={{ backgroundImage: "url('/images/eb9fb38adaf4e895f43ef0798cf67c3a.webp')" }} />
                   <div className="db-welcome-gradient" />
                   <div className="db-welcome-content">
                     <span className="db-welcome-eyebrow">Welcome back</span>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                 {/* Promo Card */}
                 <div className="db-card">
                   <div className="db-promo-card">
-                    <img src="/homepage/Introimages/pexels-cottonbro.jpg" className="db-promo-img" alt="Retreat" />
+                    <img loading="lazy" src="/homepage/Introimages/pexels-cottonbro.webp" className="db-promo-img" alt="Retreat" />
                     <div>
                       <div className="db-promo-eyebrow">Longevity Highlight</div>
                       <div className="db-promo-title">Summer Solstice Himalayan Sanctuary</div>
@@ -283,15 +283,6 @@ export default function DashboardPage() {
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: "1.5rem" }}>Profile Details</h3>
                   <form onSubmit={hProfile(handleProfileUpdate)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     {profileSuccess && <div className="db-form-success"><CheckCircle size={15} /> Profile updated successfully!</div>}
-
-                    <div className="db-avatar-row">
-                      <img src={user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150"} alt="Avatar" />
-                      <div className="db-avatar-info">
-                        <h4>Avatar Image</h4>
-                        <p>PNG, JPG up to 2MB</p>
-                        <button type="button" className="db-avatar-change-btn">Change Photo</button>
-                      </div>
-                    </div>
 
                     <div className="db-form-grid">
                       {[
@@ -484,11 +475,11 @@ export default function DashboardPage() {
               <motion.div key="wishlist" className="db-fadein">
                 <div className="db-grid-2">
                   {[
-                    { img: "/homepage/Introimages/natalia-portilho.jpg", name: "Ananda Sanctuary Valley Retreat", loc: "Himalayas, India" },
-                    { img: "/homepage/Introimages/storiesofdesign.jpg", name: "Coastal Healing & Thalasso Spa", loc: "Algarve, Portugal" },
+                    { img: "/homepage/Introimages/natalia-portilho.webp", name: "Ananda Sanctuary Valley Retreat", loc: "Himalayas, India" },
+                    { img: "/homepage/Introimages/storiesofdesign.webp", name: "Coastal Healing & Thalasso Spa", loc: "Algarve, Portugal" },
                   ].map(w => (
                     <div className="db-card" key={w.name} style={{ overflow: "hidden" }}>
-                      <img className="db-wishlist-img" src={w.img} alt={w.name} />
+                      <img loading="lazy" className="db-wishlist-img" src={w.img} alt={w.name} />
                       <div className="db-wishlist-body">
                         <div className="db-wishlist-title">{w.name}</div>
                         <div className="db-wishlist-sub">{w.loc}</div>

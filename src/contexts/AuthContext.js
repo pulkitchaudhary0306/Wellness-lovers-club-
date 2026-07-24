@@ -1,7 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authService } from "@/services/authService";
+import {
+  saveSession,
+  clearSession,
+  getStoredToken,
+  getStoredUser,
+  updateStoredUser,
+} from "@/lib/tokenStorage";
 
 const AuthContext = createContext(undefined);
 
@@ -10,64 +17,76 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore session from cache on mount
+  // ─── Internal: hard logout (clear state + storage) ───────────────────────
+  const _clearAuth = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    clearSession();
+  }, []);
+
+  // ─── Restore session on mount ─────────────────────────────────────────────
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        // Check localStorage first (for Remember Me accounts)
-        let storedToken = localStorage.getItem("wlc_auth_token");
-        let storedUser = localStorage.getItem("wlc_auth_user");
+        const storedToken = getStoredToken();
+        const storedUser = getStoredUser();
 
-        // Check sessionStorage if not found in localStorage
-        if (!storedToken) {
-          storedToken = sessionStorage.getItem("wlc_auth_token");
-          storedUser = sessionStorage.getItem("wlc_auth_user");
+        if (!storedToken || !storedUser) {
+          setLoading(false);
+          return;
         }
 
-        if (storedToken && storedUser) {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-          
-          // Verify/refresh user data in the background
-          try {
-            const freshUser = await authService.getProfile();
-            setUser(freshUser);
-            if (localStorage.getItem("wlc_auth_token")) {
-              localStorage.setItem("wlc_auth_user", JSON.stringify(freshUser));
-            } else {
-              sessionStorage.setItem("wlc_auth_user", JSON.stringify(freshUser));
-            }
-          } catch (err) {
-            console.error("Failed to sync profile:", err);
-          }
+        // Optimistically restore from storage first so the UI isn't blank
+        setToken(storedToken);
+        setUser(storedUser);
+
+        // Validate token with WordPress (catches expired JWTs)
+        const isValid = await authService.validateToken();
+        if (!isValid) {
+          _clearAuth();
+          return;
+        }
+
+        // Sync fresh profile data in the background
+        try {
+          const freshUser = await authService.getProfile();
+          setUser(freshUser);
+          updateStoredUser(freshUser);
+        } catch (err) {
+          console.error("Failed to sync profile:", err);
+          // Non-fatal: keep the cached user data
         }
       } catch (err) {
         console.error("Session restoration error:", err);
+        _clearAuth();
       } finally {
         setLoading(false);
       }
     };
 
     restoreSession();
-  }, []);
+  }, [_clearAuth]);
 
-  const login = async (email, password, rememberMe) => {
+  // ─── Login ─────────────────────────────────────────────────────────────────
+  const login = async (username, password, rememberMe) => {
     setLoading(true);
     try {
-      const response = await authService.login(email, password, rememberMe);
+      const response = await authService.login(username, password, rememberMe);
+
       setUser(response.user);
       setToken(response.token);
+      saveSession(response.token, response.refreshToken, response.user, rememberMe);
 
-      // Save credentials based on Remember Me
-      if (rememberMe) {
-        localStorage.setItem("wlc_auth_token", response.token);
-        localStorage.setItem("wlc_auth_user", JSON.stringify(response.user));
-      } else {
-        sessionStorage.setItem("wlc_auth_token", response.token);
-        sessionStorage.setItem("wlc_auth_user", JSON.stringify(response.user));
+      // Fetch full profile immediately after login (JWT response has minimal data)
+      try {
+        const fullProfile = await authService.getProfile();
+        setUser(fullProfile);
+        updateStoredUser(fullProfile);
+        return fullProfile;
+      } catch {
+        // Non-fatal; return the basic user from the JWT response
+        return response.user;
       }
-
-      return response.user;
     } catch (err) {
       throw err;
     } finally {
@@ -75,15 +94,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ─── Register ──────────────────────────────────────────────────────────────
   const register = async (userData) => {
     setLoading(true);
     try {
       const response = await authService.register(userData);
-      // Auto-login upon registration
+      // Auto-login upon successful registration
       setUser(response.user);
       setToken(response.token);
-      sessionStorage.setItem("wlc_auth_token", response.token);
-      sessionStorage.setItem("wlc_auth_user", JSON.stringify(response.user));
+      saveSession(response.token, response.refreshToken, response.user, false);
       return response.user;
     } catch (err) {
       throw err;
@@ -92,52 +111,72 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ─── Logout ────────────────────────────────────────────────────────────────
   const logout = async () => {
     setLoading(true);
     try {
-      await authService.logout();
+      await authService.logout(); // Notifies WP server (best-effort)
     } catch (err) {
-      console.error("Logout request error:", err);
+      console.error("Server-side logout error:", err);
     } finally {
-      setUser(null);
-      setToken(null);
-      localStorage.removeItem("wlc_auth_token");
-      localStorage.removeItem("wlc_auth_user");
-      sessionStorage.removeItem("wlc_auth_token");
-      sessionStorage.removeItem("wlc_auth_user");
+      _clearAuth();
       setLoading(false);
     }
   };
 
+  // ─── Password flows ────────────────────────────────────────────────────────
   const forgotPassword = async (email) => {
     await authService.forgotPassword(email);
   };
 
-  const resetPassword = async (password) => {
-    await authService.resetPassword(password);
+  const resetPassword = async (password, resetKey, userLogin) => {
+    await authService.resetPassword(password, resetKey, userLogin);
   };
 
-  const verifyOTP = async (otp) => {
-    await authService.verifyOTP(otp);
+  const verifyOTP = async (otp, email) => {
+    await authService.verifyOTP(otp, email);
   };
 
+  // ─── Profile update ────────────────────────────────────────────────────────
   const updateProfile = async (profileData) => {
     setLoading(true);
     try {
       const updatedUser = await authService.updateProfile(profileData);
       setUser(updatedUser);
-      if (localStorage.getItem("wlc_auth_token")) {
-        localStorage.setItem("wlc_auth_user", JSON.stringify(updatedUser));
-      } else {
-        sessionStorage.setItem("wlc_auth_user", JSON.stringify(updatedUser));
-      }
+      updateStoredUser(updatedUser);
       return updatedUser;
     } catch (err) {
+      // Auto-logout on 401 (expired token)
+      if (err?.name === "WPApiError" && err?.isUnauthorized) {
+        _clearAuth();
+        throw new Error("Your session has expired. Please log in again.");
+      }
       throw err;
     } finally {
       setLoading(false);
     }
   };
+
+  // ─── 401 guard for data fetches in child components ───────────────────────
+  /**
+   * Wraps any authService call and automatically clears the session on a 401.
+   * Usage in pages/components:
+   *   const orders = await handleApiCall(() => authService.getOrders());
+   */
+  const handleApiCall = useCallback(
+    async (fn) => {
+      try {
+        return await fn();
+      } catch (err) {
+        if (err?.name === "WPApiError" && err?.isUnauthorized) {
+          _clearAuth();
+          throw new Error("Your session has expired. Please log in again.");
+        }
+        throw err;
+      }
+    },
+    [_clearAuth]
+  );
 
   return (
     <AuthContext.Provider
@@ -152,7 +191,8 @@ export function AuthProvider({ children }) {
         forgotPassword,
         resetPassword,
         verifyOTP,
-        updateProfile
+        updateProfile,
+        handleApiCall,
       }}
     >
       {children}

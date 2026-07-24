@@ -10,40 +10,34 @@ export const metadata = {
 export default function WellnessRetreatsPage() {
   const destinations = [
     {
-      name: "Bali, Indonesia",
-      code: "id",
-      stats: "4 Luxury Resorts • 8 Retreat Packages",
-      img: "/images/bali.jpg"
+      name: "Niraamaya Retreats Surya Samudra",
+      flag: "🇮🇳",
+      stats: "Kovalam, Trivandrum, Kerala",
+      img: "/images/niraamaya-retreat-real.webp"
     },
     {
-      name: "Maldives",
-      code: "mv",
-      stats: "3 Overwater Resorts • 6 Retreat Packages",
-      img: "/images/maldives.jpg"
+      name: "Swastik Luxury Wellbeing Sanctuary",
+      flag: "🇮🇳",
+      stats: "Pune, Maharashtra",
+      img: "/images/swastik-sanctuary-real.webp"
     },
     {
-      name: "Thailand",
-      code: "th",
-      stats: "6 Sanctuary Resorts • 12 Retreat Packages",
-      img: "/images/thailand.jpg"
+      name: "The Wellness Co",
+      flag: "🇮🇳",
+      stats: "Karma Lakelands, Gurgaon",
+      img: "/images/wellness-co-real.webp"
     },
     {
-      name: "Switzerland",
-      code: "ch",
-      stats: "2 Alpine Resorts • 4 Retreat Packages",
-      img: "/images/switzerland.jpg"
+      name: "Viveda Wellness Resort",
+      flag: "🇮🇳",
+      stats: "Nashik, Maharashtra",
+      img: "/images/viveda-resort-real.webp"
     },
     {
-      name: "India",
-      code: "in",
-      stats: "5 Ayurvedic Resorts • 10 Retreat Packages",
-      img: "/images/india.jpg"
-    },
-    {
-      name: "Sri Lanka",
-      code: "lk",
-      stats: "3 Eco-Luxe Resorts • 5 Retreat Packages",
-      img: "/images/sri-lanka.jpg"
+      name: "Viva Mayr",
+      flag: "🇦🇹",
+      stats: "Maria Wörth, Austria",
+      img: "/images/vivamayr-austria-real.webp"
     }
   ];
 
@@ -55,7 +49,7 @@ export default function WellnessRetreatsPage() {
           <span className="eyebrow">EXCLUSIVE SANCTUARIES</span>
           <h1 className="inner-hero-title">Wellness Retreats</h1>
           <p className="inner-hero-desc">
-            Transformative escapes in the world's most serene, handpicked locations. Reconnect with your inner peace and experience bespoke therapies designed for total rejuvenation.
+            Discover immersive escapes in the world’s most serene destinations, where nature, bespoke wellness programs, and restorative experiences come together to renew mind, body, and perspective.
           </p>
         </div>
       </section>
@@ -87,16 +81,7 @@ export default function WellnessRetreatsPage() {
                 <div className="dest-gradient" aria-hidden="true" />
                 <div className="dest-content">
                   <h3 className="dest-title">
-                    {dest.name} 
-                    <span className="dest-flag">
-                      <img 
-                        src={`https://flagcdn.com/w40/${dest.code}.png`} 
-                        alt="" 
-                        width="20"
-                        height="15"
-                        style={{ display: "block" }}
-                      />
-                    </span>
+                    {dest.name} <span className="dest-flag-emoji" style={{ fontSize: "22px", marginLeft: "4px" }}>{dest.flag}</span>
                   </h3>
                   <p className="dest-stats">{dest.stats}</p>
                   <Link href="/contact" className="dest-btn">

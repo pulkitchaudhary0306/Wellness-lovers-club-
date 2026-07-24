@@ -33,7 +33,7 @@ export default function LogoutPage() {
     <div style={{
       minHeight: "100vh", width: "100%", display: "flex",
       alignItems: "center", justifyContent: "center",
-      backgroundImage: "url('/images/buddha-bg.jpg')",
+      backgroundImage: "url('/images/buddha-bg.webp')",
       backgroundSize: "cover", backgroundPosition: "center",
       backgroundAttachment: "fixed", position: "relative",
     }}>
