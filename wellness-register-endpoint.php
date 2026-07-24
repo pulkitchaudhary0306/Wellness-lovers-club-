@@ -38,12 +38,8 @@ function wlc_rest_register_user( WP_REST_Request $request ) {
 
     // ─── 1. Validation ────────────────────────────────────────────────────────
     
-    // Required fields
     if ( empty( $params['firstName'] ) ) {
         return new WP_Error( 'missing_first_name', 'First name is required.', array( 'status' => 400 ) );
-    }
-    if ( empty( $params['lastName'] ) ) {
-        return new WP_Error( 'missing_last_name', 'Last name is required.', array( 'status' => 400 ) );
     }
     if ( empty( $params['email'] ) ) {
         return new WP_Error( 'missing_email', 'Email address is required.', array( 'status' => 400 ) );
@@ -53,7 +49,7 @@ function wlc_rest_register_user( WP_REST_Request $request ) {
     }
 
     $firstName = sanitize_text_field( $params['firstName'] );
-    $lastName  = sanitize_text_field( $params['lastName'] );
+    $lastName  = isset( $params['lastName'] ) ? sanitize_text_field( $params['lastName'] ) : '';
     $email     = sanitize_email( $params['email'] );
     $password  = $params['password'];
 

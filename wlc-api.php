@@ -103,7 +103,7 @@ class Wellness_API_Security {
 
 class Wellness_API_Validator {
     public static function validate_registration( $params ) {
-        $required = array( 'firstName', 'lastName', 'email', 'password' );
+        $required = array( 'firstName', 'email', 'password' );
 
         foreach ( $required as $field ) {
             if ( empty( $params[$field] ) ) {
