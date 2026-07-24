@@ -102,11 +102,11 @@ function Header() {
 
           <div className="header-member-btn">
             <Link
-              href={isAuthenticated ? "/dashboard" : "/membership"}
+              href="/membership"
               className="member-button"
               onClick={closeMenu}
             >
-              {isAuthenticated ? "MEMBER HUB →" : "BECOME A MEMBER →"}
+              BECOME A MEMBER →
             </Link>
           </div>
         </div>
