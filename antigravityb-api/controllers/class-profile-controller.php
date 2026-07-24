@@ -68,9 +68,7 @@ class ProfileController {
             update_user_meta( $user_id, 'wlc_social_links', $social );
         }
 
-        if ( isset( $params['avatar'] ) ) {
-            update_user_meta( $user_id, 'wlc_avatar_url', sanitize_url( $params['avatar'] ) );
-        }
+
 
         $profile = $this->get_user_profile_data( $user_id );
         return new \WP_REST_Response( $profile, 200 );
@@ -92,15 +90,12 @@ class ProfileController {
         $country     = get_user_meta( $user_id, 'wlc_country', true );
         $bio         = get_user_meta( $user_id, 'wlc_bio', true );
         $social      = get_user_meta( $user_id, 'wlc_social_links', true );
-        $custom_avatar = get_user_meta( $user_id, 'wlc_avatar_url', true );
         
         $membership_status = get_user_meta( $user_id, 'wlc_membership_status', true );
         $membership_tier   = get_user_meta( $user_id, 'wlc_membership_tier', true );
 
         if ( empty( $membership_status ) ) { $membership_status = 'Inactive'; }
         if ( empty( $membership_tier ) ) { $membership_tier = 'Lotus Club'; }
-
-        $avatar = ! empty( $custom_avatar ) ? $custom_avatar : get_avatar_url( $user_id, array( 'size' => 120 ) );
 
         return array(
             'id'               => (string) $user_id,
@@ -114,7 +109,6 @@ class ProfileController {
             'country'          => $country,
             'bio'              => $bio ? $bio : $user->description,
             'socialLinks'      => ! empty( $social ) ? (array) $social : array(),
-            'avatar'           => $avatar,
             'roles'            => (array) $user->roles,
             'membershipStatus' => $membership_status,
             'membershipTier'   => $membership_tier

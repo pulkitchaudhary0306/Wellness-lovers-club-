@@ -42,6 +42,10 @@ export class WPApiError extends Error {
   }
 }
 
+function isWPErrorBody(body: unknown): body is WPErrorBody {
+  return typeof body === "object" && body !== null;
+}
+
 const BASE_URL = (
   process.env.NEXT_PUBLIC_WORDPRESS_URL ||
   "https://cms.wellnessloversclub.com"
@@ -98,7 +102,11 @@ export async function wpFetch<T = unknown>(
   const contentType = response.headers.get("content-type") || "";
 
   if (contentType.includes("application/json")) {
-    body = await response.json();
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
   } else {
     body = await response.text();
   }
@@ -106,10 +114,15 @@ export async function wpFetch<T = unknown>(
   console.log("Response Body:", body);
 
   if (!response.ok) {
+    const errorBody = isWPErrorBody(body) ? body : undefined;
+
     throw new WPApiError(
-      body?.code ?? "unknown_error",
-      body?.message ?? `Request failed (${response.status})`,
-      body?.data?.status ?? response.status
+      errorBody?.code ?? "unknown_error",
+      errorBody?.message ??
+        (typeof body === "string" && body.trim()
+          ? body
+          : `Request failed (${response.status})`),
+      errorBody?.data?.status ?? response.status
     );
   }
 

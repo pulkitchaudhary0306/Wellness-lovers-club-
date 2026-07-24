@@ -335,8 +335,7 @@ function wlc_api_get_profile( $request ) {
         'address'          => $address,
         'preferences'      => $preferences ? (array) $preferences : array(),
         'membershipStatus' => $membership_status,
-        'membershipTier'   => $membership_tier,
-        'avatarUrl'        => get_avatar_url( $user_id, array( 'size' => 96 ) )
+        'membershipTier'   => $membership_tier
     ) );
 }
 

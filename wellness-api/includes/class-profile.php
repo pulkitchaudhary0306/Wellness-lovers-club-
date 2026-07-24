@@ -55,8 +55,6 @@ class Wellness_API_Profile {
             $membership_tier = 'Lotus Club';
         }
 
-        $avatar_url = get_avatar_url( $user_id, array( 'size' => 96 ) );
-
         $response_data = array(
             'id'               => (string) $user_id,
             'firstName'        => $user->first_name,
@@ -69,8 +67,7 @@ class Wellness_API_Profile {
             'address'          => $address,
             'preferences'      => $preferences ? (array) $preferences : array(),
             'membershipStatus' => $membership_status,
-            'membershipTier'   => $membership_tier,
-            'avatarUrl'        => $avatar_url
+            'membershipTier'   => $membership_tier
         );
 
         return Wellness_API_Response::success( $response_data );

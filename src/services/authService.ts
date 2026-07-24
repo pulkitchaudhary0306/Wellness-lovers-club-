@@ -24,6 +24,7 @@
 
 import { User, AuthResponse, Order, Payment, Membership } from "@/types/auth";
 import { wpPost, wpGet, wpPut, WPApiError } from "@/lib/wpFetch";
+import { getStoredToken } from "@/lib/tokenStorage";
 
 // ─── Endpoint map ─────────────────────────────────────────────────────────────
 
@@ -72,8 +73,6 @@ interface ProfileResponse extends Omit<Partial<User>, "id"> {
   first_name?: string;
   last_name?: string;
   user_email?: string;
-  avatar_url?: string;
-  avatar_urls?: Record<string, string>;
   roles?: string[];
   membership_status?: string;
   membership_tier?: string;
@@ -85,11 +84,6 @@ interface ProfileResponse extends Omit<Partial<User>, "id"> {
  * Maps a WordPress profile response (snake_case) to the front-end User shape.
  */
 function mapProfile(raw: ProfileResponse): User {
-  const avatarUrl =
-    raw.avatarUrl ??
-    raw.avatar_url ??
-    (raw.avatar_urls ? raw.avatar_urls["96"] ?? raw.avatar_urls["48"] ?? raw.avatar_urls["24"] : undefined);
-
   let firstName = raw.firstName ?? raw.first_name ?? "";
   let lastName = raw.lastName ?? raw.last_name ?? "";
   if (!firstName && raw.name) {
@@ -116,7 +110,6 @@ function mapProfile(raw: ProfileResponse): User {
     address: raw.address,
     membershipStatus,
     membershipTier: raw.membershipTier ?? raw.membership_tier ?? "Lotus Club",
-    avatarUrl,
   };
 }
 
@@ -242,11 +235,19 @@ export const authService = {
    * Returns true when valid, false when expired / invalid.
    */
   async validateToken(): Promise<boolean> {
+    if (!getStoredToken()) return false;
+
     try {
       await wpPost(WP_API_CONFIG.ENDPOINTS.TOKEN_VALIDATE, {});
       return true;
     } catch (err) {
-      if (err instanceof WPApiError && err.isUnauthorized) return false;
+      if (
+        err instanceof WPApiError &&
+        (err.isUnauthorized || err.isForbidden)
+      ) {
+        return false;
+      }
+
       throw err;
     }
   },
