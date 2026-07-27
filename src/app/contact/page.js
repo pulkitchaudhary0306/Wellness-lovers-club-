@@ -26,10 +26,17 @@ const WP_BASE = (
 async function submitContactToWordPress(data) {
   const CF7_FORM_ID = "6";
   const formPayload = new FormData();
-  formPayload.append("your-name", `${data.firstName} ${data.lastName}`.trim());
+  formPayload.append("_wpcf7", CF7_FORM_ID);
+  formPayload.append("_wpcf7_version", "6.1.6");
+  formPayload.append("_wpcf7_locale", "en_US");
+  formPayload.append("_wpcf7_unit_tag", `wpcf7-f${CF7_FORM_ID}-o1`);
+  formPayload.append("_wpcf7_container_post", "0");
+
+  formPayload.append("first-name", data.firstName);
+  formPayload.append("last-name", data.lastName);
   formPayload.append("your-email", data.email);
-  formPayload.append("your-subject", `Website Contact Inquiry from ${data.firstName} ${data.lastName}`.trim());
-  formPayload.append("your-message", `Message:\n${data.message}\n\nPhone: ${data.phone}`);
+  formPayload.append("phone-number", data.phone);
+  formPayload.append("your-message", data.message);
 
   const res = await fetch(
     `${WP_BASE}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`,
