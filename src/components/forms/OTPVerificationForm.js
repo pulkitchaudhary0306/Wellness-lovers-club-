@@ -127,24 +127,21 @@ export default function OTPVerificationForm({ isEmbed = false }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={isEmbed
-          ? "w-full max-w-md bg-transparent border-0 p-0 shadow-none text-center"
-          : "w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-8 rounded-[24px] shadow-xl text-center"
-        }
+        className={isEmbed ? "otp-card border-0 bg-transparent shadow-none" : "otp-card"}
       >
-        <div className="flex flex-col items-center gap-4">
+        <div>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center"
+            className="otp-success-icon"
           >
             <CheckCircle2 size={36} />
           </motion.div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          <h2 className="otp-success-title">
             Account Verified
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "14px", fontWeight: 300 }}>
             Your email has been successfully verified. Logging you into the dashboard...
           </p>
         </div>
@@ -157,19 +154,13 @@ export default function OTPVerificationForm({ isEmbed = false }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={isEmbed
-        ? "w-full max-w-md bg-transparent border-0 p-0 shadow-none"
-        : "w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-8 rounded-[24px] shadow-xl"
-      }
+      className={isEmbed ? "otp-card border-0 bg-transparent shadow-none" : "otp-card"}
     >
-      <div className="flex flex-col gap-2 text-center mb-8">
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-          Verify Email
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+      <div className="otp-header">
+        <h2>Verify Email</h2>
+        <p>
           We&apos;ve sent a 6-digit code to your inbox. Enter it below to verify.
-          <br />
-          <span className="text-slate-400 text-xs">(Enter code 123456 or 111111 to pass)</span>
+          <span className="otp-demo-hint">(Enter code 123456 or 111111 to pass)</span>
         </p>
       </div>
 
@@ -177,16 +168,16 @@ export default function OTPVerificationForm({ isEmbed = false }) {
         animate={isShaking ? { x: [-10, 10, -10, 10, 0] } : {}}
         transition={{ duration: 0.4 }}
         onSubmit={handleVerify}
-        className="flex flex-col gap-6"
+        className="otp-form"
       >
         {apiError && (
-          <div className="p-3.5 bg-rose-50 border border-rose-200/80 text-rose-600 text-sm font-medium rounded-xl text-center">
+          <div className="otp-error-alert">
             {apiError}
           </div>
         )}
 
         {/* 6 OTP boxes container */}
-        <div className="flex justify-between gap-2.5" onPaste={handlePaste}>
+        <div className="otp-inputs-container" onPaste={handlePaste}>
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -196,38 +187,35 @@ export default function OTPVerificationForm({ isEmbed = false }) {
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-12 h-14 text-center text-xl font-bold rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-150"
+              className="otp-input-field"
             />
           ))}
         </div>
 
-        <div className="flex flex-col gap-1 items-center justify-center text-sm">
+        <div className="otp-timer-text">
           {!canResend ? (
-            <p className="text-slate-500">
-              Resend code in <span className="font-bold text-slate-800">{formatTime(countdown)}</span>
+            <p>
+              Resend code in <span className="otp-timer-time">{formatTime(countdown)}</span>
             </p>
           ) : (
             <button
               type="button"
               onClick={handleResend}
-              className="flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 active:scale-95 transition-transform"
+              className="otp-resend-btn"
             >
-              <RefreshCw size={14} />
+              <RefreshCw size={13} />
               Resend Code
             </button>
           )}
         </div>
 
-        <Button type="submit" loading={isLoading}>
-          Verify OTP
-        </Button>
+        <button type="submit" className="otp-submit-btn" disabled={isLoading}>
+          {isLoading ? "Verifying..." : "Verify OTP"}
+        </button>
       </motion.form>
 
-      <div className="mt-8 text-center">
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors"
-        >
+      <div>
+        <Link href="/login" className="otp-back-link">
           <ArrowLeft size={14} />
           Back to Sign In
         </Link>
