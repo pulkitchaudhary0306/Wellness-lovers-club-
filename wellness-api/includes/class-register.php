@@ -69,8 +69,17 @@ class Wellness_API_Register {
         }
 
         // Set default membership details
-        wlc_update_user_meta( $user_id, 'membershipStatus', 'Pending' );
+        wlc_update_user_meta( $user_id, 'membershipStatus', 'Inactive' );
         wlc_update_user_meta( $user_id, 'membershipTier', 'Lotus Club' );
+
+        // Generate and send registration OTP
+        $otp = (string) rand( 100000, 999999 );
+        update_user_meta( $user_id, 'wlc_reset_otp', $otp );
+        update_user_meta( $user_id, 'wlc_reset_otp_time', time() );
+
+        $subject = 'Verify Your Email | Wellness Lovers Club';
+        $message = "Hello " . $first_name . ",\n\nWelcome to Wellness Lovers Club! Please verify your email address to activate your membership.\n\nYour Verification OTP Code: " . $otp . "\n\nThis OTP will expire in 15 minutes.\n";
+        wp_mail( $params['email'], $subject, $message );
 
         // Generate JWT token by performing internal loopback login call
         $token = '';

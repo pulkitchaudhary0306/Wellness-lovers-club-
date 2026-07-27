@@ -256,6 +256,15 @@ function wlc_api_register( $request ) {
     wlc_update_user_meta( $user_id, 'membershipStatus', 'Inactive' );
     wlc_update_user_meta( $user_id, 'membershipTier', 'Lotus Club' );
 
+    // Generate and send registration OTP
+    $otp = (string) rand( 100000, 999999 );
+    update_user_meta( $user_id, 'wlc_reset_otp', $otp );
+    update_user_meta( $user_id, 'wlc_reset_otp_time', time() );
+
+    $subject = 'Verify Your Email | Wellness Lovers Club';
+    $message = "Hello " . $firstName . ",\n\nWelcome to Wellness Lovers Club! Please verify your email address to activate your membership.\n\nYour Verification OTP Code: " . $otp . "\n\nThis OTP will expire in 15 minutes.\n";
+    wp_mail( $email, $subject, $message );
+
     $secret_key = defined( 'JWT_AUTH_SECRET_KEY' ) ? JWT_AUTH_SECRET_KEY : 'wlc_fallback_secret_key_1234567890';
     $header = json_encode( array( 'typ' => 'JWT', 'alg' => 'HS256' ) );
     $issuedAt = time();
@@ -455,6 +464,9 @@ function wlc_api_verify_email( $request ) {
 
     delete_user_meta( $user->ID, 'wlc_reset_otp' );
     delete_user_meta( $user->ID, 'wlc_reset_otp_time' );
+
+    // Update membership status to Active
+    wlc_update_user_meta( $user->ID, 'membershipStatus', 'Active' );
 
     return Wellness_API_Response::success( array( 'success' => true, 'message' => 'OTP verification successful.' ) );
 }

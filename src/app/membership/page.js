@@ -112,12 +112,7 @@ function RegisterPanel({ onSwitchToLogin }) {
     const parts = data.name.trim().split(/\s+/);
     try {
       await signup({ ...data, firstName: parts[0] || "", lastName: parts.slice(1).join(" ") || "" });
-      // Redirect to payment page after successful registration
-      const params = new URLSearchParams({
-        plan: "gold",          // default plan — user can change on the payment page
-        name: data.name.trim(),
-      });
-      router.push(`/payment?${params.toString()}`);
+      router.push("/verify-otp");
     } catch (err) { setApiError(err.message || "Registration failed. Please try again."); }
     finally { setIsLoading(false); }
   };

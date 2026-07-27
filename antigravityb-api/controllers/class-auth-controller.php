@@ -103,6 +103,15 @@ class AuthController {
         update_user_meta( $user_id, 'wlc_membership_status', 'Inactive' );
         update_user_meta( $user_id, 'wlc_membership_tier', 'Lotus Club' );
 
+        // Generate and send registration OTP
+        $otp = (string) rand( 100000, 999999 );
+        update_user_meta( $user_id, 'wlc_reset_otp', $otp );
+        update_user_meta( $user_id, 'wlc_reset_otp_time', time() );
+
+        $subject = 'Verify Your Email | Wellness Lovers Club';
+        $message = "Hello " . $firstName . ",\n\nWelcome to Wellness Lovers Club! Please verify your email address to activate your membership.\n\nYour Verification OTP Code: " . $otp . "\n\nThis OTP will expire in 15 minutes.\n";
+        wp_mail( $email, $subject, $message );
+
         $token = Jwt::generate_token( $user_id );
 
         $profile_controller = new ProfileController();
@@ -235,6 +244,9 @@ class AuthController {
 
         delete_user_meta( $user->ID, 'wlc_reset_otp' );
         delete_user_meta( $user->ID, 'wlc_reset_otp_time' );
+
+        // Update membership status to Active
+        update_user_meta( $user->ID, 'wlc_membership_status', 'Active' );
 
         return new \WP_REST_Response( array(
             'success' => true,

@@ -156,6 +156,9 @@ class Wellness_API_Password {
         delete_user_meta( $user->ID, 'wlc_reset_otp' );
         delete_user_meta( $user->ID, 'wlc_reset_otp_time' );
 
+        // Update membership status to Active
+        wlc_update_user_meta( $user->ID, 'membershipStatus', 'Active' );
+
         return Wellness_API_Response::success( array(
             'success' => true,
             'message' => 'OTP verification successful.'
