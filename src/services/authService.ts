@@ -158,9 +158,20 @@ export const authService = {
   async register(
     userData: Partial<User> & { password?: string }
   ): Promise<AuthResponse> {
+    const payload = {
+      name: `${userData.firstName ?? ""} ${userData.lastName ?? ""}`.trim(),
+      email: userData.email,
+      password: userData.password,
+      phone: userData.phone,
+      profession: userData.profession,
+      companyName: userData.companyName,
+      correspondenceAddress: userData.address,
+      preferences: userData.preferences,
+    };
+
     const data = await wpPost<RegisterResponse>(
       WP_API_CONFIG.ENDPOINTS.REGISTER,
-      userData,
+      payload,
       { unauthenticated: true }
     );
 

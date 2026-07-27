@@ -11,6 +11,7 @@ export interface User {
   address?: string;
   membershipStatus: "Inactive" | "Active" | "Lifetime" | "Pending";
   membershipTier?: string;
+  preferences?: any;
 }
 
 export interface Membership {
