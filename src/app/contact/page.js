@@ -9,19 +9,10 @@ const WP_BASE = (
 ).replace(/\/$/, "");
 
 /**
- * Submits the contact form to WordPress.
+ * Submits the contact form to WordPress custom REST API endpoint.
  *
- * Two supported backends — choose whichever you have installed:
- *  A) Contact Form 7 REST API plugin:
- *     endpoint: /wp-json/contact-form-7/v1/contact-forms/<YOUR_FORM_ID>/feedback
- *     body:     FormData (CF7 requires multipart/form-data)
- *
- *  B) Custom WP plugin endpoint:
- *     endpoint: /wp-json/custom/v1/contact
- *     body:     JSON
- *
- * The function below uses option B (JSON) by default.
- * To switch to CF7, uncomment the CF7 block and set your form ID.
+ * Endpoint: /wp-json/custom/v1/contact
+ * Body:     JSON
  */
 async function submitContactToWordPress(data) {
   const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
