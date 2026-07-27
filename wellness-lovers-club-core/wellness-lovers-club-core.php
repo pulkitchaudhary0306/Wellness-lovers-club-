@@ -30,6 +30,14 @@ require_once WLC_CORE_PATH . 'includes/class-newsletter-controller.php';
 require_once WLC_CORE_PATH . 'includes/class-router.php';
 require_once WLC_CORE_PATH . 'includes/class-admin.php';
 
+// Load SMTP Module Files
+require_once WLC_CORE_PATH . 'includes/class-email-security.php';
+require_once WLC_CORE_PATH . 'includes/class-email-settings.php';
+require_once WLC_CORE_PATH . 'includes/class-smtp.php';
+require_once WLC_CORE_PATH . 'includes/class-email-logs.php';
+require_once WLC_CORE_PATH . 'includes/class-email-queue.php';
+require_once WLC_CORE_PATH . 'includes/class-email-test.php';
+
 // Bootstrap the Plugin
 class Wellness_Lovers_Club_Core {
 
@@ -52,6 +60,11 @@ class Wellness_Lovers_Club_Core {
         WLC_Core_Db::get_instance();
         WLC_Core_Router::get_instance();
         WLC_Core_Admin::get_instance();
+
+        // Initialize SMTP module engines
+        WLC_Core_Smtp::get_instance();
+        WLC_Core_Email_Logs::get_instance();
+        WLC_Core_Email_Queue::init();
     }
 }
 
@@ -59,5 +72,12 @@ class Wellness_Lovers_Club_Core {
 Wellness_Lovers_Club_Core::get_instance();
 
 // Register Activation and Deactivation Hooks
-register_activation_hook( __FILE__, array( 'WLC_Core_Db', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'WLC_Core_Db', 'deactivate' ) );
+register_activation_hook( __FILE__, function() {
+    WLC_Core_Db::activate();
+    WLC_Core_Email_Queue::register_cron();
+} );
+
+register_deactivation_hook( __FILE__, function() {
+    WLC_Core_Db::deactivate();
+    WLC_Core_Email_Queue::clear_cron();
+} );

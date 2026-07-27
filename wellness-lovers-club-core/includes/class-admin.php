@@ -21,6 +21,14 @@ class WLC_Core_Admin {
     private function __construct() {
         add_action( 'admin_menu', array( $this, 'register_admin_menus' ) );
         add_action( 'admin_init', array( $this, 'handle_admin_actions' ) );
+
+        // Add admin post action hooks for SMTP module forms
+        add_action( 'admin_post_wlc_save_smtp_settings', array( $this, 'save_smtp_settings' ) );
+        add_action( 'admin_post_wlc_send_test_email', array( $this, 'send_test_email' ) );
+        add_action( 'admin_post_wlc_trigger_queue_process', array( $this, 'trigger_queue_process' ) );
+        add_action( 'admin_post_wlc_clear_all_logs', array( $this, 'clear_all_logs' ) );
+        add_action( 'admin_post_wlc_delete_log', array( $this, 'delete_log' ) );
+        add_action( 'admin_post_wlc_retry_log', array( $this, 'retry_log' ) );
     }
 
     /**
@@ -53,6 +61,24 @@ class WLC_Core_Admin {
             'manage_options',
             'wlc-memberships',
             array( $this, 'render_memberships_page' )
+        );
+
+        add_submenu_page(
+            'wlc-core-dashboard',
+            'Email Settings',
+            'Email Settings',
+            'manage_options',
+            'wlc-email-settings',
+            array( $this, 'render_email_settings_page' )
+        );
+
+        add_submenu_page(
+            'wlc-core-dashboard',
+            'Email Logs',
+            'Email Logs',
+            'manage_options',
+            'wlc-email-logs',
+            array( $this, 'render_email_logs_page' )
         );
     }
 
@@ -404,6 +430,117 @@ class WLC_Core_Admin {
         }
 
         fclose( $output );
+        exit;
+    }
+
+    /**
+     * Render Email Settings sub-page
+     */
+    public function render_email_settings_page() {
+        require_once WLC_CORE_PATH . 'templates/smtp-settings.php';
+    }
+
+    /**
+     * Render Email Logs sub-page
+     */
+    public function render_email_logs_page() {
+        require_once WLC_CORE_PATH . 'templates/smtp-logs.php';
+    }
+
+    /**
+     * Handle SMTP Settings form save
+     */
+    public function save_smtp_settings() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        check_admin_referer( 'wlc_smtp_settings_nonce' );
+        
+        WLC_Core_Email_Settings::save( $_POST );
+        wp_redirect( admin_url( 'admin.php?page=wlc-email-settings&message=saved' ) );
+        exit;
+    }
+
+    /**
+     * Handle SMTP Test Email submission
+     */
+    public function send_test_email() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        check_admin_referer( 'wlc_send_test_nonce' );
+
+        $test_email = isset( $_POST['test_email'] ) ? sanitize_email( $_POST['test_email'] ) : '';
+        $result = WLC_Core_Email_Test::send_test_email( $test_email );
+
+        // Store SMTP debug transcript in a transient for render on redirect
+        if ( ! empty( $result['debug_log'] ) ) {
+            set_transient( 'wlc_smtp_test_log', $result['debug_log'], 300 );
+        }
+
+        if ( $result['success'] ) {
+            wp_redirect( admin_url( 'admin.php?page=wlc-email-settings&message=test_success' ) );
+        } else {
+            wp_redirect( admin_url( 'admin.php?page=wlc-email-settings&error=test_failed' ) );
+        }
+        exit;
+    }
+
+    /**
+     * Manually trigger sending queued failed emails
+     */
+    public function trigger_queue_process() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        check_admin_referer( 'wlc_queue_trigger_nonce' );
+
+        WLC_Core_Email_Queue::process_queue();
+        wp_redirect( admin_url( 'admin.php?page=wlc-email-settings&message=queue_processed' ) );
+        exit;
+    }
+
+    /**
+     * Handle clearing all email logs
+     */
+    public function clear_all_logs() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        check_admin_referer( 'wlc_clear_logs_nonce' );
+
+        WLC_Core_Email_Logs::clear_all_logs();
+        wp_redirect( admin_url( 'admin.php?page=wlc-email-logs&message=logs_cleared' ) );
+        exit;
+    }
+
+    /**
+     * Handle deleting a single email log entry
+     */
+    public function delete_log() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        $id = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
+        check_admin_referer( 'wlc_delete_log_nonce_' . $id );
+
+        WLC_Core_Email_Logs::delete_log( $id );
+        wp_redirect( admin_url( 'admin.php?page=wlc-email-logs&message=log_deleted' ) );
+        exit;
+    }
+
+    /**
+     * Handle manually retrying a single failed log entry
+     */
+    public function retry_log() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized access.' );
+        }
+        $id = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
+        check_admin_referer( 'wlc_retry_log_nonce_' . $id );
+
+        WLC_Core_Email_Logs::retry_send( $id );
+        wp_redirect( admin_url( 'admin.php?page=wlc-email-logs&message=retry_queued' ) );
         exit;
     }
 }

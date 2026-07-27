@@ -45,8 +45,10 @@ class WLC_Core_Db {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $table_contacts   = $wpdb->prefix . 'wlc_contacts';
-        $table_newsletter = $wpdb->prefix . 'wlc_newsletter';
+        $table_contacts    = $wpdb->prefix . 'wlc_contacts';
+        $table_newsletter  = $wpdb->prefix . 'wlc_newsletter';
+        $table_email_logs  = $wpdb->prefix . 'wlc_email_logs';
+        $table_email_queue = $wpdb->prefix . 'wlc_email_queue';
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -76,6 +78,37 @@ class WLC_Core_Db {
             UNIQUE KEY email (email)
         ) $charset_collate;";
         dbDelta( $sql_newsletter );
+
+        // 3. Email Logs Table
+        $sql_email_logs = "CREATE TABLE IF NOT EXISTS $table_email_logs (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            recipient varchar(255) NOT NULL,
+            subject varchar(255) NOT NULL,
+            email_type varchar(50) DEFAULT '',
+            success tinyint(1) DEFAULT 1 NOT NULL,
+            failure_reason text DEFAULT '',
+            smtp_response text DEFAULT '',
+            delivery_status varchar(50) DEFAULT 'Sent' NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+        dbDelta( $sql_email_logs );
+
+        // 4. Email Queue Table
+        $sql_email_queue = "CREATE TABLE IF NOT EXISTS $table_email_queue (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            recipient varchar(255) NOT NULL,
+            subject varchar(255) NOT NULL,
+            body longtext NOT NULL,
+            headers text DEFAULT '',
+            email_type varchar(50) DEFAULT '',
+            attempts int(11) DEFAULT 0 NOT NULL,
+            status varchar(20) DEFAULT 'Pending' NOT NULL, -- Pending, Processing, Failed, Sent
+            last_attempt datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+        dbDelta( $sql_email_queue );
     }
 
     /**
