@@ -39,6 +39,7 @@ const menuItems = [
   { id: "profile",       label: "My Profile",    icon: UserIcon },
   { id: "membership",    label: "Membership",    icon: Award },
   { id: "orders",        label: "Orders",        icon: ShoppingBag },
+  { id: "payments",      label: "Payments",      icon: CreditCard },
   { id: "downloads",     label: "Downloads",     icon: Download },
   { id: "wishlist",      label: "Wishlist",      icon: Heart },
   { id: "notifications", label: "Notifications", icon: Bell },
@@ -397,6 +398,44 @@ export default function DashboardPage() {
                             <td className="db-table-muted">{o.date}</td>
                             <td><span className="db-badge db-badge-green">{o.status}</span></td>
                             <td style={{ textAlign: "right", fontWeight: 700 }}>{o.total}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ═══ PAYMENTS TAB ═══════════════════════════ */}
+            {activeTab === "payments" && (
+              <motion.div key="payments" className="db-fadein">
+                <div className="db-card">
+                  <div className="db-card-header">
+                    <div>
+                      <div className="db-card-title">Transaction Logs</div>
+                      <div className="db-card-subtitle">{payments.length} transactions</div>
+                    </div>
+                  </div>
+                  <div style={{ overflowX: "auto" }}>
+                    <table className="db-table">
+                      <thead>
+                        <tr>
+                          <th>Transaction ID</th>
+                          <th>Gateway</th>
+                          <th>Date</th>
+                          <th>Status</th>
+                          <th style={{ textAlign: "right" }}>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments.map(p => (
+                          <tr key={p.id}>
+                            <td style={{ fontWeight: 700 }}>{p.id}</td>
+                            <td className="db-table-muted">{p.method}</td>
+                            <td className="db-table-muted">{p.date}</td>
+                            <td><span className="db-badge db-badge-green">{p.status}</span></td>
+                            <td style={{ textAlign: "right", fontWeight: 700 }}>{p.amount}</td>
                           </tr>
                         ))}
                       </tbody>
