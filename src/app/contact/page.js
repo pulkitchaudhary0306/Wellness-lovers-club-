@@ -24,42 +24,24 @@ const WP_BASE = (
  * To switch to CF7, uncomment the CF7 block and set your form ID.
  */
 async function submitContactToWordPress(data) {
-  /* ── Option A: Contact Form 7 ─────────────────────────────────────────────
-  const CF7_FORM_ID = "123"; // ← replace with your CF7 form ID
+  const CF7_FORM_ID = "6";
   const formPayload = new FormData();
-  formPayload.append("your-first-name", data.firstName);
-  formPayload.append("your-last-name", data.lastName);
+  formPayload.append("your-name", `${data.firstName} ${data.lastName}`.trim());
   formPayload.append("your-email", data.email);
-  formPayload.append("your-phone", data.phone);
-  formPayload.append("your-message", data.message);
+  formPayload.append("your-subject", `Website Contact Inquiry from ${data.firstName} ${data.lastName}`.trim());
+  formPayload.append("your-message", `Message:\n${data.message}\n\nPhone: ${data.phone}`);
 
   const res = await fetch(
     `${WP_BASE}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`,
-    { method: "POST", body: formPayload }
+    {
+      method: "POST",
+      body: formPayload,
+    }
   );
+
   const json = await res.json();
   if (json.status !== "mail_sent") {
-    throw new Error(json.message || "Failed to send message.");
-  }
-  return;
-  ── End Option A ─────────────────────────────────────────────────────────── */
-
-  // ── Option B: Custom WP REST endpoint ──────────────────────────────────────
-  const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
-      first_name: data.firstName,
-      last_name: data.lastName,
-      email: data.email,
-      phone: data.phone,
-      message: data.message,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `Server error: ${res.status}`);
+    throw new Error(json.message || "Failed to send message via Contact Form 7.");
   }
 }
 
