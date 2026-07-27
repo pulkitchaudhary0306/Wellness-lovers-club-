@@ -121,7 +121,7 @@ function RegisterPanel({ onSwitchToLogin }) {
     <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {apiError && <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>{apiError}</div>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem 1.5rem" }}>
+      <div className="member-form-grid">
         <FieldInput label="Full Name" error={errors.name?.message} {...register("name")} />
         <FieldInput label="Mobile Number" type="tel" error={errors.phone?.message} {...register("phone")} />
         <FieldInput label="Email Address" type="email" error={errors.email?.message} {...register("email")} />
@@ -236,7 +236,7 @@ export default function MembershipPage() {
   if (isAuthenticated) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)" }} />
         <div style={{ position: "relative", zIndex: 1, background: "rgba(255,255,255,0.04)", backdropFilter: "blur(24px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 24, padding: "3rem 2.5rem", maxWidth: 480, width: "90%", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem" }}>
           <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(188,163,116,0.1)", border: "1px solid rgba(188,163,116,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Award size={32} color="#bca374" />
@@ -268,11 +268,11 @@ export default function MembershipPage() {
       display: "flex", justifyContent: "center", alignItems: "flex-start",
       padding: "3rem 1.5rem 4rem",
     }}>
-      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 0 }} />
 
-      <div style={{ position: "relative", zIndex: 1, display: "flex", width: "100%", maxWidth: 960, borderRadius: 16, boxShadow: "0 30px 70px rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.08)", marginTop: "2rem" }}>
+      <div className="member-card-container">
         {/* Left */}
-        <div style={{ width: "42%", background: "rgba(0,0,0,0.4)", backdropFilter: "blur(24px)", padding: "4rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center", borderRadius: "16px 0 0 16px", overflow: "hidden", flexShrink: 0 }}>
+        <div className="member-left-col">
           <div style={{ fontSize: 11, fontWeight: 700, color: "#0f8554", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>Wellness Lovers Club</div>
           <h2 style={{ fontFamily: "Arial, sans-serif", fontSize: 38, fontWeight: 800, color: "#fff", lineHeight: 1.1, marginBottom: "1.5rem" }}>
             Let&apos;s Get<br />Started
@@ -293,7 +293,7 @@ export default function MembershipPage() {
         </div>
 
         {/* Right */}
-        <div style={{ flex: 1, background: "#080c09", padding: "3rem 2.5rem", borderRadius: "0 16px 16px 0", display: "flex", flexDirection: "column", position: "relative" }}>
+        <div className="member-right-col">
           {/* Tabs */}
           <div style={{ display: "flex", gap: 4, marginBottom: "1.75rem" }}>
             {["register", "login"].map(tab => (
@@ -314,6 +314,71 @@ export default function MembershipPage() {
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         input::placeholder { color: rgba(255,255,255,0.3) !important; }
+
+        .member-card-container {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          width: 100%;
+          max-width: 960px;
+          border-radius: 16px;
+          box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+          border: 1px solid rgba(255,255,255,0.08);
+          margin-top: 2rem;
+          overflow: hidden;
+        }
+
+        .member-left-col {
+          width: 42%;
+          background: rgba(0,0,0,0.4);
+          backdrop-filter: blur(24px);
+          padding: 4rem 3rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          border-radius: 16px 0 0 16px;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+
+        .member-right-col {
+          flex: 1;
+          background: #080c09;
+          padding: 3rem 2.5rem;
+          border-radius: 0 16px 16px 0;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+        }
+
+        .member-form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+          .member-card-container {
+            flex-direction: column;
+            margin-top: 1rem;
+          }
+          .member-left-col {
+            width: 100%;
+            padding: 2.5rem 2rem;
+            border-radius: 16px 16px 0 0;
+          }
+          .member-right-col {
+            border-radius: 0 0 16px 16px;
+            padding: 2.5rem 1.5rem;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .member-form-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+        }
       `}</style>
     </div>
   );
