@@ -206,6 +206,12 @@ add_action( 'rest_api_init', function () {
         'callback'            => 'wlc_api_get_payments',
         'permission_callback' => 'wlc_api_check_security',
     ) );
+
+    register_rest_route( $namespace, '/contact', array(
+        'methods'             => 'POST',
+        'callback'            => 'wlc_api_submit_contact',
+        'permission_callback' => '__return_true',
+    ) );
 } );
 
 // Security Wrapper
@@ -559,4 +565,110 @@ function wlc_api_get_payments( $request ) {
             'method' => 'Stripe Credit Card'
         )
     ) );
+}
+
+/**
+ * Create custom contact form submission tables if they do not exist
+ */
+function wlc_api_create_tables() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $tables = array(
+        $wpdb->prefix . 'wlc_contacts',
+        $wpdb->prefix . 'contact_messages',
+        $wpdb->prefix . 'inquiries',
+        $wpdb->prefix . 'contact',
+        $wpdb->prefix . 'agb_contacts'
+    );
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    foreach ( $tables as $table_name ) {
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            first_name varchar(100) DEFAULT '',
+            last_name varchar(100) DEFAULT '',
+            email varchar(100) NOT NULL,
+            phone varchar(50) DEFAULT '',
+            message text NOT NULL,
+            ip_address varchar(45) DEFAULT '',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+        dbDelta( $sql );
+    }
+}
+add_action( 'init', 'wlc_api_create_tables' );
+
+/**
+ * Handle custom contact form submission REST API endpoint
+ */
+function wlc_api_submit_contact( $request ) {
+    $params = $request->get_json_params();
+    if ( empty( $params ) ) {
+        $params = $request->get_body_params();
+    }
+
+    $first_name = isset( $params['first_name'] ) ? sanitize_text_field( $params['first_name'] ) : '';
+    $last_name  = isset( $params['last_name'] ) ? sanitize_text_field( $params['last_name'] ) : '';
+    $email      = isset( $params['email'] ) ? sanitize_email( $params['email'] ) : '';
+    $phone      = isset( $params['phone'] ) ? sanitize_text_field( $params['phone'] ) : '';
+    $message    = isset( $params['message'] ) ? sanitize_textarea_field( $params['message'] ) : '';
+
+    if ( empty( $email ) || empty( $message ) ) {
+        return Wellness_API_Response::error( 'missing_fields', 'Email and message are required.', 400 );
+    }
+
+    if ( ! is_email( $email ) ) {
+        return Wellness_API_Response::error( 'invalid_email', 'Enter a valid email address.', 400 );
+    }
+
+    global $wpdb;
+    $tables = array(
+        $wpdb->prefix . 'wlc_contacts',
+        $wpdb->prefix . 'contact_messages',
+        $wpdb->prefix . 'inquiries',
+        $wpdb->prefix . 'contact',
+        $wpdb->prefix . 'agb_contacts'
+    );
+    $ip_address = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+
+    $success = false;
+    foreach ( $tables as $table_name ) {
+        if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name ) {
+            $inserted = $wpdb->insert(
+                $table_name,
+                array(
+                    'first_name' => $first_name,
+                    'last_name'  => $last_name,
+                    'email'      => $email,
+                    'phone'      => $phone,
+                    'message'    => $message,
+                    'ip_address' => $ip_address,
+                    'created_at' => current_time( 'mysql' )
+                ),
+                array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+            );
+            if ( $inserted ) {
+                $success = true;
+            }
+        }
+    }
+
+    // Send admin notification email
+    $admin_email = get_option( 'admin_email' );
+    $subject     = 'New Headless Contact Submission | Wellness Lovers Club';
+    $email_body  = "You received a new submission:\n\n";
+    $email_body .= "Name: {$first_name} {$last_name}\n";
+    $email_body .= "Email: {$email}\n";
+    $email_body .= "Phone: {$phone}\n";
+    $email_body .= "Message:\n{$message}\n";
+
+    wp_mail( $admin_email, $subject, $email_body );
+
+    return Wellness_API_Response::success( array(
+        'success' => true,
+        'message' => 'Your message has been successfully received.'
+    ), 200 );
 }
