@@ -24,32 +24,29 @@ const WP_BASE = (
  * To switch to CF7, uncomment the CF7 block and set your form ID.
  */
 async function submitContactToWordPress(data) {
-  const CF7_FORM_ID = "6";
-  const formPayload = new FormData();
-  formPayload.append("_wpcf7", CF7_FORM_ID);
-  formPayload.append("_wpcf7_version", "6.1.6");
-  formPayload.append("_wpcf7_locale", "en_US");
-  formPayload.append("_wpcf7_unit_tag", `wpcf7-f${CF7_FORM_ID}-o1`);
-  formPayload.append("_wpcf7_container_post", "0");
-
-  formPayload.append("first-name", data.firstName);
-  formPayload.append("last-name", data.lastName);
-  formPayload.append("your-email", data.email);
-  formPayload.append("phone-number", data.phone);
-  formPayload.append("your-message", data.message);
-
-  const res = await fetch(
-    `${WP_BASE}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`,
-    {
-      method: "POST",
-      body: formPayload,
-    }
-  );
+  const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      subject: "Website Contact Inquiry",
+      message: data.message,
+      website: "", // Honeypot field - must stay empty
+    }),
+  });
 
   const json = await res.json();
-  if (json.status !== "mail_sent") {
-    throw new Error(json.message || "Failed to send message via Contact Form 7.");
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "Failed to send message.");
   }
+
+  return json;
 }
 
 export default function ContactPage() {
