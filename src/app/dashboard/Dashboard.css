@@ -658,7 +658,7 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 48;
+  z-index: 99998;
 }
 
 .db-drawer {
@@ -670,7 +670,7 @@
   bottom: 0;
   width: 280px;
   background: var(--sidebar-bg);
-  z-index: 49;
+  z-index: 99999;
   padding: 2rem 1.25rem;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.5);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
