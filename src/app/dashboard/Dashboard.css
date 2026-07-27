@@ -653,6 +653,51 @@
 .db-fadein { animation: db-fadein 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 /* ── Responsive ───────────────────────────────────────────── */
+.db-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 48;
+}
+
+.db-drawer {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--sidebar-bg);
+  z-index: 49;
+  padding: 2rem 1.25rem;
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.db-drawer-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.db-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
 @media (max-width: 1024px) {
   .db-sidebar { display: none; }
   .db-mobile-header { display: flex; }
@@ -671,4 +716,8 @@
   .db-welcome-content { padding: 1.75rem 1.5rem; }
   .db-welcome-title { font-size: 20px; }
   .db-content { padding: 1rem 1rem 3rem; }
+  .db-card-pad { padding: 1.25rem; }
+  .db-card-header { padding: 1rem 1.25rem; }
+  .db-table th, .db-table td { padding: 10px 12px; }
+  .db-membership-meta-grid { grid-template-columns: 1fr; }
 }

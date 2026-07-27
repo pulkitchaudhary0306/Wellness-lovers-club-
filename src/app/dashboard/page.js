@@ -162,18 +162,21 @@ export default function DashboardPage() {
           <>
             <motion.div
               className="db-drawer-overlay"
-              style={{ display: "block" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.aside
-              style={{ display: "flex", position: "fixed", top: 0, left: 0, bottom: 0, width: 280, background: "var(--sidebar-bg)", zIndex: 49, padding: "2rem 1.25rem", flexDirection: "column" }}
-              initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
+              className="db-drawer"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 280, damping: 30 }}
             >
               <button
+                className="db-drawer-close"
                 onClick={() => setMobileOpen(false)}
-                style={{ position: "absolute", top: 18, right: 18, background: "none", border: "none", color: "rgba(255,255,255,0.5)", cursor: "pointer" }}
               >
                 <X size={20} />
               </button>
