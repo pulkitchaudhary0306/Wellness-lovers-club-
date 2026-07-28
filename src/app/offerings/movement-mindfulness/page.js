@@ -49,7 +49,7 @@ export default function MovementMindfulnessPage() {
             <span className="eyebrow">PRACTICES & INSTRUCTORS</span>
             <h2 className="inner-section-title">Mindful Sanctuaries</h2>
             <p>
-              Explore our select portfolio of serene locations offering curated wellness retreats, guided meditations, and yoga classes taught by world-class instructors.
+              Explore our serene locations offering wellness retreats, guided meditations, and yoga classes taught by world-class instructors.
             </p>
           </div>
 
@@ -69,10 +69,10 @@ export default function MovementMindfulnessPage() {
                 <div className="dest-gradient" aria-hidden="true" />
                 <div className="dest-content">
                   <h3 className="dest-title">
-                    {dest.name} <span className="dest-flag-emoji" style={{ fontSize: "22px", marginLeft: "4px" }}>{dest.flag}</span>
+                    {dest.name}
                   </h3>
                   <p className="dest-stats">{dest.stats}</p>
-                  <Link href="/contact" className="dest-btn">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
                     Explore Now <span>→</span>
                   </Link>
                 </div>

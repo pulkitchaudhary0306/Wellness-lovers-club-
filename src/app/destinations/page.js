@@ -25,7 +25,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 130,
       y: 100,
-      details: "Himalayan retreats, spiritual ashrams, and nature sanctuaries. 2 exclusive partners."
+      details: "Uttarakhand, Himachal Pradesh, Jammu & Kashmir"
     },
     {
       id: "delhi",
@@ -33,7 +33,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 129,
       y: 150,
-      details: "Shangri-La Eros, Hyatt Andaaz, The Wellness Co, and Silhouette Salon. 4 properties."
+      details: "Delhi, Haryana, Uttar Pradesh"
     },
     {
       id: "rajasthan",
@@ -41,7 +41,7 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 90,
       y: 185,
-      details: "Bespoke desert safaris and historical wellness retreats. 2 partner destinations."
+      details: "Rajasthan"
     },
     {
       id: "mumbai",
@@ -49,7 +49,7 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 104,
       y: 285,
-      details: "Dhun Wellness Mumbai and premium coastal day spas. 2 select sanctuaries."
+      details: "Maharashtra"
     },
     {
       id: "goa",
@@ -57,7 +57,7 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 80,
       y: 345,
-      details: "Beachside yoga retreats and wellness stays. 2 partnered properties."
+      details: "Goa"
     },
     {
       id: "bengaluru",
@@ -65,7 +65,7 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 125,
       y: 380,
-      details: "Modern integrative medical spas and botanical gardens. 1 partner centre."
+      details: "Karnataka"
     },
     {
       id: "kerala",
@@ -73,7 +73,7 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 115,
       y: 425,
-      details: "Niraamaya Surya Samudra and Backwaters & Beyond Kumarakom. 2 flagship resorts."
+      details: "Kerala"
     }
   ];
 
@@ -227,8 +227,7 @@ export default function DestinationsPage() {
       {/* Hero Header */}
       <section className="destinations-hero" aria-label="Destinations Hero">
         <div className="container inner-hero-container">
-          <span className="eyebrow">WELLNESS DESTINATIONS</span>
-          <h1 className="inner-hero-title">Discover Your Next Wellness Escape</h1>
+          <h1 className="inner-hero-title">Discover Your Next <br /> Wellness Escape</h1>
           <p className="inner-hero-desc">
             From the Himalayas to coastal sanctuaries, from ancient Ayurvedic retreats to modern luxury spas - every WLC destination is handpicked for members who seek transformation.
           </p>
@@ -249,10 +248,7 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* Indian Pride Banner */}
-      <div className="indian-pride-banner">
-        🇮🇳 INDIA - 70% OF OUR DESTINATIONS · PROUDLY INDIAN-FIRST
-      </div>
+      {/* Indian Pride Banner Removed */}
 
       {/* Interactive Map Section */}
       <section className="container" aria-label="India Map Visualizer" style={{ padding: "0 20px" }}>
@@ -301,6 +297,7 @@ export default function DestinationsPage() {
                       }`}
                     onMouseEnter={() => setHoveredMarker(marker)}
                     onMouseLeave={() => setHoveredMarker(null)}
+                    onClick={() => handleFilterClick(marker.region)}
                     style={{ cursor: "pointer" }}
                   >
                     <circle cx={marker.x} cy={marker.y} r="10" fill="rgba(13, 86, 63, 0.18)" />
@@ -432,15 +429,14 @@ export default function DestinationsPage() {
             <span className="eyebrow" style={{ color: "#bca374" }}>BEYOND INDIA</span>
             <h2 className="inner-section-title">Global Wellness Destinations</h2>
             <p>
-              For members who seek wellness beyond borders - our curated international partners bring the WLC standard of excellence to the world's finest destinations.
+              For members who seek wellness beyond borders - our curated international partners bring the <br /> WLC standard of excellence to the world's finest destinations.
             </p>
           </div>
 
           <div className="global-grid">
             {internationalDestinations.map((dest, idx) => (
               <div className="global-card" key={idx}>
-                <span className="global-flag">{dest.flag}</span>
-                <h3 className="global-name">{dest.name}</h3>
+                <h3 className="global-name" style={{ marginTop: "12px" }}>{dest.name}</h3>
                 <span className="global-type">{dest.type}</span>
               </div>
             ))}

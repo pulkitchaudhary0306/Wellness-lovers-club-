@@ -9,10 +9,7 @@
 /* Page Header / Breadcrumbs */
 .contact-header {
   position: relative;
-  background-image: url('/images/wellness-experience.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #0d563f;
   color: #fff;
   padding: 80px 0;
   text-align: center;

@@ -46,7 +46,7 @@ export default function WellnessRetreatsPage() {
       {/* Hero Banner */}
       <section className="inner-hero" aria-label="Retreats Hero">
         <div className="container inner-hero-container">
-          <span className="eyebrow">EXCLUSIVE SANCTUARIES</span>
+          <span className="eyebrow">EXCLUSIVE EXPERIENCES</span>
           <h1 className="inner-hero-title">Wellness Retreats</h1>
           <p className="inner-hero-desc">
             Discover immersive escapes in the world’s most serene destinations, where nature, bespoke wellness programs, and restorative experiences come together to renew mind, body, and perspective.
@@ -81,10 +81,10 @@ export default function WellnessRetreatsPage() {
                 <div className="dest-gradient" aria-hidden="true" />
                 <div className="dest-content">
                   <h3 className="dest-title">
-                    {dest.name} <span className="dest-flag-emoji" style={{ fontSize: "22px", marginLeft: "4px" }}>{dest.flag}</span>
+                    {dest.name}
                   </h3>
                   <p className="dest-stats">{dest.stats}</p>
-                  <Link href="/contact" className="dest-btn">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
                     Explore Now <span>→</span>
                   </Link>
                 </div>

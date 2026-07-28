@@ -16,12 +16,6 @@ export default function LuxuryStaysPage() {
       img: "/images/shangri-la-stay.webp"
     },
     {
-      name: "Pema Wellness",
-      flag: "🇮🇳",
-      stats: "Visakhapatnam, India",
-      img: "/images/pema-stay.webp"
-    },
-    {
       name: "Andaaz - Hyatt Hotel",
       flag: "🇮🇳",
       stats: "Aerocity, New Delhi",
@@ -47,7 +41,7 @@ export default function LuxuryStaysPage() {
         <div className="container">
           <div className="text-center inner-section-header">
             <span className="eyebrow">EXQUISITE RETREATS</span>
-            <h2 className="inner-section-title">Exceptional Accommodations</h2>
+            <h2 className="inner-section-title">Wellness Resorts, Hotels</h2>
             <p>
               Explore our select portfolio of boutique hotels and premium wellness properties, offering custom member privileges and dedicated care for a refreshing stay.
             </p>
@@ -69,10 +63,10 @@ export default function LuxuryStaysPage() {
                 <div className="dest-gradient" aria-hidden="true" />
                 <div className="dest-content">
                   <h3 className="dest-title">
-                    {dest.name} <span className="dest-flag-emoji" style={{ fontSize: "22px", marginLeft: "4px" }}>{dest.flag}</span>
+                    {dest.name}
                   </h3>
                   <p className="dest-stats">{dest.stats}</p>
-                  <Link href="/contact" className="dest-btn">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
                     Explore Now <span>→</span>
                   </Link>
                 </div>

@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const heroImages = [
-  "/images/d30a5470622d212e7ae19d485f9e1911.webp",
-  "/images/eb9fb38adaf4e895f43ef0798cf67c3a.webp",
-  "/images/1d8a0a0d24ef6d5d4eef7e4564b4dab8.webp",
-  "/images/41dfe3d2198e675d587959f122ba984a.webp",
+  "/images/hero-wellness.webp",
+  "/images/wellness-retreat.webp",
+  "/images/exclusive-privileges.webp",
+  "/images/membership-spa.webp",
 ];
 
 const membershipBannerImages = {
@@ -174,7 +174,7 @@ export default function HomePage() {
         </p>
         <div className="offerings-container">
           {/* Card 1 */}
-          <div className="offering-card">
+          <Link href="/offerings/wellness-retreats" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/wellness-retreat-cabin.webp"
@@ -197,10 +197,10 @@ export default function HomePage() {
                 Immersive escapes designed to restore your mind, body and perspective.
               </p>
             </div>
-          </div>
-
+          </Link>
+ 
           {/* Card 2 */}
-          <div className="offering-card">
+          <Link href="/offerings/movement-mindfulness" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/movement-mindfulness-yoga.webp"
@@ -223,10 +223,10 @@ export default function HomePage() {
                 Move with intention. Pause with purpose. Build a healthier relationship with your body.
               </p>
             </div>
-          </div>
-
+          </Link>
+ 
           {/* Card 3 */}
-          <div className="offering-card">
+          <Link href="/contact" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/community-experiences-lounge.webp"
@@ -247,10 +247,10 @@ export default function HomePage() {
                 Meaningful connections that inspire growth, collaboration and conscious living.
               </p>
             </div>
-          </div>
-
+          </Link>
+ 
           {/* Card 4 */}
-          <div className="offering-card">
+          <Link href="/contact" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/wellness-experience.webp"
@@ -271,10 +271,10 @@ export default function HomePage() {
                 Exclusive experiences reserved for those who choose wellness first.
               </p>
             </div>
-          </div>
-
+          </Link>
+ 
           {/* Card 5 */}
-          <div className="offering-card">
+          <Link href="/offerings/spa-healing" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/spa-healing-room.webp"
@@ -297,10 +297,10 @@ export default function HomePage() {
                 Ancient wisdom and modern therapies curated for complete restoration.
               </p>
             </div>
-          </div>
-
+          </Link>
+ 
           {/* Card 6 */}
-          <div className="offering-card">
+          <Link href="/offerings/luxury-stays" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
                 src="/images/luxury-stays-cabana.webp"
@@ -322,7 +322,7 @@ export default function HomePage() {
                 Preferred rates and VIP amenities at the world's most exclusive boutique wellness resorts and luxury hotels.
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 
@@ -463,7 +463,7 @@ export default function HomePage() {
       <section className="why-choose-section">
         <div className="why-choose-container">
           <span className="why-choose-subtitle">WHY CHOOSE US</span>
-          <h2 className="why-choose-title">Four Reasons WLC Stands Apart</h2>
+          <h2 className="why-choose-title">Reasons WLC Stands Apart</h2>
           <div className="why-choose-grid">
             {/* Exclusive Global Offers */}
             <div className="why-choose-item">

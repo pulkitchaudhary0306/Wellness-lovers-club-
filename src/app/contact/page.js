@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./contact.css";
 
@@ -51,6 +51,19 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const dest = params.get("destination");
+      if (dest) {
+        setFormData((prev) => ({
+          ...prev,
+          message: `I am interested in exploring the offer for: ${dest}.`
+        }));
+      }
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

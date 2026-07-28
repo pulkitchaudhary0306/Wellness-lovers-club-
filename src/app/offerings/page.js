@@ -55,7 +55,6 @@ export default function OfferingsPage() {
       {/* Hero Banner */}
       <section className="inner-hero" aria-label="Offerings Hero">
         <div className="container inner-hero-container">
-          <span className="eyebrow">OUR SERVICES</span>
           <h1 className="inner-hero-title">Our Offerings</h1>
           <p className="inner-hero-desc">
             Explore a curated selection of wellness experiences, exclusive events, and premium lifestyle privileges designed to elevate every aspect of your wellbeing.
@@ -68,9 +67,9 @@ export default function OfferingsPage() {
         <div className="container">
           <div className="text-center inner-section-header">
             <span className="eyebrow">EXPERIENCES</span>
-            <h2 className="inner-section-title">Curated For Mindful Living</h2>
+            <h2 className="inner-section-title">Exclusive Experiences</h2>
             <p>
-              As a member of Wellness Lovers Club, you gain access to exclusive partnerships, preferred pricing, and personalized itineraries tailored to your unique wellness journey.
+              As a member of Wellness Lovers Club, you gain access to exclusive partnerships, preferred pricing, and itineraries tailored to your unique wellness journey.
             </p>
           </div>
 

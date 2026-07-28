@@ -16,10 +16,10 @@ export default function SpaHealingPage() {
       img: "/images/niraamaya-backwaters-spa.webp"
     },
     {
-      name: "Viveda Wellness Resort",
+      name: "Dhun Wellness",
       flag: "🇮🇳",
-      stats: "Nashik, Maharashtra",
-      img: "/images/viveda-spa.webp"
+      stats: "Mumbai, India",
+      img: "/images/dhun-wellness-spa.webp"
     },
     {
       name: "Pema Wellness",
@@ -40,10 +40,10 @@ export default function SpaHealingPage() {
       img: "/images/silhouette-salon-spa.webp"
     },
     {
-      name: "Dhun Wellness",
+      name: "Viveda Wellness Resort",
       flag: "🇮🇳",
-      stats: "Mumbai, India",
-      img: "/images/dhun-wellness-spa.webp"
+      stats: "Nashik, Maharashtra",
+      img: "/images/viveda-spa.webp"
     },
     {
       name: "Andaaz - Hyatt Hotel",
@@ -70,8 +70,8 @@ export default function SpaHealingPage() {
       <section className="inner-section" aria-label="Spa Destinations">
         <div className="container">
           <div className="text-center inner-section-header">
-            <span className="eyebrow">THERAPIES & SANCTUARIES</span>
-            <h2 className="inner-section-title">Restorative Sanctuaries</h2>
+            <span className="eyebrow">SPA & HOLISTIC LIVING</span>
+            <h2 className="inner-section-title">Restorative Haven</h2>
             <p>
               Explore our handpicked selection of premium spa sanctuaries, salon rituals, and holistic healing clinics, offering bespoke therapies tailored to your rejuvenation.
             </p>
@@ -93,10 +93,10 @@ export default function SpaHealingPage() {
                 <div className="dest-gradient" aria-hidden="true" />
                 <div className="dest-content">
                   <h3 className="dest-title">
-                    {dest.name} <span className="dest-flag-emoji" style={{ fontSize: "22px", marginLeft: "4px" }}>{dest.flag}</span>
+                    {dest.name}
                   </h3>
                   <p className="dest-stats">{dest.stats}</p>
-                  <Link href="/contact" className="dest-btn">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
                     Explore Now <span>→</span>
                   </Link>
                 </div>

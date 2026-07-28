@@ -68,6 +68,9 @@
 
 .header-member-btn {
   flex-shrink: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .member-button {
@@ -88,6 +91,15 @@
 
 .member-button:hover {
   background-color: #093c2c;
+  color: #ffffff !important;
+}
+
+.book-now-btn {
+  background-color: #bca374;
+}
+
+.book-now-btn:hover {
+  background-color: #9c8458;
   color: #ffffff !important;
 }
 
@@ -135,6 +147,14 @@
 }
 
 @media (max-width: 767px) {
+  .header-member-btn {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 10px;
+    gap: 8px;
+  }
+
   .logo-section {
     height: 90px;
   }
