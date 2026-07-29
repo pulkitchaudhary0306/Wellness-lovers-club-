@@ -206,7 +206,7 @@
   margin-bottom: 14px;
 }
 
-.region-description {
+.region-cities {
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   line-height: 1.6;
@@ -658,7 +658,7 @@
     margin-bottom: 10px;
   }
 
-  .region-description {
+  .region-cities {
     font-size: 12px;
     min-height: auto;
     margin-bottom: 14px;

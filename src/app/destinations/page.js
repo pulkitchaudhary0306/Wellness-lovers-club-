@@ -25,7 +25,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 130,
       y: 100,
-      details: "Serene mountain retreats for renewal and mindful living."
+      details: "Uttarakhand, Himachal Pradesh, Jammu & Kashmir"
     },
     {
       id: "delhi",
@@ -33,7 +33,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 129,
       y: 150,
-      details: "Urban luxury, holistic wellness, and premium experiences."
+      details: "Delhi, Haryana, Uttar Pradesh"
     },
     {
       id: "rajasthan",
@@ -41,15 +41,15 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 90,
       y: 185,
-      details: "Royal heritage stays and immersive wellness escapes."
+      details: "Rajasthan"
     },
     {
-      id: "maharashtra",
-      name: "Maharashtra",
+      id: "mumbai",
+      name: "Mumbai",
       region: "WEST INDIA",
       x: 104,
       y: 285,
-      details: "Luxury coastal retreats, wellness resorts, and vibrant city escapes."
+      details: "Maharashtra"
     },
     {
       id: "goa",
@@ -57,15 +57,15 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 80,
       y: 345,
-      details: "Beachfront sanctuaries blending relaxation and rejuvenation."
+      details: "Goa"
     },
     {
-      id: "karnataka",
-      name: "Karnataka",
+      id: "bengaluru",
+      name: "Bengaluru",
       region: "SOUTH INDIA",
       x: 125,
       y: 380,
-      details: "Nature-inspired retreats and contemporary wellness destinations."
+      details: "Karnataka"
     },
     {
       id: "kerala",
@@ -73,54 +73,37 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 115,
       y: 425,
-      details: "Ayurvedic traditions, backwater retreats, and holistic healing."
+      details: "Kerala"
     }
   ];
 
   const regionCards = [
     {
       region: "NORTH INDIA",
-      title: "Himalayas",
-      description: "Serene mountain retreats for renewal and mindful living.",
+      title: "Himalayan Retreats",
+      cities: "Rishikesh · Mussoorie",
       stats: "2 properties"
     },
     {
       region: "SOUTH INDIA",
-      title: "Karnataka",
-      description: "Nature-inspired retreats and contemporary wellness destinations.",
-      stats: "4 properties"
-    },
-    {
-      region: "SOUTH INDIA",
-      title: "Kerala",
-      description: "Ayurvedic traditions, backwater retreats, and holistic healing.",
+      title: "Coastal & Ayurvedic",
+      cities: "Kerala · Bengaluru · Chennai · Pondicherry",
       stats: "4 properties"
     },
     {
       region: "WEST INDIA",
-      title: "Rajasthan",
-      description: "Royal heritage stays and immersive wellness escapes.",
+      title: "Luxury & Leisure",
+      cities: "Goa · Mumbai · Rajasthan · Gujarat",
       stats: "4 properties"
     },
     {
-      region: "NORTH INDIA",
-      title: "Delhi NCR",
-      description: "Urban luxury, holistic wellness, and premium experiences.",
-      stats: "2 properties"
-    },
-    {
-      region: "WEST INDIA",
-      title: "Maharashtra",
-      description: "Luxury coastal retreats, wellness resorts, and vibrant city escapes.",
-      stats: "4 properties"
-    },
-    {
-      region: "WEST INDIA",
-      title: "Goa",
-      description: "Beachfront sanctuaries blending relaxation and rejuvenation.",
+      region: "EAST INDIA",
+      title: "Nature & Spiritual",
+      cities: "Darjeeling · Gangtok · Assam",
       stats: "3 properties"
     }
   ];
+
   const partnerProperties = [
     {
       name: "Niraamaya Retreats Surya Samudra",
@@ -325,9 +308,9 @@ export default function DestinationsPage() {
                     <circle cx={marker.x} cy={marker.y} r="10" fill="rgba(13, 86, 63, 0.18)" />
                     <circle cx={marker.x} cy={marker.y} r="4.5" fill="#0d563f" />
                     <text
-                      x={marker.x + (marker.id === "goa" || marker.id === "rajasthan" || marker.id === "maharashtra" ? -16 : marker.id === "kerala" || marker.id === "himalayas" ? 0 : 16)}
+                      x={marker.x + (marker.id === "goa" || marker.id === "rajasthan" ? -16 : marker.id === "kerala" || marker.id === "himalayas" ? 0 : 16)}
                       y={marker.y + (marker.id === "kerala" ? 22 : marker.id === "himalayas" ? -18 : 4)}
-                      textAnchor={marker.id === "goa" || marker.id === "rajasthan" || marker.id === "maharashtra" ? "end" : marker.id === "kerala" || marker.id === "himalayas" ? "middle" : "start"}
+                      textAnchor={marker.id === "goa" || marker.id === "rajasthan" ? "end" : marker.id === "kerala" || marker.id === "himalayas" ? "middle" : "start"}
                       fill="#0d563f"
                       fontSize="9px"
                       fontFamily="Montserrat"
@@ -364,8 +347,8 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* State Cards Grid Section */}
-      <section className="regions-grid" aria-label="India States List">
+      {/* Region Cards Grid Section */}
+      <section className="regions-grid" aria-label="India Regions List">
         {filteredRegions.length > 0 ? (
           filteredRegions.map((region, idx) => (
             <div
@@ -376,7 +359,7 @@ export default function DestinationsPage() {
             >
               <span className="region-eyebrow">{region.region}</span>
               <h3 className="region-title">{region.title}</h3>
-              <p className="region-description">{region.description}</p>
+              <p className="region-cities">{region.cities}</p>
               <span className="region-stats">
                 <span className="legend-dot" style={{ backgroundColor: "#0d563f" }} />
                 {region.stats}
