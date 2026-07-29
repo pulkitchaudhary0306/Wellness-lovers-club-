@@ -3,7 +3,7 @@ import Link from "next/link";
 import "../wellness-retreats/retreats.css";
 
 export const metadata = {
-  title: "Premier Stays | Wellness Lovers Club",
+  title: "Exceptional Accommodations | Wellness Lovers Club",
   description: "Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.",
 };
 
@@ -29,7 +29,7 @@ export default function LuxuryStaysPage() {
       <section className="inner-hero" aria-label="Stays Hero">
         <div className="container inner-hero-container">
           <span className="eyebrow">REFINED HOSPITALITY & COMFORT</span>
-          <h1 className="inner-hero-title">Premier Stays</h1>
+          <h1 className="inner-hero-title">Exceptional Accommodations</h1>
           <p className="inner-hero-desc">
             Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
           </p>

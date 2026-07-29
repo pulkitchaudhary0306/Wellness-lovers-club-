@@ -42,7 +42,7 @@ export default function OfferingsPage() {
       link: "/offerings/spa-healing"
     },
     {
-      title: "Premier Stays",
+      title: "Exceptional Accommodations",
       desc: "Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.",
       img: "/images/luxury-stays-cabana.webp",
       category: "Stays",

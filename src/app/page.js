@@ -304,7 +304,7 @@ export default function HomePage() {
             <div className="offering-image-wrapper">
               <Image
                 src="/images/luxury-stays-cabana.webp"
-                alt="Premier Stays"
+                alt="Exceptional Accommodations"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
@@ -317,7 +317,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="offering-info">
-              <h3 className="offering-title">Premier Stays</h3>
+              <h3 className="offering-title">Exceptional Accommodations</h3>
               <p className="offering-desc">
                 Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
               </p>
