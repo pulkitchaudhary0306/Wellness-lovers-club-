@@ -4,7 +4,7 @@ import "../wellness-retreats/retreats.css";
 
 export const metadata = {
   title: "Exceptional Accommodations | Wellness Lovers Club",
-  description: "Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.",
+  description: "Enjoy preferred access to exceptional wellness resorts, hotels and luxury accommodations, where refined hospitality, tranquil surroundings, and elevated amenities create an unforgettable restorative stay.",
 };
 
 export default function LuxuryStaysPage() {
@@ -31,7 +31,7 @@ export default function LuxuryStaysPage() {
           <span className="eyebrow">REFINED HOSPITALITY & COMFORT</span>
           <h1 className="inner-hero-title">Exceptional Accommodations</h1>
           <p className="inner-hero-desc">
-            Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
+            Enjoy preferred access to exceptional wellness resorts, hotels and luxury accommodations, where refined hospitality, tranquil surroundings, and elevated amenities create an unforgettable restorative stay.
           </p>
         </div>
       </section>

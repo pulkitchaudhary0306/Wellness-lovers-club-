@@ -319,7 +319,7 @@ export default function HomePage() {
             <div className="offering-info">
               <h3 className="offering-title">Exceptional Accommodations</h3>
               <p className="offering-desc">
-                Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
+                Enjoy preferred access to exceptional wellness resorts, hotels and luxury accommodations, where refined hospitality, tranquil surroundings, and elevated amenities create an unforgettable restorative stay.
               </p>
             </div>
           </Link>

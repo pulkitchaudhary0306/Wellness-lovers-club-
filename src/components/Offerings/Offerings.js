@@ -70,7 +70,7 @@ export default function Offerings() {
     {
       id: "stays",
       title: "Exceptional Accommodations",
-      desc: "Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.",
+      desc: "Enjoy preferred access to exceptional wellness resorts, hotels and luxury accommodations, where refined hospitality, tranquil surroundings, and elevated amenities create an unforgettable restorative stay.",
       img: "/images/luxury-stays-cabana.webp",
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
