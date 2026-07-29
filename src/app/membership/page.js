@@ -291,10 +291,11 @@ export default function MembershipPage() {
             ))}
           </div>
 
-          {/* QR Code Section */}
+          {/* Payment QR Section */}
           <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.03)", padding: "1rem", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <img src="/images/qr-code.png" alt="Scan to Apply on Mobile" style={{ width: "95px", height: "95px", borderRadius: "6px", border: "3px solid #fff" }} />
-            <span style={{ fontSize: "10px", fontWeight: 600, color: "#0f8554", letterSpacing: "0.05em", textTransform: "uppercase" }}>Scan to Apply on Mobile</span>
+            <img src="/images/payment-qr.png" alt="Scan to Pay Membership Fee" style={{ width: "112px", height: "112px", borderRadius: "6px", border: "3px solid #fff" }} />
+            <span style={{ fontSize: "10px", fontWeight: 600, color: "#0f8554", letterSpacing: "0.05em", textTransform: "uppercase" }}>Scan to Pay</span>
+            <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", textAlign: "center" }}>UPI payment method for membership</span>
           </div>
         </div>
 
