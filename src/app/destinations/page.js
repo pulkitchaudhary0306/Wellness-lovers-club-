@@ -81,25 +81,25 @@ export default function DestinationsPage() {
     {
       region: "NORTH INDIA",
       title: "Himalayan Retreats",
-      cities: "Rishikesh · Mussoorie · Dharamshala · Shimla",
-      stats: "4 properties"
+      cities: "Rishikesh · Mussoorie",
+      stats: "2 properties"
     },
     {
       region: "SOUTH INDIA",
       title: "Coastal & Ayurvedic",
       cities: "Kerala · Bengaluru · Chennai · Pondicherry",
-      stats: "5 properties"
+      stats: "4 properties"
     },
     {
       region: "WEST INDIA",
       title: "Luxury & Leisure",
       cities: "Goa · Mumbai · Rajasthan · Gujarat",
-      stats: "6 properties"
+      stats: "4 properties"
     },
     {
       region: "EAST INDIA",
       title: "Nature & Spiritual",
-      cities: "Darjeeling · Gangtok · Shillong · Assam",
+      cities: "Darjeeling · Gangtok · Assam",
       stats: "3 properties"
     }
   ];

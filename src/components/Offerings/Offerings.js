@@ -69,8 +69,8 @@ export default function Offerings() {
     },
     {
       id: "stays",
-      title: "Luxury Wellness Stays",
-      desc: "Preferred rates and VIP amenities at the world's most exclusive boutique wellness resorts and luxury hotels.",
+      title: "Premier Stays",
+      desc: "Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.",
       img: "/images/luxury-stays-cabana.webp",
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

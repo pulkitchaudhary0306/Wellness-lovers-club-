@@ -126,8 +126,8 @@ export default function AboutPage() {
         <div className="about-sec-image-wrapper">
           <div className="about-image-container">
             <Image
-              src="/images/philosophy-sunset.jpg"
-              alt="Sunset over hills with silhouetted wild grass"
+              src="/images/philosophy-pool.webp"
+              alt="Luxury tropical wellness resort pool with palm trees"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
               className="arch-image"

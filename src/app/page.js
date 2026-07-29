@@ -129,11 +129,11 @@ export default function HomePage() {
               <span className="philosophy-subtitle">OUR PHILOSOPHY</span>
               <h2 className="philosophy-title">Conscious Living, Elevated.</h2>
               <div className="philosophy-separator"></div>
-              <p className="philosophy-text" style={{ marginBottom: "20px" }}>
+              <p className="philosophy-text">
                 We curate meaningful experiences that nurture, restore, and inspire. Wellness Lovers Club is built on the belief that true luxury is the freedom to live consciously to invest in your mind, body, and soul with intention.
               </p>
-              <p className="philosophy-text" style={{ fontSize: "15px", lineHeight: "1.7", color: "#666" }}>
-                Backed by GlobalSpa  India&apos;s leading wellness and luxury lifestyle media brand WLC is more than a club. It is a movement. A movement that brings together like-minded individuals who value holistic living, mindful experiences, and conscious indulgence.
+              <p className="philosophy-text">
+                Backed by GlobalSpa India&apos;s leading wellness and luxury lifestyle media brand WLC is more than a club. It is a movement. A movement that brings together like-minded individuals who value holistic living, mindful experiences, and conscious indulgence.
               </p>
             </div>
           </div>
@@ -141,8 +141,8 @@ export default function HomePage() {
             <div className="philosophy-collage">
               <div className="philosophy-main-image-wrapper">
                 <Image
-                  src="/images/philosophy-sunset.jpg"
-                  alt="Sunset over hills with silhouetted wild grass"
+                  src="/images/philosophy-pool.webp"
+                  alt="Luxury tropical wellness resort pool with palm trees"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
@@ -151,8 +151,8 @@ export default function HomePage() {
               </div>
               <div className="philosophy-detail-image-wrapper">
                 <Image
-                  src="/images/philosophy-zen-stones.jpg"
-                  alt="Stacked zen stones balanced in a flowing river"
+                  src="/images/journey-wellness.webp"
+                  alt="Wellness journey concept"
                   fill
                   sizes="200px"
                   className="philosophy-detail-img"
@@ -304,7 +304,7 @@ export default function HomePage() {
             <div className="offering-image-wrapper">
               <Image
                 src="/images/luxury-stays-cabana.webp"
-                alt="Luxury Wellness Stays"
+                alt="Premier Stays"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
@@ -317,9 +317,9 @@ export default function HomePage() {
               </div>
             </div>
             <div className="offering-info">
-              <h3 className="offering-title">Luxury Wellness Stays</h3>
+              <h3 className="offering-title">Premier Stays</h3>
               <p className="offering-desc">
-                Preferred rates and VIP amenities at the world's most exclusive boutique wellness resorts and luxury hotels.
+                Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
               </p>
             </div>
           </Link>
