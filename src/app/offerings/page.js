@@ -67,9 +67,9 @@ export default function OfferingsPage() {
         <div className="container">
           <div className="text-center inner-section-header">
             <span className="eyebrow">EXPERIENCES</span>
-            <h2 className="inner-section-title">Exclusive Experiences</h2>
+            <h2 className="inner-section-title">Curated for Mindful Living</h2>
             <p>
-              As a member of Wellness Lovers Club, you gain access to exclusive partnerships, preferred pricing, and itineraries tailored to your unique wellness journey.
+              As a member of Wellness Lovers Club, you gain access to exclusive experiences, preferred pricing and member-only privileges across our trusted wellness partners.
             </p>
           </div>
 
