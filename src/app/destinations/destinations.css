@@ -176,11 +176,14 @@
   padding: 28px 24px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
 }
 
-.region-card:hover {
+.region-card:hover,
+.region-card.active {
   transform: translateY(-5px);
   border-color: #0d563f;
+  background-color: #f6faf8;
   box-shadow: 0 12px 30px rgba(13, 86, 63, 0.08);
 }
 

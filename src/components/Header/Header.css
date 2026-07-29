@@ -94,15 +94,6 @@
   color: #ffffff !important;
 }
 
-.book-now-btn {
-  background-color: #bca374;
-}
-
-.book-now-btn:hover {
-  background-color: #9c8458;
-  color: #ffffff !important;
-}
-
 .mobile-menu-button {
   display: none;
   width: 42px;

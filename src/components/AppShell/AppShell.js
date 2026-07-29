@@ -24,23 +24,23 @@ export default function AppShell({ children, header, footer }) {
       // First visit: disable scrolling
       document.body.classList.add("splash-active");
 
-      // Start fading in homepage content a bit early (1.2 seconds)
+      // Start fading in homepage content a bit early (2.2 seconds)
       const contentFadeTimeout = setTimeout(() => {
         setContentFadeIn(true);
-      }, 1200);
+      }, 2200);
 
-      // Start fading out the splash screen at 1.5 seconds
+      // Start fading out the splash screen at 2.5 seconds
       const fadeTimeout = setTimeout(() => {
         setIsFadingOut(true);
-      }, 1500);
+      }, 2500);
 
-      // Fully remove splash screen and enable scrolling at 2.0 seconds
+      // Fully remove splash screen and enable scrolling at 3.0 seconds
       const removeTimeout = setTimeout(() => {
         setShowSplash(false);
         document.body.classList.remove("splash-active");
         document.documentElement.classList.add("splash-complete");
         sessionStorage.setItem("wlc_splash_shown", "true");
-      }, 2000);
+      }, 3000);
 
       return () => {
         clearTimeout(contentFadeTimeout);

@@ -219,6 +219,11 @@ export default function DestinationsPage() {
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
+    } else {
+      const element = document.getElementById("properties-section");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -346,7 +351,12 @@ export default function DestinationsPage() {
       <section className="regions-grid" aria-label="India Regions List">
         {filteredRegions.length > 0 ? (
           filteredRegions.map((region, idx) => (
-            <div className="region-card" key={idx}>
+            <div
+              className={`region-card ${activeFilter === region.region ? "active" : ""}`}
+              key={idx}
+              onClick={() => handleFilterClick(region.region)}
+              style={{ cursor: "pointer" }}
+            >
               <span className="region-eyebrow">{region.region}</span>
               <h3 className="region-title">{region.title}</h3>
               <p className="region-cities">{region.cities}</p>
@@ -372,7 +382,7 @@ export default function DestinationsPage() {
       </div>
 
       {/* Dynamic Properties Section */}
-      <section className="properties-section" aria-label="Partner Properties Grid">
+      <section id="properties-section" className="properties-section" aria-label="Partner Properties Grid" style={{ scrollMarginTop: "80px" }}>
         <div className="properties-header-wrapper">
           <div>
             <h2 className="properties-section-title">
@@ -387,7 +397,12 @@ export default function DestinationsPage() {
         <div className="properties-grid">
           {filteredProperties.length > 0 ? (
             filteredProperties.map((prop, idx) => (
-              <div className="property-card" key={idx}>
+              <Link
+                href={prop.link}
+                className="property-card"
+                key={idx}
+                style={{ textDecoration: "none" }}
+              >
                 <div className="property-img-container">
                   <span className="property-category-badge">{prop.category}</span>
                   <Image
@@ -403,11 +418,11 @@ export default function DestinationsPage() {
                   <div className="property-card-location">
                     <span>📍</span> {prop.location}
                   </div>
-                  <Link href={prop.link} className="property-card-link">
+                  <span className="property-card-link">
                     Explore Details <span>→</span>
-                  </Link>
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "60px", color: "#666666", fontFamily: "Montserrat" }}>
@@ -435,10 +450,15 @@ export default function DestinationsPage() {
 
           <div className="global-grid">
             {internationalDestinations.map((dest, idx) => (
-              <div className="global-card" key={idx}>
+              <Link
+                href="/contact"
+                className="global-card"
+                key={idx}
+                style={{ textDecoration: "none" }}
+              >
                 <h3 className="global-name" style={{ marginTop: "12px" }}>{dest.name}</h3>
                 <span className="global-type">{dest.type}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

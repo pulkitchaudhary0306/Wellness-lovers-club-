@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const heroImages = [
-  "/images/hero-wellness.webp",
-  "/images/wellness-retreat.webp",
-  "/images/exclusive-privileges.webp",
-  "/images/membership-spa.webp",
+  "/images/d30a5470622d212e7ae19d485f9e1911.webp",
+  "/images/eb9fb38adaf4e895f43ef0798cf67c3a.webp",
+  "/images/1d8a0a0d24ef6d5d4eef7e4564b4dab8.webp",
+  "/images/41dfe3d2198e675d587959f122ba984a.webp",
 ];
 
 const membershipBannerImages = {
@@ -141,8 +141,8 @@ export default function HomePage() {
             <div className="philosophy-collage">
               <div className="philosophy-main-image-wrapper">
                 <Image
-                  src="/homepage/Introimages/natalia-portilho.webp"
-                  alt="Luxury pool at wellness resort"
+                  src="/images/philosophy-sunset.jpg"
+                  alt="Sunset over hills with silhouetted wild grass"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
@@ -151,8 +151,8 @@ export default function HomePage() {
               </div>
               <div className="philosophy-detail-image-wrapper">
                 <Image
-                  src="/homepage/Introimages/szymon-shields.webp"
-                  alt="Lush green palm leaves close-up"
+                  src="/images/philosophy-zen-stones.jpg"
+                  alt="Stacked zen stones balanced in a flowing river"
                   fill
                   sizes="200px"
                   className="philosophy-detail-img"
@@ -655,9 +655,15 @@ export default function HomePage() {
             </a>
           </div>
           <div className="journey-lotus-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0d563f" strokeWidth="0.75" opacity="0.15" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8L19 19M5 19l2.2-2.2M16.8 7.2L19 5" />
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M60 10C60 10 50 40 35 55C20 70 5 60 5 60C5 60 25 80 45 75C65 70 60 110 60 110C60 110 65 70 85 75C105 80 115 60 115 60C115 60 100 70 85 55C70 40 60 10 60 10Z"
+                stroke="#bca374"
+                strokeWidth="0.8"
+                strokeOpacity="0.12"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </div>
         </div>

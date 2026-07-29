@@ -867,21 +867,22 @@ main {
   line-height: 1.5;
 }
 
-/* Begin Your Wellness Journey Section */
 .journey-section {
   display: flex;
   width: 100%;
   height: 300px;
-  background-color: #f7f4ee;
+  background: linear-gradient(90deg, #e3d5b8 0%, #faf6ef 45%, #faf6ef 100%);
   border-bottom: 1px solid #e5dec9;
   position: relative;
   overflow: hidden;
 }
 
 .journey-image-col {
-  width: 35%;
+  width: 45%;
   position: relative;
   height: 100%;
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
 }
 
 .journey-img {
@@ -889,7 +890,7 @@ main {
 }
 
 .journey-content-col {
-  width: 65%;
+  width: 55%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -901,14 +902,18 @@ main {
 
 .journey-lotus-bg {
   position: absolute;
-  right: 60px;
+  right: 40px;
   top: 50%;
   transform: translateY(-50%);
-  width: 150px;
-  height: 150px;
-  opacity: 0.15;
+  width: 160px;
+  height: 160px;
   z-index: 1;
   pointer-events: none;
+}
+
+.journey-lotus-bg svg {
+  width: 100%;
+  height: 100%;
 }
 
 .journey-title {
@@ -1029,11 +1034,14 @@ main {
   .journey-section {
     flex-direction: column;
     height: auto;
+    background: linear-gradient(to bottom, #e3d5b8 0%, #faf6ef 35%, #faf6ef 100%);
   }
 
   .journey-image-col {
     width: 100%;
-    height: 200px;
+    height: 220px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
   }
 
   .journey-content-col {

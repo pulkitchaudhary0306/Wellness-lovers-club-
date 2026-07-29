@@ -108,13 +108,7 @@ function Header() {
             >
               BECOME A MEMBER →
             </Link>
-            <Link
-              href="/contact"
-              className="member-button book-now-btn"
-              onClick={closeMenu}
-            >
-              BOOK NOW →
-            </Link>
+
           </div>
         </div>
       </div>

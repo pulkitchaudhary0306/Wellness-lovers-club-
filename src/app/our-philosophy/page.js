@@ -56,13 +56,13 @@ export default function OurPhilosophyPage() {
       {/* SECTION 1 — A WELLNESS MOVEMENT NURTURED BY GLOBALSPA */}
       <section className="about-sec" aria-label="A Wellness Movement">
         <div className="about-sec-content">
-          <span className="about-eyebrow">WLC · WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
+          <span className="about-eyebrow"> WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
           <h1 className="about-sec-title">A Wellness Movement Nurtured by GlobalSpa</h1>
           <p className="about-sec-desc">
             Backed by <strong>GlobalSpa</strong> - India&apos;s leading wellness and luxury lifestyle media brand - WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
           </p>
           <p className="about-sec-desc">
-            We believe that true luxury is the freedom to focus on personal well-being. WLC serves as your trusted companion, offering preferred rates, bespoke wellness itineraries, and members-only events that nurture your spiritual and physical growth.
+            We believe that true luxury is the freedom to focus on personal well-being. WLC serves as your trusted companion, offering preferred rates, bespoke wellness experiences, and members-only events that nurture your spiritual and physical growth.
           </p>
         </div>
         <div className="about-sec-image-wrapper">
@@ -126,8 +126,8 @@ export default function OurPhilosophyPage() {
         <div className="about-sec-image-wrapper">
           <div className="about-image-container">
             <Image
-              src="/images/conscious-living.webp"
-              alt="Buddha statue reflecting in a peaceful garden pond under soft sunlight"
+              src="/images/philosophy-sunset.jpg"
+              alt="Sunset over hills with silhouetted wild grass"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
               className="arch-image"
