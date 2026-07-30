@@ -144,7 +144,7 @@ class WLC_Core_Profile_Controller {
                     'id'     => '101',
                     'date'   => date( 'Y-m-d', strtotime( '-2 weeks' ) ),
                     'status' => 'Completed',
-                    'total'  => '$499.00',
+                    'total'  => '₹29,000.00',
                     'item'   => 'Lotus Club Annual Membership'
                 )
             );
@@ -157,15 +157,7 @@ class WLC_Core_Profile_Controller {
      * Get Payment history
      */
     public function get_payments( $request ) {
-        $payments = array(
-            array(
-                'id'     => 'pay_101',
-                'date'   => date( 'Y-m-d', strtotime( '-2 weeks' ) ),
-                'amount' => '$499.00',
-                'status' => 'Successful',
-                'method' => 'Stripe Credit Card'
-            )
-        );
+        $payments = array();
 
         return Wellness_API_Response::success( $payments );
     }

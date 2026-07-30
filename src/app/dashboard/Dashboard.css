@@ -568,8 +568,143 @@
 .db-table td { padding: 14px 20px; color: var(--text-primary); font-weight: 500; vertical-align: middle; }
 .db-table-id { font-weight: 700; color: var(--green); font-size: 12px; }
 .db-table-muted { color: var(--text-muted); }
+.db-empty-row { text-align: center; color: var(--text-faint) !important; font-weight: 600 !important; }
+
+/* Payment Mode */
+.db-payment-mode-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.db-payment-mode-copy {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.db-payment-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--green-pale);
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-payment-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.db-payment-qr-box img {
+  width: 112px;
+  height: 112px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.db-payment-qr-box span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+}
 
 /* ── Badges ───────────────────────────────────────────────── */
+.db-payment-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.4fr;
+  gap: 1.25rem;
+}
+
+.db-payment-amount-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(188,163,116,0.28);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(188,163,116,0.1), rgba(15,133,84,0.05));
+  display: grid;
+  gap: 6px;
+}
+
+.db-payment-amount-box span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.db-payment-amount-box strong {
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--gold-dark);
+}
+
+.db-payment-amount-box em {
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.db-payment-note {
+  margin-top: 0.85rem;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.db-bank-details {
+  display: grid;
+  gap: 0;
+  margin-top: 1rem;
+}
+
+.db-bank-details div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.db-bank-details div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.db-bank-details dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.db-bank-details dd {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .db-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 10px; font-weight: 700; }
 .db-badge-green { background: var(--green-pale); color: var(--green); }
 .db-badge-gold  { background: rgba(188,163,116,0.12); color: var(--gold-dark); }
@@ -716,6 +851,20 @@
 @media (max-width: 640px) {
   .db-stats-grid { grid-template-columns: 1fr; }
   .db-grid-2 { grid-template-columns: 1fr; }
+  .db-payment-mode-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .db-payment-grid {
+    grid-template-columns: 1fr;
+  }
+  .db-payment-qr-box {
+    width: 100%;
+  }
+  .db-bank-details div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
   .db-welcome-content { padding: 1.75rem 1.5rem; }
   .db-welcome-title { font-size: 20px; }
   .db-content { padding: 1rem 1rem 3rem; }

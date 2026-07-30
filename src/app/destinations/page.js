@@ -25,7 +25,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 130,
       y: 100,
-      details: "Uttarakhand, Himachal Pradesh, Jammu & Kashmir"
+      details: "Serene mountain retreats for renewal and mindful living."
     },
     {
       id: "delhi",
@@ -33,7 +33,7 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 129,
       y: 150,
-      details: "Delhi, Haryana, Uttar Pradesh"
+      details: "Urban luxury, holistic wellness, and premium experiences."
     },
     {
       id: "rajasthan",
@@ -41,15 +41,15 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 90,
       y: 185,
-      details: "Rajasthan"
+      details: "Royal heritage stays and immersive wellness escapes."
     },
     {
       id: "mumbai",
-      name: "Mumbai",
+      name: "Maharashtra",
       region: "WEST INDIA",
       x: 104,
       y: 285,
-      details: "Maharashtra"
+      details: "Luxury coastal retreats, wellness resorts, and vibrant city escapes."
     },
     {
       id: "goa",
@@ -57,15 +57,15 @@ export default function DestinationsPage() {
       region: "WEST INDIA",
       x: 80,
       y: 345,
-      details: "Goa"
+      details: "Beachfront sanctuaries blending relaxation and rejuvenation."
     },
     {
       id: "bengaluru",
-      name: "Bengaluru",
+      name: "Karnataka",
       region: "SOUTH INDIA",
       x: 125,
       y: 380,
-      details: "Karnataka"
+      details: "Nature-inspired retreats and contemporary wellness destinations."
     },
     {
       id: "kerala",
@@ -73,7 +73,7 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 115,
       y: 425,
-      details: "Kerala"
+      details: "Ayurvedic traditions, backwater retreats, and holistic healing."
     }
   ];
 

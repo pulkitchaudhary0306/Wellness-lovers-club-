@@ -48,6 +48,44 @@ const menuItems = [
 ];
 
 /* ─── Sidebar Nav ────────────────────────────────────────── */
+const paymentInfo = {
+  amount: "₹29,000.00",
+  gst: "GST 18%",
+  payeeName: "Pinnacle Connect LLP",
+  upiId: "pinnacleconnect@kotak",
+  bank: "Kotak Mahindra Bank",
+  accountNumber: "0312619723",
+  ifsc: "KKBK0004591",
+  address: "M-3 Hauz Khas Enclave, Aurobindo Marg, New Delhi - 110016",
+  qrPath: "/QR images/Pinnacle_Connect_UPI_QR_29000.png",
+};
+
+function toArray(value) {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.items)) return value.items;
+  if (Array.isArray(value?.memberships)) return value.memberships;
+  return value ? [value] : [];
+}
+
+function displayText(value, fallback = "—") {
+  if (value === null || value === undefined || value === "") return fallback;
+  if (typeof value === "string" || typeof value === "number") return String(value);
+  return fallback;
+}
+
+function normalizeMembership(m, index, user, paymentInfo) {
+  return {
+    id: displayText(m?.id ?? m?.membershipId ?? m?.subscription_id, `membership-${user.id}-${index}`),
+    tier: displayText(m?.tier ?? m?.membershipTier, user.membershipTier || "Lotus Club"),
+    status: displayText(m?.status ?? m?.membershipStatus, user.membershipStatus || "Active"),
+    startDate: displayText(m?.startDate ?? m?.start_date, "Active"),
+    endDate: displayText(m?.endDate ?? m?.end_date ?? m?.validUntil, "April 28, 2027"),
+    price: displayText(m?.price ?? m?.amount, paymentInfo.amount),
+    billingCycle: displayText(m?.billingCycle ?? m?.billing_cycle, "Annual"),
+  };
+}
+
 function SidebarNav({ activeTab, setActiveTab, onLogout, onClose }) {
   return (
     <>
@@ -114,9 +152,15 @@ export default function DashboardPage() {
     if (!isAuthenticated) return;
     (async () => {
       try {
-        setOrders(await authService.getOrders());
-        setPayments(await authService.getPayments());
-        setMemberships(await authService.getMemberships());
+        const [ordersData, paymentsData, membershipsData] = await Promise.all([
+          authService.getOrders(),
+          authService.getPayments(),
+          authService.getMemberships(),
+        ]);
+
+        setOrders(toArray(ordersData));
+        setPayments(toArray(paymentsData));
+        setMemberships(toArray(membershipsData));
       } catch (e) { console.error(e); }
     })();
   }, [isAuthenticated]);
@@ -147,6 +191,41 @@ export default function DashboardPage() {
   };
 
   const currentLabel = menuItems.find(i => i.id === activeTab)?.label || "";
+  const hasSuccessfulMembershipPayment = ["Active", "Lifetime"].includes(user.membershipStatus);
+  const confirmedMembershipPayment = {
+    id: `WLC-${user.id}-29000`,
+    method: "UPI / Bank Transfer",
+    date: new Date().toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    status: "Successful",
+    amount: `${paymentInfo.amount} (${paymentInfo.gst})`,
+  };
+  const displayedPayments =
+    payments.length > 0
+      ? payments
+      : hasSuccessfulMembershipPayment
+        ? [confirmedMembershipPayment]
+        : [];
+  const fallbackMembership = {
+    id: `membership-${user.id}`,
+    tier: user.membershipTier || "Lotus Club",
+    status: user.membershipStatus || "Active",
+    startDate: "Active",
+    endDate: "April 28, 2027",
+    price: paymentInfo.amount,
+    billingCycle: "Annual",
+  };
+  const displayedMemberships =
+    memberships.length > 0
+      ? memberships.map((membership, index) =>
+          normalizeMembership(membership, index, user, paymentInfo)
+        )
+      : hasSuccessfulMembershipPayment
+        ? [fallbackMembership]
+        : [];
 
   return (
     <div className="db-root">
@@ -343,8 +422,8 @@ export default function DashboardPage() {
             {/* ═══ MEMBERSHIP TAB ═════════════════════════ */}
             {activeTab === "membership" && (
               <motion.div key="membership" className="db-fadein" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                {memberships.map((m) => (
-                  <div key={m.id} className="db-card db-card-pad">
+                {displayedMemberships.map((m, index) => (
+                  <div key={m.id || `membership-card-${index}`} className="db-card db-card-pad">
                     <div className="db-membership-card-top">
                       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                         <div className="db-membership-tier-icon"><Award size={26} /></div>
@@ -412,12 +491,57 @@ export default function DashboardPage() {
 
             {/* ═══ PAYMENTS TAB ═══════════════════════════ */}
             {activeTab === "payments" && (
-              <motion.div key="payments" className="db-fadein">
+              <motion.div key="payments" className="db-fadein" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                <div className="db-card db-payment-mode-card">
+                  <div className="db-payment-mode-copy">
+                    <div className="db-payment-icon"><CreditCard size={22} /></div>
+                    <div>
+                      <div className="db-card-title">Payment Mode</div>
+                      <div className="db-card-subtitle">Scan the UPI QR code or transfer to the bank account below.</div>
+                    </div>
+                  </div>
+                  <div className="db-payment-qr-box">
+                    <img src={paymentInfo.qrPath} alt="Scan to Pay Membership Fee" />
+                    <span>Scan to Pay</span>
+                  </div>
+                </div>
+
+                <div className="db-payment-grid">
+                  <div className="db-card db-card-pad">
+                    <div className="db-card-title">Amount Details</div>
+                    <div className="db-payment-amount-box">
+                      <span>Amount to Pay</span>
+                      <strong>{paymentInfo.amount}</strong>
+                      <em>{paymentInfo.gst}</em>
+                    </div>
+                    <div className="db-payment-note">Please pay the exact amount mentioned above.</div>
+                  </div>
+
+                  <div className="db-card db-card-pad">
+                    <div className="db-card-title">Bank Transfer Details</div>
+                    <dl className="db-bank-details">
+                      {[
+                        ["Bank", paymentInfo.bank],
+                        ["Account Number", paymentInfo.accountNumber],
+                        ["Name", paymentInfo.payeeName],
+                        ["IFSC Code", paymentInfo.ifsc],
+                        ["Address", paymentInfo.address],
+                        ["UPI ID", paymentInfo.upiId],
+                      ].map(([label, value]) => (
+                        <div key={label}>
+                          <dt>{label}</dt>
+                          <dd>{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                </div>
+
                 <div className="db-card">
                   <div className="db-card-header">
                     <div>
                       <div className="db-card-title">Transaction Logs</div>
-                      <div className="db-card-subtitle">{payments.length} transactions</div>
+                      <div className="db-card-subtitle">{displayedPayments.length} transactions</div>
                     </div>
                   </div>
                   <div style={{ overflowX: "auto" }}>
@@ -432,7 +556,7 @@ export default function DashboardPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {payments.map(p => (
+                        {displayedPayments.map(p => (
                           <tr key={p.id}>
                             <td style={{ fontWeight: 700 }}>{p.id}</td>
                             <td className="db-table-muted">{p.method}</td>
@@ -441,6 +565,11 @@ export default function DashboardPage() {
                             <td style={{ textAlign: "right", fontWeight: 700 }}>{p.amount}</td>
                           </tr>
                         ))}
+                        {displayedPayments.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="db-empty-row">No successful transactions yet.</td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -500,7 +629,7 @@ export default function DashboardPage() {
                 <div className="db-card db-card-pad">
                   {[
                     { icon: <Bell size={16} />, iconBg: "#eff6ff", iconColor: "#3b82f6", title: "Welcome to Club Hub!", body: "We're excited to help you elevate your wellness journey. Check out the Himalayan Sanctuary special rates in the dashboard.", time: "2 hours ago" },
-                    { icon: <CheckCircle size={16} />, iconBg: "var(--green-pale)", iconColor: "var(--green)", title: "Annual Membership Active", body: "Your Premium Lotus Club Annual Membership of $350.00 was successfully processed through PayPal.", time: "3 days ago" },
+                    { icon: <CheckCircle size={16} />, iconBg: "var(--green-pale)", iconColor: "var(--green)", title: "Annual Membership Active", body: `Your Premium Lotus Club Annual Membership of ${paymentInfo.amount} with ${paymentInfo.gst} was successfully processed.`, time: "3 days ago" },
                   ].map(n => (
                     <div className="db-notif-item" key={n.title}>
                       <div className="db-notif-icon" style={{ background: n.iconBg, color: n.iconColor }}>{n.icon}</div>

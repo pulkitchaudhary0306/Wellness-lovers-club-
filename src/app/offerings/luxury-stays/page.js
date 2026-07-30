@@ -41,9 +41,9 @@ export default function LuxuryStaysPage() {
         <div className="container">
           <div className="text-center inner-section-header">
             <span className="eyebrow">EXQUISITE RETREATS</span>
-            <h2 className="inner-section-title">Wellness Resorts, Hotels</h2>
+            <h2 className="inner-section-title">Premier Stays</h2>
             <p>
-              Explore our select portfolio of boutique hotels and premium wellness properties, offering custom member privileges and dedicated care for a refreshing stay.
+              Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
             </p>
           </div>
 
