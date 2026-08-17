@@ -27,6 +27,11 @@ export function saveSession(
   storage.setItem(KEYS.USER, JSON.stringify(user));
 }
 
+export function storeToken(token: string, persistent: boolean = true): void {
+  const storage = persistent ? localStorage : sessionStorage;
+  storage.setItem(KEYS.TOKEN, token);
+}
+
 export function updateStoredUser(user: object): void {
   if (localStorage.getItem(KEYS.TOKEN)) {
     localStorage.setItem(KEYS.USER, JSON.stringify(user));

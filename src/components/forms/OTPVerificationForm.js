@@ -1,116 +1,170 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, ArrowLeft, RefreshCw, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function OTPVerificationForm({ isEmbed = false }) {
-  const { verifyOTP } = useAuth();
+const emptySubscribe = () => () => {};
+
+function getStoredClientEmail() {
+  if (typeof window === "undefined") return "";
+  try {
+    const stored = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email");
+    if (stored) return stored;
+    const params = new URLSearchParams(window.location.search);
+    return params.get("email") || params.get("identifier") || "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * OTPVerificationForm
+ *
+ * Production Email OTP verification form with fully responsive layout,
+ * mobile autofill support, and smooth keyboard navigation.
+ */
+export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = "", prefilledIdentifier = "" }) {
+  const { verifyOTP, resendOTP, user } = useAuth();
   const router = useRouter();
-  
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [countdown, setCountdown] = useState(60);
-  const [canResend, setCanResend] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState("");
   const [apiError, setApiError] = useState("");
   const [isShaking, setIsShaking] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // References to the 6 input elements to manage focus
+  const clientEmail = useSyncExternalStore(emptySubscribe, getStoredClientEmail, () => "");
+  const canResend = countdown <= 0;
+  const activeEmail = prefilledEmail || prefilledIdentifier || user?.email || clientEmail || "";
+
+  // References to the 6 OTP input boxes
   const inputRefs = [
     useRef(null),
     useRef(null),
     useRef(null),
     useRef(null),
     useRef(null),
-    useRef(null)
+    useRef(null),
   ];
 
-  // Countdown timer effect
+  // 60-second countdown timer for resend cooldown
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(timer);
-    } else {
-      setTimeout(() => {
-        setCanResend(true);
-      }, 0);
-    }
+    if (countdown <= 0) return;
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
   }, [countdown]);
 
   const handleChange = (value, index) => {
-    // Only accept numeric digits
-    if (value !== "" && !/^[0-9]$/.test(value)) return;
+    // Handle multi-character input (e.g., mobile SMS / email OTP autofill or copy-paste)
+    const cleaned = value.replace(/\D/g, "");
+    if (cleaned.length > 1) {
+      const digits = cleaned.slice(0, 6).split("");
+      const newOtp = [...otp];
+      digits.forEach((d, i) => {
+        if (i < 6) newOtp[i] = d;
+      });
+      setOtp(newOtp);
+      const nextIdx = Math.min(digits.length, 5);
+      inputRefs[nextIdx]?.current?.focus();
+      return;
+    }
 
+    // Single digit entry or clear
+    if (value !== "" && !/^[0-9]$/.test(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Automatically shift focus forward if value entered
     if (value !== "" && index < 5) {
-      inputRefs[index + 1].current.focus();
+      inputRefs[index + 1]?.current?.focus();
     }
   };
 
   const handleKeyDown = (e, index) => {
-    // Shift focus backward on Backspace
-    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
-      inputRefs[index - 1].current.focus();
+    if (e.key === "Backspace") {
+      if (otp[index] === "" && index > 0) {
+        inputRefs[index - 1]?.current?.focus();
+      }
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      e.preventDefault();
+      inputRefs[index - 1]?.current?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      e.preventDefault();
+      inputRefs[index + 1]?.current?.focus();
     }
   };
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").trim();
-    if (/^[0-9]{6}$/.test(pastedData)) {
-      const digits = pastedData.split("");
-      setOtp(digits);
-      // Focus the last input box
-      inputRefs[5].current.focus();
+    const pastedData = e.clipboardData.getData("text").trim().replace(/\D/g, "");
+    if (pastedData.length > 0) {
+      const digits = pastedData.slice(0, 6).split("");
+      const newOtp = [...otp];
+      digits.forEach((d, i) => {
+        if (i < 6) newOtp[i] = d;
+      });
+      setOtp(newOtp);
+      const targetIdx = Math.min(digits.length, 5);
+      inputRefs[targetIdx]?.current?.focus();
     }
   };
 
-  const handleResend = () => {
+  const shake = () => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+  };
+
+  const handleResend = async () => {
     if (!canResend) return;
-    setOtp(["", "", "", "", "", ""]);
-    setCountdown(60);
-    setCanResend(false);
+    setResendStatus("Sending new verification code...");
     setApiError("");
-    inputRefs[0].current.focus();
-    alert("Verification code has been resent to your email.");
+
+    try {
+      const targetEmail = activeEmail || (typeof window !== "undefined" ? sessionStorage.getItem("wlc_reg_email") : "") || "";
+      await resendOTP(targetEmail);
+      setOtp(["", "", "", "", "", ""]);
+      setCountdown(60);
+      setResendStatus("A new 6-digit verification code has been sent to your email.");
+      inputRefs[0]?.current?.focus();
+    } catch (err) {
+      setApiError(err?.message || "Failed to resend verification code.");
+      setResendStatus("");
+    }
   };
 
   const handleVerify = async (e) => {
     e.preventDefault();
     const otpCode = otp.join("");
+
     if (otpCode.length < 6) {
       setApiError("Please enter the full 6-digit verification code.");
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
+      shake();
       return;
     }
 
     setIsLoading(true);
     setApiError("");
-    setIsShaking(false);
+    setResendStatus("");
 
     try {
-      // Valid codes simulated: "123456" or "111111"
-      await verifyOTP(otpCode);
+      const targetEmail = activeEmail || (typeof window !== "undefined" ? sessionStorage.getItem("wlc_reg_email") : "") || "";
+      await verifyOTP(otpCode, targetEmail);
+
       setIsSuccess(true);
       setTimeout(() => {
         router.push("/dashboard");
-      }, 2000);
+      }, 1500);
     } catch (err) {
-      setApiError(err.message || "Invalid code. Please try again.");
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
+      setApiError(err?.message || "Invalid or expired verification code. Please try again.");
+      shake();
     } finally {
       setIsLoading(false);
     }
@@ -122,6 +176,7 @@ export default function OTPVerificationForm({ isEmbed = false }) {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  // ─── Success state ──────────────────────────────────────────────────────────
   if (isSuccess) {
     return (
       <motion.div
@@ -136,19 +191,18 @@ export default function OTPVerificationForm({ isEmbed = false }) {
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
             className="otp-success-icon"
           >
-            <CheckCircle2 size={36} />
+            <CheckCircle2 size={32} />
           </motion.div>
-          <h2 className="otp-success-title">
-            Account Verified
-          </h2>
-          <p style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "14px", fontWeight: 300 }}>
-            Your email has been successfully verified. Logging you into the dashboard...
+          <h2 className="otp-success-title">Email Verified!</h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "14px", fontWeight: 300, lineHeight: "1.6" }}>
+            Your account is now verified and active. Redirecting you to your dashboard...
           </p>
         </div>
       </motion.div>
     );
   }
 
+  // ─── OTP form ───────────────────────────────────────────────────────────────
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -157,10 +211,17 @@ export default function OTPVerificationForm({ isEmbed = false }) {
       className={isEmbed ? "otp-card border-0 bg-transparent shadow-none" : "otp-card"}
     >
       <div className="otp-header">
-        <h2>Verify Email</h2>
+        <div className="otp-icon-wrapper">
+          <ShieldCheck size={26} style={{ color: "#10b981" }} />
+        </div>
+        <h2>Verify Your Email</h2>
         <p>
-          We&apos;ve sent a 6-digit code to your inbox. Enter it below to verify.
-          <span className="otp-demo-hint">(Enter code 123456 or 111111 to pass)</span>
+          We&apos;ve sent a 6-digit verification code to
+          {activeEmail ? (
+            <> <span className="otp-email-badge">{activeEmail}</span></>
+          ) : (
+            " your email address"
+          )}. Enter it below to activate your account.
         </p>
       </div>
 
@@ -171,27 +232,37 @@ export default function OTPVerificationForm({ isEmbed = false }) {
         className="otp-form"
       >
         {apiError && (
-          <div className="otp-error-alert">
-            {apiError}
+          <div className="otp-error-alert">{apiError}</div>
+        )}
+
+        {resendStatus && (
+          <div className="p-3 bg-emerald-950/40 border border-emerald-800/60 text-emerald-300 text-xs font-medium rounded-lg text-center">
+            {resendStatus}
           </div>
         )}
 
-        {/* 6 OTP boxes container */}
+        {/* 6 OTP input boxes */}
         <div className="otp-inputs-container" onPaste={handlePaste}>
           {otp.map((digit, index) => (
             <input
               key={index}
               ref={inputRefs[index]}
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               maxLength={1}
               value={digit}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="otp-input-field"
+              className={`otp-input-field ${digit ? "filled" : ""}`}
+              autoComplete={index === 0 ? "one-time-code" : "off"}
+              aria-label={`Digit ${index + 1} of verification code`}
             />
           ))}
         </div>
 
+        {/* Countdown / Resend */}
         <div className="otp-timer-text">
           {!canResend ? (
             <p>
@@ -209,17 +280,31 @@ export default function OTPVerificationForm({ isEmbed = false }) {
           )}
         </div>
 
-        <button type="submit" className="otp-submit-btn" disabled={isLoading}>
-          {isLoading ? "Verifying..." : "Verify OTP"}
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={isLoading || otp.join("").length < 6}
+          className="otp-submit-btn"
+        >
+          {isLoading ? (
+            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+              <span className="animate-spin inline-block w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full" />
+              Verifying...
+            </span>
+          ) : (
+            "Verify & Continue"
+          )}
         </button>
-      </motion.form>
 
-      <div>
-        <Link href="/login" className="otp-back-link">
-          <ArrowLeft size={14} />
-          Back to Sign In
-        </Link>
-      </div>
+        <div className="otp-footer-links">
+          <Link href="/register" className="otp-back-link">
+            <ArrowLeft size={13} /> Back to Registration
+          </Link>
+          <Link href="/login" className="otp-back-link">
+            Back to Sign In
+          </Link>
+        </div>
+      </motion.form>
     </motion.div>
   );
 }

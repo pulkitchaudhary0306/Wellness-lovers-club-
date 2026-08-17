@@ -1,14 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { PARTNERS_DATA } from "@/data/partnerOffers";
+import "./explore-offer.css";
 import "../contact/contact.css";
 
 const WP_BASE = (
-  process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://your-wordpress-site.com"
+  process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://cms.wellnessloversclub.com"
 ).replace(/\/$/, "");
 
-async function submitInquiryToWordPress(data, destinationName) {
+async function submitInquiryToWordPress(data, destinationName, offerName) {
   const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
     method: "POST",
     headers: {
@@ -19,8 +22,8 @@ async function submitInquiryToWordPress(data, destinationName) {
       last_name: data.lastName,
       email: data.email,
       phone: data.phone,
-      subject: `Exclusive Offer Inquiry - ${destinationName || "General"}`,
-      message: `Preferred Booking/Travel Date: ${data.travelDate || "Not Specified"}\n\nMessage: ${data.message}`,
+      subject: `Exclusive Offer Booking - ${destinationName}${offerName ? ` (${offerName})` : ""}`,
+      message: `Preferred Booking/Travel Date: ${data.travelDate || "Not Specified"}\n\nSelected Privilege: ${offerName || "All Member Privileges"}\n\nGuest Message: ${data.message}`,
       website: "", // Honeypot field
     }),
   });
@@ -34,33 +37,60 @@ async function submitInquiryToWordPress(data, destinationName) {
   return json;
 }
 
-export default function ExploreOfferPage() {
-  const [destination, setDestination] = useState("");
+function ExploreOfferContent() {
+  const searchParams = useSearchParams();
+  const rawDest = searchParams.get("destination") || "Niraamaya Retreats Surya Samudra";
+  const rawOffer = searchParams.get("offer") || "";
+
+  // Match the partner record from the partner dataset
+  const matchedPartner = PARTNERS_DATA.find((p) => {
+    const pName = p.name.toLowerCase();
+    const target = (rawDest || "").toLowerCase();
+    return pName.includes(target) || target.includes(pName) || p.slug.includes(target);
+  }) || PARTNERS_DATA[0]; // Defaults to Niraamaya Retreats Surya Samudra
+
+  const formSectionRef = useRef(null);
+
+  const [selectedOffer, setSelectedOffer] = useState(
+    matchedPartner.offers.find((o) => o.title.toLowerCase().includes(rawOffer.toLowerCase())) || matchedPartner.offers[0]
+  );
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     travelDate: "",
-    message: "",
+    message: `I would like to explore and claim the member privilege "${selectedOffer?.title || "All Member Privileges"}" (${selectedOffer?.discount || "20% SAVINGS"}) at ${matchedPartner.name}. Please share availability and apply club pricing.`,
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const dest = params.get("destination");
-      if (dest) {
-        setDestination(dest);
-        setFormData((prev) => ({
-          ...prev,
-          message: `I am interested in booking / exploring the exclusive members offer for ${dest}. Please share the availability, special packages, and member benefits.`
-        }));
+    if (rawOffer) {
+      const found = matchedPartner.offers.find((o) => o.title.toLowerCase().includes(rawOffer.toLowerCase()));
+      if (found) {
+        setSelectedOffer(found);
       }
     }
-  }, []);
+  }, [rawOffer, matchedPartner]);
+
+  const handleSelectOffer = (offer) => {
+    setSelectedOffer(offer);
+    setFormData((prev) => ({
+      ...prev,
+      message: `I would like to explore and claim the member privilege "${offer.title}" (${offer.discount}) at ${matchedPartner.name}. Please share availability and apply club pricing.`,
+    }));
+    setIsSubmitted(false);
+    setSubmitError("");
+
+    // Smooth scroll down to the form
+    if (formSectionRef.current) {
+      formSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +103,11 @@ export default function ExploreOfferPage() {
     setSubmitError("");
 
     try {
-      await submitInquiryToWordPress(formData, destination);
+      await submitInquiryToWordPress(
+        formData,
+        matchedPartner.name,
+        selectedOffer ? selectedOffer.title : "All Member Privileges"
+      );
       setIsSubmitted(true);
     } catch (err) {
       setSubmitError(
@@ -85,208 +119,347 @@ export default function ExploreOfferPage() {
   };
 
   return (
-    <div className="contact-page" style={{ minHeight: "100vh" }}>
-      {/* Page Header */}
-      <div className="contact-header" style={{ backgroundColor: "#0d563f" }}>
-        <div className="contact-header-content">
-          <span style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#bca374", textTransform: "uppercase", display: "block", marginBottom: "8px", fontWeight: 600 }}>Exclusive WLC Offer</span>
-          <h1 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(24px, 4vw, 38px)", textTransform: "none", letterSpacing: "normal" }}>
-            {destination ? `Explore ${destination}` : "Explore Exclusive Offers"}
-          </h1>
-          <div className="contact-breadcrumbs">
-            <Link href="/">Home</Link>
-            <span className="separator">/</span>
-            <Link href="/offerings">Offerings</Link>
-            <span className="separator">/</span>
-            <span>Explore Offer</span>
+    <article className="privileges-page">
+      {/* ─── Hero Banner ─────────────────────────────────────────────────── */}
+      <section className="privileges-hero" aria-label="Partner Hero">
+        <div className="privileges-hero-container">
+          <span className="privileges-hero-eyebrow">
+            {matchedPartner.flag} {matchedPartner.category}
+          </span>
+          <h1 className="privileges-hero-title">{matchedPartner.name}</h1>
+          <p className="privileges-hero-desc">
+            Exclusive club privileges, preferred savings, and bespoke wellness experiences curated specifically for Wellness Lovers Club members.
+          </p>
+        </div>
+      </section>
+
+      {/* ─── Partner Detail Header Card ──────────────────────────────────── */}
+      <div className="partner-detail-header-card">
+        <div className="partner-detail-info">
+          <div className="partner-detail-location">
+            <span>📍</span>
+            <span>{matchedPartner.location}</span>
+          </div>
+          <h2 className="partner-detail-name">Exclusive Member Privileges</h2>
+          <p className="partner-detail-summary">{matchedPartner.shortDesc}</p>
+        </div>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <button
+            onClick={() => handleSelectOffer(matchedPartner.offers[0])}
+            className="btn btn-gold"
+            style={{ padding: "12px 24px", fontSize: "12.5px" }}
+          >
+            Book / Claim Privilege ↓
+          </button>
+          <Link href="/destinations" className="partner-back-btn">
+            ← Explore Destinations
+          </Link>
+        </div>
+      </div>
+
+      {/* ─── Exclusive Member Inclusions Banner ──────────────────────────── */}
+      <div className="inclusions-banner-card">
+        <div className="inclusions-title">
+          <span>✨</span>
+          <span>Exclusive Member Inclusions for {matchedPartner.name}</span>
+        </div>
+        <div className="inclusions-list">
+          <div className="inclusion-item">
+            <div className="inclusion-label">Preferred Member Rates</div>
+            <div className="inclusion-desc">Exclusive bespoke luxury pricing reserved for active WLC members.</div>
+          </div>
+          <div className="inclusion-item">
+            <div className="inclusion-label">Complimentary Inclusions</div>
+            <div className="inclusion-desc">Wellness consultations, spa & salon credits with eligible stays.</div>
+          </div>
+          <div className="inclusion-item">
+            <div className="inclusion-label">VIP Hospitality</div>
+            <div className="inclusion-desc">Priority room upgrades, flexible check-in & check-out privileges.</div>
           </div>
         </div>
       </div>
 
-      {/* Main Content Split Layout */}
-      <div className="contact-container" style={{ marginTop: "60px" }}>
-        {/* Left Column: Offer Details */}
-        <div className="contact-info">
-          <div>
-            <h2 className="contact-info-title" style={{ color: "#0d563f", fontFamily: "Georgia, serif" }}>WLC Member Privileges</h2>
-            <p className="contact-info-subtitle" style={{ fontSize: "14.5px" }}>
-              As a valued member of the Wellness Lovers Club, you gain access to curated privileges, preferred pricing, and tailored services at our handpicked partner destinations.
+      {/* ─── Partner-Specific Offers Section ─────────────────────────────── */}
+      <section className="privileges-main-section" style={{ paddingTop: "0px", paddingBottom: "40px" }}>
+        <div className="partner-offers-grid">
+          {matchedPartner.offers.map((offer) => {
+            const isSelected = selectedOffer?.id === offer.id;
+            return (
+              <div
+                className="partner-offer-card"
+                key={offer.id}
+                style={{
+                  border: isSelected ? "2px solid #0d563f" : "1px solid rgba(13, 86, 63, 0.08)",
+                  boxShadow: isSelected ? "0 15px 35px rgba(13, 86, 63, 0.15)" : undefined,
+                  transform: isSelected ? "translateY(-4px)" : undefined,
+                }}
+              >
+                <div className="offer-card-top">
+                  <span className="offer-savings-pill">{offer.discount}</span>
+                  {offer.badge && <span className="offer-badge">{offer.badge}</span>}
+                </div>
+
+                <h3 className="offer-title">{offer.title}</h3>
+                <p className="offer-desc">{offer.description}</p>
+
+                {offer.memberPrice && (
+                  <div className="offer-pricing-block">
+                    <div>
+                      <div style={{ fontSize: "10.5px", textTransform: "uppercase", color: "#888", letterSpacing: "0.5px" }}>
+                        Original MRP
+                      </div>
+                      <div className="offer-mrp">{offer.originalPrice}</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: "10.5px", textTransform: "uppercase", color: "#0d563f", fontWeight: 700, letterSpacing: "0.5px" }}>
+                        WLC Member Price
+                      </div>
+                      <div className="offer-member-price-val">{offer.memberPrice}</div>
+                    </div>
+                  </div>
+                )}
+
+                {offer.terms && (
+                  <div className="offer-terms-note">
+                    <strong>Terms:</strong> {offer.terms}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectOffer(offer)}
+                  className="offer-redeem-btn"
+                  style={{
+                    border: "none",
+                    backgroundColor: isSelected ? "#bca374" : "#0d563f",
+                    color: isSelected ? "#06281e" : "#ffffff",
+                    fontWeight: 700,
+                  }}
+                >
+                  {isSelected ? "✓ Selected (Proceed Below) ↓" : "Select Privilege →"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ─── INLINE LUXURY BOOKING & INQUIRY FORM SECTION ────────────────── */}
+      <section
+        ref={formSectionRef}
+        style={{
+          background: "#ffffff",
+          borderTop: "1px solid #ebdcb9",
+          borderBottom: "1px solid #ebdcb9",
+          padding: "70px 24px 85px 24px",
+        }}
+      >
+        <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "40px" }}>
+            <span className="eyebrow" style={{ display: "block", color: "#bca374", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>
+              CONCIERGE BOOKING & PRIVILEGE CLAIM
+            </span>
+            <h2 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "clamp(28px, 4vw, 38px)", color: "#0d563f", margin: "0 0 10px 0" }}>
+              Book & Claim Privileges at {matchedPartner.name}
+            </h2>
+            <p style={{ color: "#666", fontSize: "14.5px", maxWidth: "620px", margin: "0 auto" }}>
+              Submit your dates and details below to lock in exclusive member rates and tailored hospitality inclusions.
             </p>
           </div>
 
-          {/* Benefits Cards */}
-          <div className="contact-card" style={{ background: "#ffffff", border: "1px solid rgba(13,86,63,0.08)" }}>
-            <div className="contact-card-icon" style={{ backgroundColor: "rgba(13,86,63,0.05)", color: "#0d563f" }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
+          {/* Selected Privilege Highlight Banner */}
+          {selectedOffer && (
+            <div
+              style={{
+                background: "linear-gradient(135deg, rgba(13,86,63,0.06) 0%, rgba(188,163,116,0.14) 100%)",
+                border: "1px solid #bca374",
+                borderRadius: "14px",
+                padding: "18px 24px",
+                marginBottom: "32px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "12px",
+              }}
+            >
+              <div>
+                <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#9c8458", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  Selected Offer for {matchedPartner.name}
+                </span>
+                <div style={{ fontFamily: "Georgia, serif", fontSize: "18px", fontWeight: 600, color: "#0d563f" }}>
+                  {selectedOffer.title}
+                </div>
+              </div>
+              <span
+                style={{
+                  background: "#bca374",
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                }}
+              >
+                {selectedOffer.discount}
+              </span>
             </div>
-            <div className="contact-card-content">
-              <h3 style={{ color: "#0d563f" }}>Priority Bookings</h3>
-              <p>Skip standard reservation lines with direct, fast-track access to our partner retreats and spas.</p>
-            </div>
-          </div>
+          )}
 
-          <div className="contact-card" style={{ background: "#ffffff", border: "1px solid rgba(13,86,63,0.08)" }}>
-            <div className="contact-card-icon" style={{ backgroundColor: "rgba(13,86,63,0.05)", color: "#0d563f" }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </div>
-            <div className="contact-card-content">
-              <h3 style={{ color: "#0d563f" }}>Exclusive Benefits</h3>
-              <p>Enjoy complimentary room upgrades, extended checkout times, and specialized spa/salon credits.</p>
-            </div>
-          </div>
-
-          <div className="contact-card" style={{ background: "#ffffff", border: "1px solid rgba(13,86,63,0.08)" }}>
-            <div className="contact-card-icon" style={{ backgroundColor: "rgba(13,86,63,0.05)", color: "#0d563f" }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <div className="contact-card-content">
-              <h3 style={{ color: "#0d563f" }}>Dedicated Support</h3>
-              <p>A dedicated wellness consultant will manage your booking and ensure a seamless, restorative stay.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Inquiry Form */}
-        <div className="contact-form-wrapper" style={{ background: "#ffffff", border: "1px solid rgba(13,86,63,0.08)", boxShadow: "0 8px 30px rgba(13,86,63,0.04)" }}>
           {isSubmitted ? (
-            <div className="contact-success-box" style={{ borderColor: "#0d563f", backgroundColor: "rgba(13, 86, 63, 0.03)", color: "#0d563f" }}>
-              <h3 style={{ fontFamily: "Georgia, serif", fontSize: "20px" }}>Request Submitted!</h3>
-              <p style={{ marginTop: "10px", lineHeight: "1.6" }}>
-                Thank you for your interest in {destination || "our exclusive offer"}. Your inquiry has been sent to our membership team. One of our wellness consultants will reach out to you shortly.
+            <div
+              style={{
+                background: "rgba(13, 86, 63, 0.04)",
+                border: "1.5px solid #0d563f",
+                borderRadius: "16px",
+                padding: "40px 30px",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#0d563f", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto", fontSize: "30px" }}>
+                ✓
+              </div>
+              <h3 style={{ fontFamily: "Georgia, serif", fontSize: "26px", color: "#0d563f", marginBottom: "8px" }}>
+                Privilege Claim Submitted!
+              </h3>
+              <p style={{ color: "#555", fontSize: "15px", lineHeight: "1.7", maxWidth: "560px", margin: "0 auto 24px auto" }}>
+                Thank you! Your booking request for <strong>{selectedOffer?.title || "Member Privileges"}</strong> at <strong>{matchedPartner.name}</strong> has been received. Our dedicated member concierge will contact you promptly to finalize details and apply member discounts.
               </p>
-              <div style={{ marginTop: "24px" }}>
-                <Link href="/offerings" className="btn btn-gold" style={{ display: "inline-block", padding: "10px 20px", fontSize: "12px", textDecoration: "none" }}>
-                  Back to Offerings
+              <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+                <button
+                  onClick={() => setIsSubmitted(false)}
+                  className="btn btn-gold"
+                  style={{ padding: "12px 24px", fontSize: "12.5px" }}
+                >
+                  Submit Another Request
+                </button>
+                <Link href="/destinations" className="btn btn-green" style={{ padding: "12px 24px", fontSize: "12.5px" }}>
+                  Explore All Destinations
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <h2 style={{ fontFamily: "Georgia, serif", color: "#0d563f", marginBottom: "20px" }}>Request More Information</h2>
-              
-              <div className="contact-form-grid">
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+              <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div className="contact-form-group">
-                  <label htmlFor="firstName" style={{ color: "#0d563f" }}>First Name *</label>
+                  <label htmlFor="firstName" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>First Name *</label>
                   <input
                     type="text"
                     id="firstName"
                     name="firstName"
                     required
-                    placeholder="First Name"
+                    placeholder="e.g. Aria"
                     value={formData.firstName}
                     onChange={handleChange}
-                    style={{ background: "#faf8f5" }}
+                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                   />
                 </div>
                 <div className="contact-form-group">
-                  <label htmlFor="lastName" style={{ color: "#0d563f" }}>Last Name *</label>
+                  <label htmlFor="lastName" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Last Name *</label>
                   <input
                     type="text"
                     id="lastName"
                     name="lastName"
                     required
-                    placeholder="Last Name"
+                    placeholder="e.g. Sharma"
                     value={formData.lastName}
                     onChange={handleChange}
-                    style={{ background: "#faf8f5" }}
+                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                   />
                 </div>
               </div>
 
-              <div className="contact-form-grid" style={{ marginTop: "20px" }}>
+              <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div className="contact-form-group">
-                  <label htmlFor="email" style={{ color: "#0d563f" }}>Email Address *</label>
+                  <label htmlFor="email" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Email Address *</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     required
-                    placeholder="Email Address"
+                    placeholder="aria@example.com"
                     value={formData.email}
                     onChange={handleChange}
-                    style={{ background: "#faf8f5" }}
+                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                   />
                 </div>
                 <div className="contact-form-group">
-                  <label htmlFor="phone" style={{ color: "#0d563f" }}>Phone Number *</label>
+                  <label htmlFor="phone" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Mobile Number *</label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
                     required
-                    placeholder="Phone Number"
+                    placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={handleChange}
-                    style={{ background: "#faf8f5" }}
+                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                   />
                 </div>
               </div>
 
-              <div className="contact-form-group" style={{ margin: "20px 0" }}>
-                <label htmlFor="travelDate" style={{ color: "#0d563f" }}>Preferred Travel / Booking Date (Optional)</label>
+              <div className="contact-form-group">
+                <label htmlFor="travelDate" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Preferred Travel / Treatment Date</label>
                 <input
                   type="date"
                   id="travelDate"
                   name="travelDate"
                   value={formData.travelDate}
                   onChange={handleChange}
-                  style={{ background: "#faf8f5" }}
+                  style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div className="contact-form-group full-width" style={{ marginBottom: "24px" }}>
-                <label htmlFor="message" style={{ color: "#0d563f" }}>Inquiry Details *</label>
+              <div className="contact-form-group">
+                <label htmlFor="message" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Special Inquiries or Requests</label>
                 <textarea
                   id="message"
                   name="message"
-                  required
-                  placeholder="Share any details like length of stay, guest count, or custom wellness requirements..."
+                  rows="4"
                   value={formData.message}
                   onChange={handleChange}
-                  style={{ background: "#faf8f5", height: "130px" }}
+                  style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
                 ></textarea>
               </div>
 
               {submitError && (
-                <div
-                  role="alert"
-                  style={{
-                    marginBottom: "16px",
-                    padding: "12px 16px",
-                    borderRadius: "8px",
-                    background: "rgba(220, 38, 38, 0.08)",
-                    border: "1px solid rgba(220, 38, 38, 0.3)",
-                    color: "#dc2626",
-                    fontSize: "0.875rem",
-                  }}
-                >
+                <div style={{ color: "#e53e3e", fontSize: "13px", textAlign: "center" }}>
                   {submitError}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="contact-submit-btn"
                 disabled={isSubmitting}
-                style={{ backgroundColor: "#0d563f", color: "#ffffff" }}
+                className="btn btn-green"
+                style={{ width: "100%", padding: "16px 24px", fontSize: "14px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", marginTop: "10px" }}
               >
-                {isSubmitting ? (
-                  <span>Submitting...</span>
-                ) : (
-                  <span>Submit Inquiry Request</span>
-                )}
+                {isSubmitting ? "Submitting Inquiry..." : `Submit Booking Inquiry for ${matchedPartner.name} →`}
               </button>
             </form>
           )}
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Bottom Global Actions */}
+      <section style={{ padding: "50px 24px 70px 24px", textAlign: "center", background: "#fdfbf7" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+          <Link href="/destinations" className="btn btn-green">
+            ← Explore Destinations
+          </Link>
+          <Link href="/membership" className="btn btn-gold">
+            Membership Tiers
+          </Link>
+        </div>
+      </section>
+    </article>
+  );
+}
+
+export default function ExploreOfferPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading Offer...</div>}>
+      <ExploreOfferContent />
+    </Suspense>
   );
 }

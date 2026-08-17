@@ -132,10 +132,13 @@ export default function RegisterForm({ isEmbed = false }) {
     };
 
     try {
-      await signup(submitData);
-      router.push("/verify-otp");
+      const result = await signup(submitData);
+      // result = { success: true, message: "...", user_id: N, email: "..." }
+      // No token returned — redirect to OTP verification
+      const targetEmail = result?.email || data.email;
+      router.push(`/verify-email?email=${encodeURIComponent(targetEmail)}`);
     } catch (err) {
-      setApiError(err.message || "Registration failed. Please try again.");
+      setApiError(err?.message || "Registration failed. Please try again.");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
     } finally {

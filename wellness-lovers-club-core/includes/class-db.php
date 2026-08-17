@@ -45,10 +45,14 @@ class WLC_Core_Db {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $table_contacts    = $wpdb->prefix . 'wlc_contacts';
-        $table_newsletter  = $wpdb->prefix . 'wlc_newsletter';
-        $table_email_logs  = $wpdb->prefix . 'wlc_email_logs';
-        $table_email_queue = $wpdb->prefix . 'wlc_email_queue';
+        $table_contacts       = $wpdb->prefix . 'wlc_contacts';
+        $table_newsletter     = $wpdb->prefix . 'wlc_newsletter';
+        $table_email_logs     = $wpdb->prefix . 'wlc_email_logs';
+        $table_email_queue    = $wpdb->prefix . 'wlc_email_queue';
+        $table_email_verify   = $wpdb->prefix . 'wlc_email_verification';
+        $table_dual_verify    = $wpdb->prefix . 'wlc_dual_verification';
+        $table_payments       = $wpdb->prefix . 'wlc_payments';
+        $legacy_email_verify  = $wpdb->prefix . 'wlc_email_verifications';
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -61,7 +65,7 @@ class WLC_Core_Db {
             phone varchar(50) DEFAULT '',
             subject varchar(200) DEFAULT '',
             message text NOT NULL,
-            status varchar(20) DEFAULT 'New' NOT NULL, -- New, Read
+            status varchar(20) DEFAULT 'New' NOT NULL,
             ip_address varchar(45) DEFAULT '',
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id)
@@ -72,7 +76,7 @@ class WLC_Core_Db {
         $sql_newsletter = "CREATE TABLE IF NOT EXISTS $table_newsletter (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             email varchar(100) NOT NULL,
-            status varchar(20) DEFAULT 'Active' NOT NULL, -- Active, Unsubscribed
+            status varchar(20) DEFAULT 'Active' NOT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
             UNIQUE KEY email (email)
@@ -103,12 +107,92 @@ class WLC_Core_Db {
             headers text DEFAULT '',
             email_type varchar(50) DEFAULT '',
             attempts int(11) DEFAULT 0 NOT NULL,
-            status varchar(20) DEFAULT 'Pending' NOT NULL, -- Pending, Processing, Failed, Sent
+            status varchar(20) DEFAULT 'Pending' NOT NULL,
             last_attempt datetime DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
         dbDelta( $sql_email_queue );
+
+        // 5. Email Verification Table (OTP-based, hashed storage)
+        $sql_email_verify = "CREATE TABLE IF NOT EXISTS $table_email_verify (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) NOT NULL,
+            email varchar(100) NOT NULL,
+            otp_hash varchar(255) NOT NULL,
+            expires_at datetime NOT NULL,
+            attempts int(11) DEFAULT 0 NOT NULL,
+            resend_count int(11) DEFAULT 0 NOT NULL,
+            last_resent_at datetime DEFAULT NULL,
+            verified tinyint(1) DEFAULT 0 NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id),
+            KEY user_id (user_id),
+            KEY email (email)
+        ) $charset_collate;";
+        dbDelta( $sql_email_verify );
+
+        // 6. Dual OTP Registration Pending Sessions Table
+        $sql_dual_verify = "CREATE TABLE IF NOT EXISTS $table_dual_verify (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            session_token varchar(64) NOT NULL,
+            email varchar(100) NOT NULL,
+            phone varchar(50) NOT NULL,
+            registration_payload longtext NOT NULL,
+            email_otp_hash varchar(255) NOT NULL,
+            phone_otp_hash varchar(255) NOT NULL,
+            email_verified tinyint(1) DEFAULT 0 NOT NULL,
+            phone_verified tinyint(1) DEFAULT 0 NOT NULL,
+            expires_at datetime NOT NULL,
+            attempts int(11) DEFAULT 0 NOT NULL,
+            resend_count int(11) DEFAULT 0 NOT NULL,
+            last_resent_at datetime DEFAULT NULL,
+            user_id bigint(20) DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY session_token (session_token),
+            KEY email (email),
+            KEY phone (phone)
+        ) $charset_collate;";
+        dbDelta( $sql_dual_verify );
+
+        // 7. Membership Orders & Payment Transactions Table
+        $sql_payments = "CREATE TABLE IF NOT EXISTS $table_payments (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            order_id varchar(64) NOT NULL,
+            user_id bigint(20) NOT NULL,
+            membership_id varchar(50) DEFAULT '',
+            tier varchar(50) NOT NULL,
+            amount decimal(10,2) NOT NULL,
+            tax_amount decimal(10,2) DEFAULT 0.00 NOT NULL,
+            discount_amount decimal(10,2) DEFAULT 0.00 NOT NULL,
+            promo_code varchar(50) DEFAULT '',
+            currency varchar(10) DEFAULT 'INR' NOT NULL,
+            gateway varchar(50) DEFAULT 'upi_qr' NOT NULL,
+            gateway_order_id varchar(100) DEFAULT '',
+            gateway_payment_id varchar(100) DEFAULT '',
+            gateway_signature varchar(255) DEFAULT '',
+            upi_vpa varchar(100) DEFAULT '',
+            upi_qr_payload text DEFAULT '',
+            qr_expires_at datetime DEFAULT NULL,
+            status varchar(30) DEFAULT 'pending' NOT NULL,
+            invoice_number varchar(64) DEFAULT '',
+            webhook_payload longtext DEFAULT '',
+            paid_at datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY order_id (order_id),
+            KEY user_id (user_id),
+            KEY status (status)
+        ) $charset_collate;";
+        dbDelta( $sql_payments );
+
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy_email_verify ) ) === $legacy_email_verify ) {
+            $wpdb->query( "INSERT IGNORE INTO $table_email_verify SELECT * FROM $legacy_email_verify" );
+        }
     }
 
     /**

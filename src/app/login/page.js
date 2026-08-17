@@ -80,13 +80,21 @@ export default function LoginPage() {
     defaultValues: { usernameOrEmail: "", password: "", rememberMe: false },
   });
 
-  const onSubmit = async (data) => {
+  const onPasswordSubmit = async (data) => {
     setIsLoading(true);
     setApiError("");
     try {
       await login(data.usernameOrEmail, data.password, data.rememberMe);
       router.push("/dashboard");
     } catch (err) {
+      if (err?.code === "email_not_verified" || err?.code === "phone_not_verified" || err?.code === "EMAIL_NOT_VERIFIED") {
+        const unverifiedEmail = err?.email || (data.usernameOrEmail.includes("@") ? data.usernameOrEmail : "");
+        if (typeof window !== "undefined" && unverifiedEmail) {
+          sessionStorage.setItem("wlc_reg_email", unverifiedEmail);
+        }
+        router.push("/verify-otp?email=" + encodeURIComponent(unverifiedEmail));
+        return;
+      }
       setApiError(err.message || "Invalid credentials. Please try again.");
     } finally {
       setIsLoading(false);
@@ -146,29 +154,15 @@ export default function LoginPage() {
 
   /* ── Login form view ── */
   return (
-    <div style={{
-      minHeight: "100vh", width: "100%", position: "relative",
-      backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
-      backgroundPosition: "center", backgroundAttachment: "fixed",
-      display: "flex", justifyContent: "center", alignItems: "center",
-      padding: "3rem 1.5rem",
-    }}>
+    <div className="auth-page-wrapper">
       {/* Overlay */}
-      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 0 }} />
+      <div className="auth-overlay" />
 
       {/* Card */}
-      <div style={{
-        position: "relative", zIndex: 1, display: "flex", width: "100%", maxWidth: 900,
-        borderRadius: 16, boxShadow: "0 30px 70px rgba(0,0,0,0.7)",
-        border: "1px solid rgba(255,255,255,0.08)",
-      }}>
+      <div className="auth-card-container">
 
         {/* Left Panel */}
-        <div style={{
-          width: "45%", background: "rgba(0,0,0,0.4)", backdropFilter: "blur(24px)",
-          padding: "4rem 3.5rem", display: "flex", flexDirection: "column", justifyContent: "center",
-          borderRadius: "16px 0 0 16px", overflow: "hidden", flexShrink: 0,
-        }}>
+        <div className="auth-left-panel">
           <div style={{ fontSize: 11, fontWeight: 700, color: "#0f8554", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
             Wellness Lovers Club
           </div>
@@ -191,33 +185,29 @@ export default function LoginPage() {
         </div>
 
         {/* Right Panel */}
-        <div style={{
-          flex: 1, background: "#080c09", padding: "3.5rem 3rem",
-          borderRadius: "0 16px 16px 0", display: "flex", flexDirection: "column", justifyContent: "center",
-        }}>
+        <div className="auth-right-panel">
           <div style={{ marginBottom: "2rem" }}>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Sign In</h2>
             <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontWeight: 300 }}>
-              Enter your credentials to continue
+              Enter your credentials to access your account
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {apiError && (
+            <div style={{
+              padding: "10px 14px", background: "rgba(248,113,113,0.1)",
+              border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8,
+              fontSize: 12, color: "#f87171", textAlign: "center", marginBottom: "1.25rem",
+            }}>
+              {apiError}
+            </div>
+          )}
 
-            {apiError && (
-              <div style={{
-                padding: "10px 14px", background: "rgba(248,113,113,0.1)",
-                border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8,
-                fontSize: 12, color: "#f87171", textAlign: "center",
-              }}>
-                {apiError}
-              </div>
-            )}
-
+          <form onSubmit={handleSubmit(onPasswordSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <FieldInput
-              label="Username or Email Address"
+              label="Email Address or Username"
               type="text"
-              placeholder="e.g. aria@example.com or aria_username"
+              placeholder="e.g. aria@example.com"
               error={errors.usernameOrEmail?.message}
               {...register("usernameOrEmail")}
             />
@@ -265,63 +255,16 @@ export default function LoginPage() {
                 : "Sign In"
               }
             </button>
+          </form>
 
-            {/* Divider */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
-              <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>OR CONTINUE WITH</span>
-              <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
-            </div>
-
-            {/* Social buttons */}
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                type="button"
-                onClick={() => alert("Google sign-in configured for WordPress integration.")}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  padding: "10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 12, fontWeight: 600,
-                  cursor: "pointer", transition: "background 0.2s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-              >
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Google
-              </button>
-              <button
-                type="button"
-                onClick={() => alert("Facebook sign-in configured for WordPress integration.")}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  padding: "10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 12, fontWeight: 600,
-                  cursor: "pointer", transition: "background 0.2s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-              >
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="#1877F2">
-                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
-                </svg>
-                Facebook
-              </button>
-            </div>
-
-            {/* Footer link */}
+          <div style={{ marginTop: "2rem" }}>
             <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.4)", margin: 0 }}>
               New to the Club?{" "}
               <Link href="/register" style={{ color: "#0f8554", fontWeight: 700, textDecoration: "none" }}>
                 Become a member
               </Link>
             </p>
-          </form>
+          </div>
         </div>
       </div>
 
@@ -332,3 +275,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

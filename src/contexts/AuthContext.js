@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ─── Internal: hard logout (clear state + storage) ───────────────────────
+  // ─── Internal: hard logout (clear state + storage) ────────────────────────
   const _clearAuth = useCallback(() => {
     setUser(null);
     setToken(null);
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        // Optimistically restore from storage first so the UI isn't blank
+        // Optimistically restore from storage so UI isn't blank
         setToken(storedToken);
         setUser(storedUser);
 
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        // Sync fresh profile data in the background
+        // Sync fresh profile data in background
         try {
           const freshUser = await authService.getProfile();
           setUser(freshUser);
@@ -84,7 +84,7 @@ export function AuthProvider({ children }) {
         updateStoredUser(fullProfile);
         return fullProfile;
       } catch {
-        // Non-fatal; return the basic user from the JWT response
+        // Non-fatal; return the basic user from login response
         return response.user;
       }
     } catch (err) {
@@ -95,15 +95,16 @@ export function AuthProvider({ children }) {
   };
 
   // ─── Register ──────────────────────────────────────────────────────────────
+  /**
+   * Register does NOT return a token — JWT is only issued after OTP verification.
+   * Returns { success, message, user_id, email } so the UI can redirect to /verify-email.
+   */
   const register = async (userData) => {
     setLoading(true);
     try {
-      const response = await authService.register(userData);
-      // Auto-login upon successful registration
-      setUser(response.user);
-      setToken(response.token);
-      saveSession(response.token, response.refreshToken, response.user, false);
-      return response.user;
+      const result = await authService.register(userData);
+      // No session to save — user must verify OTP first
+      return result;
     } catch (err) {
       throw err;
     } finally {
@@ -124,6 +125,43 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ─── OTP flows (Mobile SMS & Email) ───────────────────────────────────────
+
+  /**
+   * Send a fresh OTP to mobile number or email
+   */
+  const sendOTP = async (identifier) => {
+    await authService.sendOTP(identifier);
+  };
+
+  const sendEmailOTP = async (email) => {
+    await authService.sendEmailOTP(email);
+  };
+
+  /**
+   * Verify the 6-digit OTP. On success saves session and logs user in.
+   */
+  const verifyOTP = async (otp, identifier) => {
+    const response = await authService.verifyOTP(otp, identifier);
+    if (response && response.token && response.user) {
+      setUser(response.user);
+      setToken(response.token);
+      saveSession(response.token, response.refreshToken ?? "", response.user, false);
+    }
+    return response;
+  };
+
+  /**
+   * Resend OTP. Backend enforces 60-second throttle.
+   */
+  const resendOTP = async (identifier) => {
+    await authService.resendOTP(identifier);
+  };
+
+  const resendEmailOTP = async (email) => {
+    await authService.resendOTP(email);
+  };
+
   // ─── Password flows ────────────────────────────────────────────────────────
   const forgotPassword = async (email) => {
     await authService.forgotPassword(email);
@@ -131,10 +169,6 @@ export function AuthProvider({ children }) {
 
   const resetPassword = async (password, resetKey, userLogin) => {
     await authService.resetPassword(password, resetKey, userLogin);
-  };
-
-  const verifyOTP = async (otp, email) => {
-    await authService.verifyOTP(otp, email);
   };
 
   // ─── Profile update ────────────────────────────────────────────────────────
@@ -157,12 +191,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ─── 401 guard for data fetches in child components ───────────────────────
-  /**
-   * Wraps any authService call and automatically clears the session on a 401.
-   * Usage in pages/components:
-   *   const orders = await handleApiCall(() => authService.getOrders());
-   */
+  // ─── 401 guard for data fetches in child components ──────────────────────
   const handleApiCall = useCallback(
     async (fn) => {
       try {
@@ -188,9 +217,13 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        sendOTP,
+        sendEmailOTP,
+        verifyOTP,
+        resendOTP,
+        resendEmailOTP,
         forgotPassword,
         resetPassword,
-        verifyOTP,
         updateProfile,
         handleApiCall,
       }}

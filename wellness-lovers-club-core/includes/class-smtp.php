@@ -19,19 +19,38 @@ class WLC_Core_Smtp {
     }
 
     private function __construct() {
-        // Setup PHPMailer configuration hook
+        if ( defined( 'WLC_DISABLE_CUSTOM_SMTP' ) && WLC_DISABLE_CUSTOM_SMTP ) {
+            return;
+        }
         add_action( 'phpmailer_init', array( $this, 'configure_phpmailer' ) );
-
-        // Setup custom From Email and From Name filters
         add_filter( 'wp_mail_from', array( $this, 'override_from_email' ), 99 );
         add_filter( 'wp_mail_from_name', array( $this, 'override_from_name' ), 99 );
+    }
+
+    private function is_wp_mail_smtp_active() {
+        return function_exists( 'wp_mail_smtp' )
+            || class_exists( '\WPMailSMTP\WP' )
+            || defined( 'WPMS_PLUGIN_VER' );
     }
 
     /**
      * Dynamically configure SMTP params on PHPMailer object
      */
     public function configure_phpmailer( $phpmailer ) {
-        // Only configure if Host is specified (meaning SMTP is configured)
+        if ( defined( 'WLC_DISABLE_CUSTOM_SMTP' ) && WLC_DISABLE_CUSTOM_SMTP ) {
+            return;
+        }
+
+        if ( $this->is_wp_mail_smtp_active() ) {
+            return;
+        }
+
+        // Only configure if SMTP is explicitly enabled and Host is specified
+        $smtp_enabled = WLC_Core_Email_Settings::get( 'smtp_enabled', '0' );
+        if ( $smtp_enabled !== '1' ) {
+            return;
+        }
+
         $host = WLC_Core_Email_Settings::get( 'smtp_host' );
         if ( empty( $host ) ) {
             return;
@@ -59,8 +78,17 @@ class WLC_Core_Smtp {
             $phpmailer->SMTPSecure = 'tls';
         } else {
             $phpmailer->SMTPSecure = '';
-            // If encryption is disabled, prevent verification issues in some environments
             $phpmailer->SMTPAutoTLS = false;
+        }
+
+        // Set Sender From Email and From Name directly on PHPMailer
+        $from_email = WLC_Core_Email_Settings::get( 'from_email' );
+        if ( ! empty( $from_email ) && is_email( $from_email ) ) {
+            $phpmailer->From = $from_email;
+        }
+        $from_name = WLC_Core_Email_Settings::get( 'from_name' );
+        if ( ! empty( $from_name ) ) {
+            $phpmailer->FromName = $from_name;
         }
 
         // Reply-To header configuration
@@ -74,7 +102,6 @@ class WLC_Core_Smtp {
         if ( WLC_Core_Email_Settings::get( 'debug_mode' ) === '1' ) {
             $phpmailer->SMTPDebug = 2; // Client messages and server responses
             $phpmailer->Debugoutput = function( $str, $level ) {
-                // Save logs to a transient/global or session so the test email callback can render them
                 global $wlc_smtp_debug_log;
                 if ( ! isset( $wlc_smtp_debug_log ) ) {
                     $wlc_smtp_debug_log = '';
@@ -88,6 +115,10 @@ class WLC_Core_Smtp {
      * Override default WordPress From Email address
      */
     public function override_from_email( $original_email_address ) {
+        if ( $this->is_wp_mail_smtp_active() ) {
+            return $original_email_address;
+        }
+
         $from_email = WLC_Core_Email_Settings::get( 'from_email' );
         if ( ! empty( $from_email ) && is_email( $from_email ) ) {
             return $from_email;
@@ -99,6 +130,10 @@ class WLC_Core_Smtp {
      * Override default WordPress From Name
      */
     public function override_from_name( $original_email_from ) {
+        if ( $this->is_wp_mail_smtp_active() ) {
+            return $original_email_from;
+        }
+
         $from_name = WLC_Core_Email_Settings::get( 'from_name' );
         if ( ! empty( $from_name ) ) {
             return $from_name;

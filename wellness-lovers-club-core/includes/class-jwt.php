@@ -9,11 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WLC_Core_JWT {
 
+    private static function get_secret_key() {
+        if ( defined( 'JWT_AUTH_SECRET_KEY' ) && JWT_AUTH_SECRET_KEY ) {
+            return JWT_AUTH_SECRET_KEY;
+        }
+
+        return wp_salt( 'auth' );
+    }
+
     /**
      * Generate a new JWT token for a given user ID
      */
     public static function generate_token( $user_id ) {
-        $secret_key = defined( 'JWT_AUTH_SECRET_KEY' ) ? JWT_AUTH_SECRET_KEY : 'wlc_fallback_secret_key_1234567890';
+        $secret_key = self::get_secret_key();
         $header = json_encode( array( 'typ' => 'JWT', 'alg' => 'HS256' ) );
         $issuedAt = time();
         $expire   = $issuedAt + DAY_IN_SECONDS * 7; // Token expires in 7 days
@@ -60,7 +68,7 @@ class WLC_Core_JWT {
 
         list( $base64UrlHeader, $base64UrlPayload, $base64UrlSignature ) = $parts;
 
-        $secret_key = defined( 'JWT_AUTH_SECRET_KEY' ) ? JWT_AUTH_SECRET_KEY : 'wlc_fallback_secret_key_1234567890';
+        $secret_key = self::get_secret_key();
         
         // Re-calculate signature
         $signature = hash_hmac( 'sha256', $base64UrlHeader . "." . $base64UrlPayload, $secret_key, true );

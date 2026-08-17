@@ -231,20 +231,20 @@
 
 /* ─── Membership Invitation Banner ────────────────────────── */
 .faq-invite-banner {
-  background-color: #0f3d26; /* Dark Green */
+  background: linear-gradient(135deg, #0d563f 0%, #06281e 100%);
   color: #ffffff;
-  padding: 60px 20px;
-  text-align: center;
+  padding: 55px 24px;
+  border-top: 1px solid #ebdcb9;
 }
 
 .faq-invite-inner {
-  max-width: 1200px;
+  width: min(100% - 32px, 1200px);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 28px;
 }
 
 .faq-invite-quote {
@@ -254,31 +254,34 @@
   color: #ffffff;
   text-align: left;
   flex: 1;
-  min-width: 300px;
+  min-width: 280px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .faq-invite-btn {
   display: inline-block;
-  background-color: #c8b97a; /* Gold */
-  color: #0f3d26 !important;
+  background: linear-gradient(135deg, #bca374 0%, #d4af37 100%);
+  color: #06281e !important;
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 16px 36px;
-  border-radius: 4px;
+  padding: 15px 36px;
+  border-radius: 6px;
   text-decoration: none;
   transition: all 0.3s ease;
-  border: 1px solid #c8b97a;
+  border: 1px solid #d4af37;
   cursor: pointer;
 }
 
 .faq-invite-btn:hover {
-  background-color: transparent;
-  color: #ffffff !important;
+  background: #ffffff;
+  color: #0d563f !important;
+  border-color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(200, 185, 122, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 }
 
 /* ─── Responsive ─────────────────────────────────────────── */

@@ -74,7 +74,7 @@ class WLC_Core_Contact_Controller {
 
         WLC_Core_Logger::log( "New contact form submission from: {$email}", 'INFO' );
 
-        // Send Notification Email to Admin
+        // Send Notification Email to Admin via Gmail SMTP
         WLC_Core_Emails::send_contact_notification( array(
             'first_name' => $first_name,
             'last_name'  => $last_name,
@@ -83,6 +83,9 @@ class WLC_Core_Contact_Controller {
             'subject'    => $subject,
             'message'    => $message
         ) );
+
+        // Send Contact Form Auto Reply Email to the User via Gmail SMTP
+        WLC_Core_Emails::send_contact_auto_reply( $email, $first_name ?: 'Member' );
 
         return Wellness_API_Response::success( array(
             'success' => true,

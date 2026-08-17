@@ -7,17 +7,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, ChevronDown, Check, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ChevronDown, Check, Loader2, ArrowRight } from "lucide-react";
 
 const registerSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  phone: z.string().min(1, "Mobile number is required").regex(/^\+?[0-9\s\-()]{7,15}$/, "Enter a valid phone number"),
+  phone: z.string().optional(),
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
   profession: z.string().min(1, "Profession is required"),
   companyName: z.string().optional(),
   correspondenceAddress: z.string().min(1, "Address is required"),
   preferences: z.array(z.string()).min(1, "Select at least one preference"),
-  password: z.string().min(8, "Min 8 characters").regex(/[A-Z]/, "Needs uppercase").regex(/[0-9]/, "Needs number").regex(/[^A-Za-z0-9]/, "Needs special char"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
   agreeTerms: z.literal(true, { errorMap: () => ({ message: "You must agree to Terms & Conditions" }) }),
   subscribeNewsletter: z.boolean().default(false),
@@ -77,7 +77,7 @@ function FieldInput({ label, error, type = "text", placeholder, ...rest }) {
 }
 
 export default function RegisterPage() {
-  const { isAuthenticated, user, logout, register: signup } = useAuth();
+  const { register: registerUser, isAuthenticated, user, logout } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("register");
   const [selectedPrefs, setSelectedPrefs] = useState([]);
@@ -112,14 +112,50 @@ export default function RegisterPage() {
     setIsLoading(true);
     setApiError("");
     const parts = data.name.trim().split(/\s+/);
+    const registrationPayload = {
+      name: data.name.trim(),
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
+      phone: data.phone || "",
+      email: data.email.toLowerCase().trim(),
+      password: data.password,
+      profession: data.profession,
+      companyName: data.companyName,
+      address: data.correspondenceAddress,
+      preferences: data.preferences,
+    };
+
     try {
-      await signup({ ...data, firstName: parts[0] || "", lastName: parts.slice(1).join(" ") || "" });
-      router.push("/verify-otp");
+      await registerUser(registrationPayload);
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("wlc_reg_email", registrationPayload.email);
+        if (registrationPayload.phone) {
+          sessionStorage.setItem("wlc_reg_phone", registrationPayload.phone);
+        }
+      }
+      router.push("/verify-otp?email=" + encodeURIComponent(registrationPayload.email));
     } catch (err) {
       setApiError(err.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleFillAll = () => {
+    setValue("name", "Alexander Wright", { shouldValidate: true });
+    setValue("phone", "9876543210", { shouldValidate: true });
+    setValue("email", "alexander.wright@wellnessloversclub.com", { shouldValidate: true });
+    setValue("profession", "Architect & Longevity Connoisseur", { shouldValidate: true });
+    setValue("companyName", "Sanctuary Design Studio", { shouldValidate: true });
+    setValue("correspondenceAddress", "Estate No. 4, DLF Phase 5, Gurgaon", { shouldValidate: true });
+    setValue("password", "Wellness@2026", { shouldValidate: true });
+    setValue("confirmPassword", "Wellness@2026", { shouldValidate: true });
+    setValue("agreeTerms", true, { shouldValidate: true });
+    setValue("subscribeNewsletter", true, { shouldValidate: true });
+    const prefs = ["Curated Wellness Retreats", "Spa Offerings", "Masterclass with Wellness Experts"];
+    setSelectedPrefs(prefs);
+    setValue("preferences", prefs, { shouldValidate: true });
+    setApiError("");
   };
 
   const inputStyle = {
@@ -129,30 +165,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh", width: "100%", position: "relative",
-      backgroundImage: "url('/images/buddha-bg.webp')", backgroundSize: "cover",
-      backgroundPosition: "center", backgroundAttachment: "fixed",
-      display: "flex", justifyContent: "center", alignItems: "flex-start",
-      padding: "3rem 1.5rem 4rem",
-    }}>
+    <div className="auth-page-wrapper" style={{ alignItems: "flex-start", padding: "3rem 1.5rem 4rem" }}>
       {/* Overlay */}
-      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 0 }} />
+      <div className="auth-overlay" />
 
       {/* Card */}
-      <div style={{
-        position: "relative", zIndex: 1, display: "flex", width: "100%", maxWidth: 960,
-        borderRadius: 16, overflow: "visible",
-        boxShadow: "0 30px 70px rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.08)",
-        marginTop: "2rem",
-      }}>
+      <div className="auth-card-container" style={{ marginTop: "2rem" }}>
 
         {/* Left Panel */}
-        <div style={{
-          width: "42%", background: "rgba(0,0,0,0.4)", backdropFilter: "blur(24px)",
-          padding: "4rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center",
-          borderRadius: "16px 0 0 16px", overflow: "hidden", flexShrink: 0,
-        }}>
+        <div className="auth-left-panel">
           <div style={{ fontSize: 11, fontWeight: 700, color: "#0f8554", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
             Wellness Lovers Club
           </div>
@@ -175,11 +196,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Right Panel */}
-        <div style={{
-          flex: 1, background: "#080c09", padding: "3rem 2.5rem",
-          borderRadius: "0 16px 16px 0", display: "flex", flexDirection: "column",
-          position: "relative",
-        }}>
+        <div className="auth-right-panel">
           {/* Tab switcher */}
           <div style={{ display: "flex", gap: 4, marginBottom: "1.75rem" }}>
             {["register", "login"].map(tab => (
@@ -206,8 +223,8 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              {/* 2-col grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem 1.5rem" }}>
+              {/* 2-col responsive grid */}
+              <div className="auth-grid-2col">
                 <FieldInput label="Full Name" error={errors.name?.message} {...register("name")} />
                 <FieldInput label="Mobile Number" type="tel" error={errors.phone?.message} {...register("phone")} />
                 <FieldInput label="Email Address" type="email" error={errors.email?.message} {...register("email")} />
@@ -311,7 +328,7 @@ export default function RegisterPage() {
                 onMouseEnter={e => { if (!isLoading) e.target.style.background = "#0d7348"; }}
                 onMouseLeave={e => { e.target.style.background = "#0f8554"; }}
               >
-                {isLoading ? <><Loader2 size={15} style={{ animation: "spin 1s linear infinite" }} /> Please wait...</> : "Become a Member"}
+                {isLoading ? <><Loader2 size={15} style={{ animation: "spin 1s linear infinite" }} /> Creating Account...</> : "Become a Member"}
               </button>
 
               {/* Divider + Social */}

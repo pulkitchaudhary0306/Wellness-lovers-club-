@@ -42,64 +42,62 @@ export default function WellnessRetreatsPage() {
   ];
 
   return (
-    <article>
+    <article className="offerings-page">
       {/* Hero Banner */}
-      <section className="inner-hero" aria-label="Retreats Hero">
-        <div className="container inner-hero-container">
-          <span className="eyebrow">EXCLUSIVE EXPERIENCES</span>
-          <h1 className="inner-hero-title">Wellness Retreats</h1>
-          <p className="inner-hero-desc">
+      <section className="offerings-hero" aria-label="Retreats Hero">
+        <div className="offerings-hero-container">
+          <span className="offerings-hero-eyebrow">EXCLUSIVE EXPERIENCES</span>
+          <h1 className="offerings-hero-title">Wellness Retreats</h1>
+          <p className="offerings-hero-desc">
             Discover immersive escapes in the world’s most serene destinations, where nature, bespoke wellness programs, and restorative experiences come together to renew mind, body, and perspective.
           </p>
         </div>
       </section>
 
-      {/* Staggered Grid Content Section */}
-      <section className="inner-section" aria-label="Retreat Destinations">
-        <div className="container">
-          <div className="text-center inner-section-header">
-            <span className="eyebrow">DESTINATIONS</span>
-            <h2 className="inner-section-title">Mindful Journeys Await</h2>
-            <p>
-              Explore our global portfolio of curated wellness programs, luxury sanctuary partnerships, and tailored retreats designed to release stress and restore vitality.
-            </p>
-          </div>
+      {/* Grid Content Section */}
+      <section className="offerings-main-section" aria-label="Retreat Destinations">
+        <div className="offerings-section-header">
+          <span className="eyebrow">DESTINATIONS</span>
+          <h2 className="offerings-section-title">Mindful Journeys Await</h2>
+          <p>
+            Explore our global portfolio of curated wellness programs, luxury sanctuary partnerships, and tailored retreats designed to release stress and restore vitality.
+          </p>
+        </div>
 
-          <div className="staggered-grid">
-            {destinations.map((dest, idx) => (
-              <div className="destination-card" key={idx}>
-                <div className="dest-img-container">
-                  <Image
-                    src={dest.img}
-                    alt={dest.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    style={{ objectFit: "cover" }}
-                    priority={idx < 3}
-                  />
-                </div>
-                <div className="dest-gradient" aria-hidden="true" />
-                <div className="dest-content">
-                  <h3 className="dest-title">
-                    {dest.name}
-                  </h3>
-                  <p className="dest-stats">{dest.stats}</p>
-                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                    Explore Now <span>→</span>
-                  </Link>
-                </div>
+        <div className="staggered-grid">
+          {destinations.map((dest, idx) => (
+            <div className="destination-card" key={idx}>
+              <div className="dest-img-container">
+                <Image
+                  src={dest.img}
+                  alt={dest.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                  priority={idx < 3}
+                />
               </div>
-            ))}
-          </div>
+              <div className="dest-gradient" aria-hidden="true" />
+              <div className="dest-content">
+                <h3 className="dest-title">
+                  {dest.name}
+                </h3>
+                <p className="dest-stats">{dest.stats}</p>
+                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                  Explore Now <span>→</span>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          <div className="text-center" style={{ marginTop: "80px" }}>
-            <Link href="/offerings" className="btn btn-gold" style={{ marginRight: "16px" }}>
-              ← All Offerings
-            </Link>
-            <Link href="/membership" className="btn btn-outline" style={{ color: "#ffffff", borderColor: "#ffffff" }}>
-              Become a Member
-            </Link>
-          </div>
+        <div className="text-center" style={{ marginTop: "60px", display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+          <Link href="/offerings" className="btn btn-green">
+            ← All Offerings
+          </Link>
+          <Link href="/membership" className="btn btn-gold">
+            Become a Member
+          </Link>
         </div>
       </section>
     </article>

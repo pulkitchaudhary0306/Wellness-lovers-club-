@@ -92,7 +92,11 @@ export default function ContactPage() {
       {/* Page Header / Breadcrumbs */}
       <div className="contact-header">
         <div className="contact-header-content">
+          <span className="contact-header-eyebrow">GET IN TOUCH</span>
           <h1>Contact Us</h1>
+          <p className="contact-header-desc">
+            Have questions about our exclusive wellness retreats, spa rituals, or membership benefits? Reach out to our concierge team.
+          </p>
           <div className="contact-breadcrumbs">
             <Link href="/">Home</Link>
             <span className="separator">/</span>
@@ -138,7 +142,7 @@ export default function ContactPage() {
             <div className="contact-card-content">
               <h3>Email</h3>
               <p>
-                <a href="mailto:wlc@pinnacleconnect.in">wlc@pinnacleconnect.in</a>
+                <a href="mailto:wellnessloversclub@gmail.com">wellnessloversclub@gmail.com</a>
               </p>
             </div>
           </div>

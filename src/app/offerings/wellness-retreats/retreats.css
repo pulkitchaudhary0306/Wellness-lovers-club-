@@ -1,18 +1,20 @@
-/* Stylesheet for Wellness Retreats sub-page */
+/* =========================================================================
+   Wellness Lovers Club — Offerings Sub-pages Stylesheet
+   ========================================================================= */
 
 .staggered-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 65px 30px;
-  width: min(100% - 40px, 1200px);
+  gap: 40px 30px;
+  width: min(100% - 32px, 1200px);
   margin: 0 auto;
-  padding-bottom: 60px;
+  padding-bottom: 40px;
 }
 
 /* Staggered cards layout for desktop and tablet */
 @media (min-width: 992px) {
   .staggered-grid {
-    padding-bottom: 120px;
+    padding-bottom: 60px;
   }
   
   .staggered-grid .destination-card {
@@ -21,29 +23,7 @@
   }
   
   .staggered-grid .destination-card:nth-child(3n + 2) {
-    --translate-y: 50px;
-    transform: translateY(var(--translate-y));
-  }
-  
-  .staggered-grid .destination-card:hover {
-    transform: translateY(var(--translate-y)) translateY(-10px) scale(1.02) !important;
-  }
-}
-
-@media (max-width: 991px) and (min-width: 768px) {
-  .staggered-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 50px 24px;
-    padding-bottom: 80px;
-  }
-  
-  .staggered-grid .destination-card {
-    --translate-y: 0px;
-    transform: translateY(var(--translate-y));
-  }
-  
-  .staggered-grid .destination-card:nth-child(2n) {
-    --translate-y: 35px;
+    --translate-y: 30px;
     transform: translateY(var(--translate-y));
   }
   
@@ -52,13 +32,35 @@
   }
 }
 
+@media (max-width: 991px) and (min-width: 768px) {
+  .staggered-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 24px;
+    padding-bottom: 40px;
+  }
+  
+  .staggered-grid .destination-card {
+    --translate-y: 0px;
+    transform: translateY(var(--translate-y));
+  }
+  
+  .staggered-grid .destination-card:nth-child(2n) {
+    --translate-y: 20px;
+    transform: translateY(var(--translate-y));
+  }
+  
+  .staggered-grid .destination-card:hover {
+    transform: translateY(var(--translate-y)) translateY(-6px) scale(1.02) !important;
+  }
+}
+
 @media (max-width: 767px) {
   .staggered-grid {
     grid-template-columns: 1fr;
-    gap: 35px;
-    max-width: 440px;
+    gap: 30px;
+    max-width: 460px;
     margin: 0 auto;
-    padding-bottom: 40px;
+    padding-bottom: 30px;
   }
   
   .staggered-grid .destination-card {
@@ -66,7 +68,7 @@
   }
   
   .staggered-grid .destination-card:hover {
-    transform: translateY(-6px) scale(1.02) !important;
+    transform: translateY(-4px) scale(1.01) !important;
   }
 }
 

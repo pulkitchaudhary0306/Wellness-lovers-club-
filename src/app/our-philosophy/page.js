@@ -53,11 +53,22 @@ export default function OurPhilosophyPage() {
 
   return (
     <div className="about-page-container">
+      {/* Hero Header */}
+      <section className="about-hero" aria-label="Our Philosophy Hero">
+        <div className="about-hero-container">
+          <span className="about-hero-eyebrow">CONSCIOUS LIVING & WELLBEING</span>
+          <h1 className="about-hero-title">Our Philosophy</h1>
+          <p className="about-hero-desc">
+            A wellness movement dedicated to mindful luxury, world-class retreat sanctuaries, and holistic personal transformation.
+          </p>
+        </div>
+      </section>
+
       {/* SECTION 1 — A WELLNESS MOVEMENT NURTURED BY GLOBALSPA */}
       <section className="about-sec" aria-label="A Wellness Movement">
         <div className="about-sec-content">
           <span className="about-eyebrow"> WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
-          <h1 className="about-sec-title">A Wellness Movement Nurtured by GlobalSpa</h1>
+          <h2 className="about-sec-title">A Wellness Movement Nurtured by GlobalSpa</h2>
           <p className="about-sec-desc">
             Backed by <strong>GlobalSpa</strong> - India&apos;s leading wellness and luxury lifestyle media brand - WLC is more than a club. It is a movement that brings together like-minded individuals, luxury brands, and world-class retreats to foster a culture of conscious living.
           </p>

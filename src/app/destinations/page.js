@@ -73,28 +73,28 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 115,
       y: 425,
-      details: "Ayurvedic traditions, backwater retreats, and holistic healing."
+      details: "The home of Ayurveda, backwaters, and deep healing."
     }
   ];
 
-  const regionCards = [
+  const regions = [
     {
       region: "NORTH INDIA",
-      title: "Himalayan Retreats",
-      cities: "Rishikesh · Mussoorie",
-      stats: "2 properties"
+      title: "Himalayan & Alpine",
+      cities: "Rishikesh · Shimla · Dharamshala",
+      stats: "6 properties"
     },
     {
       region: "SOUTH INDIA",
-      title: "Coastal & Ayurvedic",
-      cities: "Kerala · Bengaluru · Chennai · Pondicherry",
-      stats: "4 properties"
+      title: "Ayurvedic & Coastal",
+      cities: "Kerala · Gokarna · Coorg",
+      stats: "8 properties"
     },
     {
       region: "WEST INDIA",
-      title: "Luxury & Leisure",
-      cities: "Goa · Mumbai · Rajasthan · Gujarat",
-      stats: "4 properties"
+      title: "Heritage & Wellness",
+      cities: "Rajasthan · Goa · Maharashtra",
+      stats: "5 properties"
     },
     {
       region: "EAST INDIA",
@@ -111,7 +111,7 @@ export default function DestinationsPage() {
       location: "Kovalam, Trivandrum, Kerala",
       category: "Wellness Retreat",
       img: "/images/niraamaya-retreat-real.webp",
-      link: "/offerings/wellness-retreats"
+      link: "/explore-offer?destination=Niraamaya%20Retreats%20Surya%20Samudra"
     },
     {
       name: "Swastik Luxury Wellbeing Sanctuary",
@@ -119,7 +119,7 @@ export default function DestinationsPage() {
       location: "Pune, Maharashtra",
       category: "Wellness Retreat",
       img: "/images/swastik-sanctuary-real.webp",
-      link: "/offerings/wellness-retreats"
+      link: "/explore-offer?destination=Swastik%20Luxury%20Wellbeing%20Sanctuary"
     },
     {
       name: "The Wellness Co",
@@ -127,7 +127,7 @@ export default function DestinationsPage() {
       location: "Karma Lakelands, Gurgaon",
       category: "Spa & Therapies",
       img: "/images/wellness-co-real.webp",
-      link: "/offerings/spa-healing"
+      link: "/explore-offer?destination=The%20Wellness%20Co"
     },
     {
       name: "Viveda Wellness Resort",
@@ -135,7 +135,7 @@ export default function DestinationsPage() {
       location: "Nashik, Maharashtra",
       category: "Wellness Retreat",
       img: "/images/viveda-resort-real.webp",
-      link: "/offerings/wellness-retreats"
+      link: "/explore-offer?destination=Viveda%20Wellness%20Resort"
     },
     {
       name: "Niraamaya Retreats Backwaters & Beyond",
@@ -143,7 +143,7 @@ export default function DestinationsPage() {
       location: "Kumarakom, Kerala",
       category: "Spa & Therapies",
       img: "/images/niraamaya-backwaters-spa.webp",
-      link: "/offerings/spa-healing"
+      link: "/explore-offer?destination=Niraamaya%20Retreats%20Backwaters%20%26%20Beyond"
     },
     {
       name: "Pema Wellness",
@@ -151,7 +151,7 @@ export default function DestinationsPage() {
       location: "Visakhapatnam, Andhra Pradesh",
       category: "Spa / Luxury Stay",
       img: "/images/pema-wellness-spa.webp",
-      link: "/offerings/spa-healing"
+      link: "/explore-offer?destination=Pema%20Wellness"
     },
     {
       name: "Silhouette Salon",
@@ -159,44 +159,52 @@ export default function DestinationsPage() {
       location: "Gurgaon, Haryana",
       category: "Spa & Salon",
       img: "/images/silhouette-salon-spa.webp",
-      link: "/offerings/spa-healing"
+      link: "/explore-offer?destination=Silhouette%20Salon"
     },
     {
-      name: "Dhun Wellness",
-      region: "WEST INDIA",
-      location: "Mumbai, Maharashtra",
-      category: "Holistic Spa",
-      img: "/images/dhun-wellness-spa.webp",
-      link: "/offerings/spa-healing"
-    },
-    {
-      name: "Andaaz - Hyatt Hotel",
+      name: "Andaaz Delhi — Hyatt Hotel",
       region: "NORTH INDIA",
       location: "Aerocity, New Delhi",
-      category: "Luxury Stay",
-      img: "/images/andaz-stay.webp",
-      link: "/offerings/luxury-stays"
+      category: "Urban Luxury Spa",
+      img: "/images/andaz-hyatt-spa.webp",
+      link: "/explore-offer?destination=Andaaz%20Delhi%20—%20Hyatt%20Hotel"
     },
     {
       name: "Shangri-La Eros",
       region: "NORTH INDIA",
       location: "Connaught Place, New Delhi",
-      category: "Luxury Stay",
+      category: "5-Star Hotel & Club",
       img: "/images/shangri-la-stay.webp",
-      link: "/offerings/luxury-stays"
+      link: "/explore-offer?destination=Shangri-La%20Eros"
+    },
+    {
+      name: "Dhun Wellness Spa",
+      region: "WEST INDIA",
+      location: "Mumbai, Maharashtra",
+      category: "Biohacking & Spa",
+      img: "/images/dhun-wellness-spa.webp",
+      link: "/explore-offer?destination=Dhun%20Wellness%20Spa"
+    },
+    {
+      name: "Florian Hurel Hair Couture & Spa",
+      region: "WEST INDIA",
+      location: "Mumbai · Pune · Ahmedabad",
+      category: "Hair Couture & Spa",
+      img: "/images/community-experiences-lounge.webp",
+      link: "/explore-offer?destination=Florian%20Hurel%20Hair%20Couture%20%26%20Spa"
     },
     {
       name: "Viva Mayr",
       region: "INTERNATIONAL",
       location: "Maria Wörth, Austria",
-      category: "Wellness Retreat",
+      category: "Medical Longevity",
       img: "/images/vivamayr-austria-real.webp",
-      link: "/offerings/wellness-retreats"
+      link: "/explore-offer?destination=Viva%20Mayr"
     }
   ];
 
-  const filteredRegions = regionCards.filter(
-    (card) => activeFilter === "ALL" || card.region === activeFilter
+  const filteredRegions = regions.filter(
+    (reg) => activeFilter === "ALL" || reg.region === activeFilter
   );
 
   const filteredProperties = partnerProperties.filter(
@@ -229,12 +237,13 @@ export default function DestinationsPage() {
 
   return (
     <article>
-      {/* Hero Header */}
+      {/* ─── Hero Header ─────────────────────────────────────────────────── */}
       <section className="destinations-hero" aria-label="Destinations Hero">
-        <div className="container inner-hero-container">
-          <h1 className="inner-hero-title">Discover Your Next <br /> Wellness Escape</h1>
-          <p className="inner-hero-desc">
-            From the Himalayas to coastal sanctuaries, from ancient Ayurvedic retreats to modern luxury spas - every WLC destination is handpicked for members who seek transformation.
+        <div className="destinations-hero-container">
+          <span className="destinations-hero-eyebrow">CURATED SANCTUARIES & DESTINATIONS</span>
+          <h1 className="destinations-hero-title">Discover Your Next <br /> Wellness Escape</h1>
+          <p className="destinations-hero-desc">
+            From the Himalayas to coastal sanctuaries, from ancient Ayurvedic retreats to modern luxury spas — every WLC destination is handpicked for members who seek transformation.
           </p>
         </div>
 
@@ -253,10 +262,8 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* Indian Pride Banner Removed */}
-
-      {/* Interactive Map Section */}
-      <section className="container" aria-label="India Map Visualizer" style={{ padding: "0 20px" }}>
+      {/* ─── Interactive Map Section ─────────────────────────────────────── */}
+      <section className="map-section-wrapper" aria-label="India Map Visualizer">
         <div className="map-box">
           <div className="map-header">
             <span className="map-title-label">INDIA MAP</span>
@@ -347,7 +354,7 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* Region Cards Grid Section */}
+      {/* ─── Region Cards Grid Section ───────────────────────────────────── */}
       <section className="regions-grid" aria-label="India Regions List">
         {filteredRegions.length > 0 ? (
           filteredRegions.map((region, idx) => (
@@ -373,7 +380,7 @@ export default function DestinationsPage() {
         )}
       </section>
 
-      {/* GlobalSpa Brand Sponsor Banner */}
+      {/* ─── GlobalSpa Brand Sponsor Banner ──────────────────────────────── */}
       <div className="globalspa-banner">
         GlobalSpa | INDIA'S #1 WELLNESS & LUXURY LIFESTYLE MEDIA BRAND
         <a href="https://globalspaonline.com/" target="_blank" rel="noopener noreferrer">
@@ -381,7 +388,7 @@ export default function DestinationsPage() {
         </a>
       </div>
 
-      {/* Dynamic Properties Section */}
+      {/* ─── Dynamic Properties Section ──────────────────────────────────── */}
       <section id="properties-section" className="properties-section" aria-label="Partner Properties Grid" style={{ scrollMarginTop: "80px" }}>
         <div className="properties-header-wrapper">
           <div>
@@ -389,7 +396,7 @@ export default function DestinationsPage() {
               {activeFilter === "ALL" ? "All Handpicked Escapes" : `Featured in ${activeFilter}`}
             </h2>
             <p className="properties-section-subtitle">
-              Exclusive properties offering tailored experiences and premium members benefits.
+              Exclusive properties offering tailored experiences and premium member privileges.
             </p>
           </div>
         </div>
@@ -409,7 +416,7 @@ export default function DestinationsPage() {
                     src={prop.img}
                     alt={prop.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
                   />
                 </div>
@@ -419,7 +426,7 @@ export default function DestinationsPage() {
                     <span>📍</span> {prop.location}
                   </div>
                   <span className="property-card-link">
-                    Explore Details <span>→</span>
+                    Explore Details & Privileges <span>→</span>
                   </span>
                 </div>
               </Link>
@@ -432,44 +439,45 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* International Destinations Section */}
+      {/* ─── International Destinations Section ──────────────────────────── */}
       <section
         id="international-section"
-        className="inner-section"
+        className="international-section"
         aria-label="Global Wellness Destinations"
         style={{ scrollMarginTop: "80px" }}
       >
-        <div className="container">
-          <div className="text-center inner-section-header">
-            <span className="eyebrow" style={{ color: "#bca374" }}>BEYOND INDIA</span>
-            <h2 className="inner-section-title">Global Wellness Destinations</h2>
-            <p>
-              For members who seek wellness beyond borders - our curated international partners bring the <br /> WLC standard of excellence to the world's finest destinations.
-            </p>
-          </div>
+        <div className="international-header-wrapper">
+          <span className="eyebrow">BEYOND INDIA</span>
+          <h2>Global Wellness Destinations</h2>
+          <p>
+            For members who seek wellness beyond borders — our curated international partners bring the WLC standard of excellence to the world's finest destinations.
+          </p>
+        </div>
 
-          <div className="global-grid">
-            {internationalDestinations.map((dest, idx) => (
-              <Link
-                href="/contact"
-                className="global-card"
-                key={idx}
-                style={{ textDecoration: "none" }}
-              >
-                <h3 className="global-name" style={{ marginTop: "12px" }}>{dest.name}</h3>
-                <span className="global-type">{dest.type}</span>
-              </Link>
-            ))}
-          </div>
+        <div className="global-grid">
+          {internationalDestinations.map((dest, idx) => (
+            <Link
+              href="/explore-offer?destination=Viva%20Mayr"
+              className="global-card"
+              key={idx}
+              style={{ textDecoration: "none" }}
+            >
+              <span className="global-flag">{dest.flag}</span>
+              <h3 className="global-name">{dest.name}</h3>
+              <span className="global-type">{dest.type}</span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* Bottom Quote & CTA strip */}
+      {/* ─── Bottom Quote & CTA Strip ────────────────────────────────────── */}
       <section className="quote-cta-strip" aria-label="Member Quote">
-        <p className="quote-text">"Every destination, curated for your transformation."</p>
-        <Link href="/membership" className="btn btn-gold">
-          BECOME A MEMBER
-        </Link>
+        <div className="quote-cta-container">
+          <p className="quote-text">"Every destination, curated for your transformation."</p>
+          <Link href="/membership" className="btn btn-gold">
+            BECOME A MEMBER
+          </Link>
+        </div>
       </section>
     </article>
   );

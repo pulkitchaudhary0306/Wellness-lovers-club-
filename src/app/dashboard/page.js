@@ -183,9 +183,10 @@ export default function DashboardPage() {
     finally { setIsUpdatingProfile(false); }
   };
 
-  const handlePasswordUpdate = async () => {
+  const handlePasswordUpdate = async (data) => {
     setIsUpdatingPassword(true);
-    try { await authService.changePassword(); setPasswordSuccess(true); resetPwd(); setTimeout(() => setPasswordSuccess(false), 3000); }
+    setPasswordError("");
+    try { await authService.changePassword(data.currentPassword, data.newPassword); setPasswordSuccess(true); resetPwd(); setTimeout(() => setPasswordSuccess(false), 3000); }
     catch (e) { setPasswordError(e.message || "Failed to update password."); }
     finally { setIsUpdatingPassword(false); }
   };

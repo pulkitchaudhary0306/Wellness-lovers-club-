@@ -96,7 +96,10 @@ export default function BenefitsPage() {
             ))}
           </div>
 
-          <div className="text-center" style={{ marginTop: "56px" }}>
+          <div className="text-center" style={{ marginTop: "56px", display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+            <Link href="/destinations" className="btn btn-green">
+              Explore Destinations →
+            </Link>
             <Link href="/membership" className="btn btn-gold">
               Become a Member Today
             </Link>

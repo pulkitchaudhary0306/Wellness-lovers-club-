@@ -52,12 +52,32 @@ export default function LoginForm({ isEmbed = false }) {
 
     try {
       await login(data.email, data.password, data.rememberMe);
-      // Success redirect to dashboard
+      // Success — redirect to dashboard
       router.push("/dashboard");
     } catch (err) {
-      setApiError(err.message || "Something went wrong. Please check your credentials.");
+      const code = err?.code;
+      const isUnverified =
+        code === "EMAIL_NOT_VERIFIED" ||
+        err?.message?.toLowerCase().includes("not verified") ||
+        err?.message?.toLowerCase().includes("verify your email");
+
+      if (isUnverified) {
+        const unverifiedEmail = err?.email || data.email;
+        setApiError(
+          <>
+            {err?.message || "Your email address is not verified yet."}{" "}
+            <a
+              href={`/verify-email?email=${encodeURIComponent(unverifiedEmail)}`}
+              className="underline font-semibold ml-1 hover:text-rose-700"
+            >
+              Verify Now →
+            </a>
+          </>
+        );
+      } else {
+        setApiError(err?.message || "Something went wrong. Please check your credentials.");
+      }
       setIsShaking(true);
-      // Reset shake state after animation ends
       setTimeout(() => setIsShaking(false), 500);
     } finally {
       setIsLoading(false);

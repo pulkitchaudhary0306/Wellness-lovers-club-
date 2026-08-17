@@ -23,9 +23,7 @@ function Header() {
 
   // Automatically close menu when path changes
   useEffect(() => {
-    setTimeout(() => {
-      setIsMenuOpen(false);
-    }, 0);
+    setIsMenuOpen(false);
   }, [pathname]);
 
   // Close menu when resizing to desktop layout
@@ -43,23 +41,35 @@ function Header() {
     <header className="site-header">
       <div className="logo-section">
         <Link href="/" onClick={closeMenu}>
-          <img loading="lazy" src="/logo/logo.png"
+          <img
+            loading="lazy"
+            src="/logo/logo.png"
             alt="Wellness Lovers Club Logo"
-            className="site-logo" />
+            className="site-logo"
+          />
         </Link>
       </div>
       <div className="navigation-section">
         <div className="header-container">
           <button
-            className="mobile-menu-button"
+            className={`mobile-menu-button ${isMenuOpen ? "active" : ""}`}
             type="button"
             onClick={toggleMenu}
             aria-label="Toggle navigation"
             aria-expanded={isMenuOpen}
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            {isMenuOpen ? (
+              <svg viewBox="0 0 24 24" width="25" height="25" stroke="#0d563f" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="25" height="25" stroke="#0d563f" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                <line x1="3.5" y1="7" x2="20.5" y2="7"></line>
+                <line x1="3.5" y1="12" x2="15.5" y2="12"></line>
+                <line x1="3.5" y1="17" x2="20.5" y2="17"></line>
+              </svg>
+            )}
           </button>
 
           <nav className={`main-navigation ${isMenuOpen ? "menu-open" : ""}`}>
@@ -98,9 +108,21 @@ function Header() {
             >
               Contact Us
             </Link>
+            
+            {/* Mobile Only: Member button placed inside the menu */}
+            <div className="mobile-only-member-btn">
+              <Link
+                href="/membership"
+                className="member-button mobile-member-button"
+                onClick={closeMenu}
+              >
+                BECOME A MEMBER →
+              </Link>
+            </div>
           </nav>
 
-          <div className="header-member-btn">
+          {/* Desktop Only: Member button */}
+          <div className="header-member-btn desktop-only">
             <Link
               href="/membership"
               className="member-button"
@@ -108,7 +130,6 @@ function Header() {
             >
               BECOME A MEMBER →
             </Link>
-
           </div>
         </div>
       </div>
@@ -117,4 +138,3 @@ function Header() {
 }
 
 export default Header;
-

@@ -50,8 +50,17 @@ export default function ResetPasswordForm({ isEmbed = false }) {
     setApiError("");
     setIsShaking(false);
 
+    let resetKey = "";
+    let userLogin = "";
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      resetKey = params.get("key") || "";
+      userLogin = params.get("login") || params.get("email") || "";
+    }
+
     try {
-      await resetPassword(data.password);
+      await resetPassword(data.password, resetKey, userLogin);
       setIsSuccess(true);
       setTimeout(() => {
         router.push("/login");

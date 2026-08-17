@@ -280,6 +280,7 @@ export default function MembershipPage() {
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }}>
             Join the Wellness Lovers Club to unlock exclusive wellness privileges, priority bookings at luxury recovery sanctuaries, and tailored longevity guides.
           </p>
+
           <div style={{ marginTop: "2.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {["Exclusive Wellness Retreats", "Priority Spa Bookings", "Expert Masterclasses", "Personalized Longevity Plans"].map(b => (
               <div key={b} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -312,6 +313,7 @@ export default function MembershipPage() {
 
           {activeTab === "register" ? (
             <RegisterPanel onSwitchToLogin={() => setActiveTab("login")} />
+
           ) : (
             <LoginPanel onSwitchToRegister={() => setActiveTab("register")} />
           )}

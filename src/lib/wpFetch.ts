@@ -79,23 +79,10 @@ export async function wpFetch<T = unknown>(
 
   const url = `${BASE_URL}${endpoint}`;
 
-  console.log("========================================");
-  console.log("WordPress API Request");
-  console.log("URL:", url);
-  console.log("Method:", fetchOptions.method);
-  console.log("Has Token:", headers.has("Authorization"));
-  console.log("========================================");
-
   const response = await fetch(url, {
     ...fetchOptions,
     headers,
   });
-
-  console.log("========================================");
-  console.log("WordPress API Response");
-  console.log("Status:", response.status);
-  console.log("Response URL:", response.url);
-  console.log("========================================");
 
   let body: any;
 
@@ -110,8 +97,6 @@ export async function wpFetch<T = unknown>(
   } else {
     body = await response.text();
   }
-
-  console.log("Response Body:", body);
 
   if (!response.ok) {
     const errorBody = isWPErrorBody(body) ? body : undefined;
