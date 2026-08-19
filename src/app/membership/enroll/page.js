@@ -134,6 +134,37 @@ function MembershipEnrollmentContent() {
           color: "#0f8554",
           backdrop_color: "rgba(8, 12, 9, 0.9)",
         },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay via UPI / Payment Apps",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["intent", "qr", "collect"],
+                    apps: ["google_pay", "phonepe", "paytm", "bhim", "cred"],
+                  },
+                ],
+              },
+              cards: {
+                name: "Cards / Net Banking",
+                instruments: [
+                  {
+                    method: "card",
+                  },
+                  {
+                    method: "netbanking",
+                  },
+                ],
+              },
+            },
+            sequence: ["block.upi", "block.cards"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
         modal: {
           ondismiss: () => {
             setPaymentLoading(false);
@@ -261,7 +292,7 @@ function MembershipEnrollmentContent() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Amount Paid</span>
-              <strong style={{ color: "#ffffff", fontSize: "15px" }}>₹1</strong>
+              <strong style={{ color: "#ffffff", fontSize: "15px" }}>₹29,000</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Status</span>
@@ -519,10 +550,10 @@ function MembershipEnrollmentContent() {
 
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "1.5rem" }}>
                   <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
-                    Annual Membership (Testing)
+                    Annual Membership
                   </div>
                   <div style={{ fontSize: "38px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
-                    ₹1
+                    ₹29,000
                   </div>
                 </div>
               </div>
@@ -732,10 +763,10 @@ function MembershipEnrollmentContent() {
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                      Amount Payable (Testing)
+                      Amount Payable
                     </span>
                     <div style={{ fontSize: "32px", fontWeight: "800", color: "#fff", letterSpacing: "-0.02em" }}>
-                      ₹1
+                      ₹29,000
                     </div>
                   </div>
                   <div style={{ fontSize: "11px", background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.4)", color: "#4ade80", padding: "6px 12px", borderRadius: "8px", fontWeight: "600" }}>
@@ -816,13 +847,50 @@ function MembershipEnrollmentContent() {
                 }}
               >
                 <div style={{ fontSize: "11px", color: "#bca374", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "700", marginBottom: 6 }}>
-                  VIP Annual Membership (Testing Mode)
+                  VIP Annual Membership
                 </div>
                 <div style={{ fontSize: "44px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.03em" }}>
-                  ₹1
+                  ₹29,000
                 </div>
                 <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
-                  Test membership amount
+                  Final membership amount (All-inclusive)
+                </div>
+              </div>
+
+              {/* Supported Direct Payment Apps Banner */}
+              <div
+                style={{
+                  background: "rgba(255, 255, 255, 0.03)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: "12px",
+                  padding: "12px 16px",
+                  marginBottom: "1.75rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 6 }}>
+                  <Sparkles size={13} color="#4ade80" />
+                  <span>Direct Payment Apps Supported via Razorpay</span>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {["Google Pay", "PhonePe", "Paytm", "BHIM UPI", "CRED", "Debit / Credit Cards", "Net Banking"].map((app, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        background: "rgba(255, 255, 255, 0.06)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        padding: "3px 8px",
+                        fontSize: "11px",
+                        color: "#e2e8f0",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {app}
+                    </span>
+                  ))}
                 </div>
               </div>
 
@@ -882,7 +950,7 @@ function MembershipEnrollmentContent() {
                 ) : (
                   <>
                     <Lock size={18} />
-                    <span>Pay ₹1</span>
+                    <span>Pay ₹29,000</span>
                     <ChevronRight size={20} />
                   </>
                 )}
@@ -896,10 +964,10 @@ function MembershipEnrollmentContent() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <CreditCard size={14} color="#4ade80" />
-                  <span>Razorpay Secure Checkout</span>
+                  <span>Razorpay Direct Gateway</span>
                 </div>
                 <div style={{ color: "rgba(255, 255, 255, 0.35)" }}>
-                  UPI • Cards • Net Banking
+                  UPI • Cards • Net Banking • Wallets
                 </div>
               </div>
 

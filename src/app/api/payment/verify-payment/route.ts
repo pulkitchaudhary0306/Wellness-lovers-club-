@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     razorpay_payment_id: razorpay_payment_id,
     membership_id: membershipId,
     invoice_number: invoiceNumber,
-    amount: 1,
+    amount: 29000,
     status: "completed",
     valid_until: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
   });

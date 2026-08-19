@@ -15,10 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WLC_Core_Payment_Controller {
 
-    const FIXED_FINAL_PRICE  = 1.00;
-    const FIXED_BASE_AMOUNT  = 0.85;
-    const FIXED_GST_AMOUNT   = 0.15;
-    const RAZORPAY_PAISE     = 100;
+    const FIXED_FINAL_PRICE  = 29000.00;
+    const FIXED_BASE_AMOUNT  = 24576.27;
+    const FIXED_GST_AMOUNT   = 4423.73;
+    const RAZORPAY_PAISE     = 2900000;
 
     /**
      * Resolves live Razorpay Key ID

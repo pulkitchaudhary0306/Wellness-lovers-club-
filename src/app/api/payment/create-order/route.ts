@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
   const email = body.email || "";
 
-  // Resilient Direct Razorpay Live Gateway Order Creation (Testing Amount: ₹1 / 100 paise)
+  // Resilient Direct Razorpay Live Gateway Order Creation (Original Amount: ₹29,000 / 2,900,000 paise)
   try {
     const orderId = `WLC_ORD_${Date.now()}_${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
     const basicAuth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString("base64");
@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        amount: 100, // strictly 1.00 INR (100 paise) for testing
+        amount: 2900000, // strictly 29,000.00 INR (2,900,000 paise)
         currency: "INR",
         receipt: orderId,
         payment_capture: 1,
         notes: {
           customer_email: email,
-          item: "VIP Annual Membership (Testing Mode)",
-          total_price: "1.00",
+          item: "VIP Annual Membership Pass",
+          total_price: "29000.00",
         },
       }),
     });
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
         order_id: orderId,
         razorpay_order_id: rzpData.id,
         key_id: RAZORPAY_KEY_ID,
-        amount: 1,
-        amount_paise: 100,
+        amount: 29000,
+        amount_paise: 2900000,
         currency: "INR",
         customer: {
           name: body.name || "Valued Member",
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         },
         item: {
           title: "VIP Annual Membership Pass",
-          total_payable: 1,
+          total_payable: 29000,
         },
       });
     }
@@ -69,8 +69,8 @@ export async function POST(req: NextRequest) {
     order_id: fallbackOrderId,
     razorpay_order_id: "",
     key_id: RAZORPAY_KEY_ID,
-    amount: 1,
-    amount_paise: 100,
+    amount: 29000,
+    amount_paise: 2900000,
     currency: "INR",
     customer: {
       name: body.name || "Valued Member",
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     },
     item: {
       title: "VIP Annual Membership Pass",
-      total_payable: 1,
+      total_payable: 29000,
     },
   });
 }
