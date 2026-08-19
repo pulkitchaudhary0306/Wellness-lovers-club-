@@ -134,34 +134,61 @@ function MembershipEnrollmentContent() {
           color: "#0f8554",
           backdrop_color: "rgba(8, 12, 9, 0.9)",
         },
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+          wallet: true,
+          emi: false,
+          paylater: false,
+        },
         config: {
           display: {
+            language: "en",
+            hide: [
+              { method: "emi" },
+              { method: "paylater" },
+            ],
+            preferences: {
+              show_default_blocks: true,
+            },
+            sequence: ["block.upi", "block.wallets", "block.cards", "block.netbanking"],
             blocks: {
               upi: {
-                name: "Pay via UPI / Payment Apps",
+                name: "Pay using UPI Apps (Google Pay, PhonePe, Paytm, Amazon Pay)",
                 instruments: [
                   {
                     method: "upi",
                     flows: ["intent", "qr", "collect"],
-                    apps: ["google_pay", "phonepe", "paytm", "bhim", "cred"],
+                    apps: ["google_pay", "phonepe", "paytm", "amazonpay", "bhim", "cred"],
+                  },
+                ],
+              },
+              wallets: {
+                name: "Amazon Pay & Wallets",
+                instruments: [
+                  {
+                    method: "wallet",
+                    wallets: ["amazonpay", "paytm", "mobikwik", "phonepe", "airtelmoney"],
                   },
                 ],
               },
               cards: {
-                name: "Cards / Net Banking",
+                name: "Credit & Debit Cards",
                 instruments: [
                   {
                     method: "card",
                   },
+                ],
+              },
+              netbanking: {
+                name: "Net Banking",
+                instruments: [
                   {
                     method: "netbanking",
                   },
                 ],
               },
-            },
-            sequence: ["block.upi", "block.cards"],
-            preferences: {
-              show_default_blocks: true,
             },
           },
         },
@@ -875,7 +902,7 @@ function MembershipEnrollmentContent() {
                   <span>Direct Payment Apps Supported via Razorpay</span>
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {["Google Pay", "PhonePe", "Paytm", "BHIM UPI", "CRED", "Debit / Credit Cards", "Net Banking"].map((app, i) => (
+                  {["Google Pay", "PhonePe", "Paytm", "Amazon Pay", "BHIM UPI", "CRED", "Debit / Credit Cards", "Net Banking"].map((app, i) => (
                     <span
                       key={i}
                       style={{
