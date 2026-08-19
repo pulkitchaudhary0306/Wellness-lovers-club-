@@ -6,8 +6,6 @@
  * - Razorpay Order Amount: 2,900,000 paise
  */
 
-import { WP_API_CONFIG } from "./authService";
-
 export interface PaymentConfig {
   key_id: string;
   currency: string;
@@ -90,52 +88,47 @@ export function loadRazorpayScript(): Promise<boolean> {
 
 export const paymentService = {
   /**
-   * Retrieves public payment configuration from WordPress backend
+   * Retrieves public payment configuration
    */
   async getConfig(): Promise<PaymentConfig> {
     try {
-      const url = `${WP_API_CONFIG.BASE_URL}/wp-json/custom/v1/payment/config`;
-      const res = await fetch(url, {
+      const res = await fetch("/api/payment/config", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+      if (res.ok) {
+        const payload = await res.json();
+        return {
+          key_id: payload.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
+          currency: payload.currency || "INR",
+          amount: payload.amount || 29000,
+          amount_paise: payload.amount_paise || 2900000,
+          item_name: payload.item_name || "Wellness Lovers Club - VIP Annual Membership",
+          description: payload.description || "Annual Luxury VIP Membership Access & Privileges",
+          is_tax_inclusive: true,
+        };
       }
-
-      const json = await res.json();
-      const payload = json.data || json;
-      return {
-        key_id: payload.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
-        currency: payload.currency || "INR",
-        amount: payload.amount || 29000,
-        amount_paise: payload.amount_paise || 2900000,
-        item_name: payload.item_name || "Wellness Lovers Club - VIP Annual Membership",
-        description: payload.description || "Annual Luxury VIP Membership Access & Privileges",
-        is_tax_inclusive: true,
-      };
     } catch (err) {
-      console.warn("Remote payment config fetch failed, using fallback:", err);
-      return {
-        key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
-        currency: "INR",
-        amount: 29000,
-        amount_paise: 2900000,
-        item_name: "Wellness Lovers Club - VIP Annual Membership",
-        description: "Annual Luxury VIP Membership Access & Privileges",
-        is_tax_inclusive: true,
-      };
+      // Fallback
     }
+
+    return {
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
+      currency: "INR",
+      amount: 29000,
+      amount_paise: 2900000,
+      item_name: "Wellness Lovers Club - VIP Annual Membership",
+      description: "Annual Luxury VIP Membership Access & Privileges",
+      is_tax_inclusive: true,
+    };
   },
 
   /**
    * Creates server-side Razorpay order with strictly verified 2,900,000 paise (₹29,000)
    */
   async createOrder(customerEmail?: string): Promise<RazorpayOrderResponse> {
-    const url = `${WP_API_CONFIG.BASE_URL}/wp-json/custom/v1/payment/create-order`;
-
     let token = "";
     let sessionToken = "";
     let email = customerEmail || "";
@@ -162,7 +155,7 @@ export const paymentService = {
       headers["X-Payment-Session"] = sessionToken;
     }
 
-    const res = await fetch(url, {
+    const res = await fetch("/api/payment/create-order", {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -175,25 +168,22 @@ export const paymentService = {
     });
 
     const json = await res.json();
-    if (!res.ok) {
+    if (!res.ok || (!json.success && !json.order_id)) {
       throw new Error(json.message || json.error || "Unable to generate payment order.");
     }
 
     const payload: RazorpayOrderResponse = json.data || json;
     if (!payload.key_id) {
-      const config = await this.getConfig();
-      payload.key_id = config.key_id;
+      payload.key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH";
     }
 
     return payload;
   },
 
   /**
-   * Sends signature & payment details to WordPress backend for HMAC SHA256 verification
+   * Sends signature & payment details for HMAC SHA256 verification
    */
   async verifyPayment(payload: PaymentVerificationPayload): Promise<PaymentVerificationResult> {
-    const url = `${WP_API_CONFIG.BASE_URL}/wp-json/custom/v1/payment/verify-payment`;
-
     let token = "";
     let sessionToken = "";
 
@@ -212,7 +202,7 @@ export const paymentService = {
       headers["X-Payment-Session"] = sessionToken;
     }
 
-    const res = await fetch(url, {
+    const res = await fetch("/api/payment/verify-payment", {
       method: "POST",
       headers,
       body: JSON.stringify({
