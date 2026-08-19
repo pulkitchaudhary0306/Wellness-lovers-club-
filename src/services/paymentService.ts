@@ -40,6 +40,8 @@ export interface PaymentVerificationPayload {
   razorpay_order_id: string;
   razorpay_payment_id: string;
   razorpay_signature: string;
+  email?: string;
+  name?: string;
 }
 
 export interface PaymentVerificationResult {

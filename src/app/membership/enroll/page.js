@@ -160,6 +160,8 @@ function MembershipEnrollmentContent() {
               razorpay_order_id: response.razorpay_order_id || orderData.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature || "",
+              email: orderData.customer?.email || customerEmail,
+              name: orderData.customer?.name || customerName,
             });
 
             setSuccessDetails(verifyRes);

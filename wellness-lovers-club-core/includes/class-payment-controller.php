@@ -330,6 +330,17 @@ class WLC_Core_Payment_Controller {
             update_user_meta( $user_id, 'wlc_membership_expiry', gmdate( 'Y-m-d H:i:s', strtotime( '+1 year' ) ) );
         }
 
+        // Dispatch Official Welcome & Thank You Email
+        $user_obj = $user_id ? get_userdata( $user_id ) : null;
+        $customer_email = $user_obj ? $user_obj->user_email : ( isset( $params['email'] ) ? sanitize_email( $params['email'] ) : '' );
+        $customer_name  = $user_obj ? ( $user_obj->display_name ?: $user_obj->first_name ) : ( isset( $params['name'] ) ? sanitize_text_field( $params['name'] ) : 'Customer' );
+
+        if ( ! empty( $customer_email ) && class_exists( 'WLC_Core_Emails' ) ) {
+            WLC_Core_Emails::send_membership_activation_email( $customer_email, array(
+                'name' => $customer_name,
+            ) );
+        }
+
         // Invalidate payment session token
         $session_token = isset( $_SERVER['HTTP_X_PAYMENT_SESSION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_PAYMENT_SESSION'] ) ) : '';
         if ( ! empty( $session_token ) ) {

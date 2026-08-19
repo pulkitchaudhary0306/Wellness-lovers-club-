@@ -345,54 +345,37 @@ class WLC_Core_Emails {
     }
 
     /**
-     * 8. VIP Membership Activation & Tax Invoice Email
+     * 8. VIP Membership Activation & Thank You Email
      */
-    public static function send_membership_activation_email( $to, $membership_data ) {
-        $name          = isset( $membership_data['name'] ) ? $membership_data['name'] : 'Distinguished Member';
-        $tier_name     = isset( $membership_data['tier_name'] ) ? $membership_data['tier_name'] : 'Wellness Gold Club';
-        $membership_id = isset( $membership_data['membership_id'] ) ? $membership_data['membership_id'] : 'WLC-2026-VIP';
-        $invoice_no    = isset( $membership_data['invoice_number'] ) ? $membership_data['invoice_number'] : 'INV-2026-001';
-        $amount        = isset( $membership_data['amount'] ) ? number_format( $membership_data['amount'], 2 ) : '11,798.00';
-        $payment_method= isset( $membership_data['payment_method'] ) ? strtoupper( $membership_data['payment_method'] ) : 'UPI / QR CODE';
-        $valid_until   = isset( $membership_data['valid_until'] ) ? $membership_data['valid_until'] : date( 'F d, Y', strtotime( '+1 year' ) );
-        $portal_url    = home_url( '/dashboard' );
+    public static function send_membership_activation_email( $to, $membership_data = array() ) {
+        $name = isset( $membership_data['name'] ) && ! empty( $membership_data['name'] ) ? $membership_data['name'] : 'Customer';
 
-        $subject = 'VIP Pass Activated: Welcome to Wellness Lovers Club | ' . $membership_id;
+        $subject = 'Thank you for joining the Wellness Lovers Club by GlobalSpa';
 
         $body = '
-        <h2 style="color: #facc15; font-size: 22px;">Membership Pass Live: Welcome to the Circle!</h2>
-        <p>Dear <strong>' . esc_html( $name ) . '</strong>,</p>
-        <p>Your payment has been successfully confirmed. Your official annual VIP pass for <strong>' . esc_html( $tier_name ) . '</strong> is now active.</p>
-        
-        <div style="background: linear-gradient(135deg, #13271c 0%, #0c1811 100%); border: 1px solid #d4af37; border-radius: 12px; padding: 24px; margin: 24px 0; color: #fff;">
-            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: #d4af37;">Official Digital Pass</div>
-            <div style="font-size: 20px; font-weight: 700; margin: 6px 0; color: #ffffff;">' . esc_html( $name ) . '</div>
-            <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 13px; color: #cbd5e1;">
-                <div><span style="color: #94a3b8; font-size: 11px; display: block;">MEMBER ID</span><strong style="color: #facc15; font-family: monospace;">' . esc_html( $membership_id ) . '</strong></div>
-                <div><span style="color: #94a3b8; font-size: 11px; display: block;">TIER</span><strong>' . esc_html( $tier_name ) . '</strong></div>
-                <div><span style="color: #94a3b8; font-size: 11px; display: block;">VALID UNTIL</span><strong>' . esc_html( $valid_until ) . '</strong></div>
-            </div>
+        <p style="font-size: 15px; color: #ffffff; margin-bottom: 16px;">Dear ' . esc_html( $name ) . ',</p>
+        <p style="font-size: 15px; color: #e2e8f0; line-height: 1.7; margin-bottom: 16px;">
+            Thank you for joining the <strong>Wellness Lovers Club by GlobalSpa</strong>.
+        </p>
+        <p style="font-size: 15px; color: #e2e8f0; line-height: 1.7; margin-bottom: 16px;">
+            We’re delighted to welcome you to our community and look forward to bringing you meaningful wellness experiences, exclusive opportunities and curated moments that inspire you to live well.
+        </p>
+        <div style="background: rgba(15, 133, 84, 0.12); border-left: 3px solid #0f8554; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0; color: #4ade80; font-weight: 600; font-size: 14px;">
+            Your registration has been successfully received.
         </div>
-
-        <h3 style="color: #ffffff; font-size: 16px; margin-top: 24px;">Statutory Tax Invoice Receipt</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; color: #cbd5e1;">
-            <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23;">Invoice Number:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23; text-align: right; font-family: monospace; color: #facc15;">' . esc_html( $invoice_no ) . '</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23;">Payment Mode:</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23; text-align: right;">' . esc_html( $payment_method ) . '</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23; font-weight: bold; color: #fff;">Total Paid (with 18% GST):</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #1e2e23; text-align: right; font-weight: bold; color: #4ade80; font-size: 15px;">₹' . esc_html( $amount ) . '</td>
-            </tr>
-        </table>
-
-        <div style="text-align: center; margin-top: 28px;">
-            <a href="' . esc_url( $portal_url ) . '" class="btn" style="background-color: #d4af37; color: #000000 !important; font-weight: 700;">Open Member Dashboard</a>
-        </div>';
+        <p style="font-size: 15px; color: #e2e8f0; line-height: 1.7; margin-bottom: 12px;">
+            To help us process your tax invoice, kindly share the below with us:
+        </p>
+        <ul style="color: #cbd5e1; font-size: 14.5px; line-height: 1.8; margin: 0 0 18px 0; padding-left: 24px;">
+            <li><strong>Billing details with GST (if applicable)</strong></li>
+        </ul>
+        <p style="font-size: 15px; color: #e2e8f0; line-height: 1.7; margin-bottom: 24px;">
+            Once we receive these details, we will share your tax invoice with you.
+        </p>
+        <p style="font-size: 15px; color: #ffffff; line-height: 1.6; margin-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 18px;">
+            Warm regards,<br>
+            <strong style="color: #bca374;">Team Wellness Lovers Club</strong>
+        </p>';
 
         return self::send_html_email( $to, $subject, $body );
     }
