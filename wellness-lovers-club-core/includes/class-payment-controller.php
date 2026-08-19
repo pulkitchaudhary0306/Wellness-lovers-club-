@@ -281,7 +281,7 @@ class WLC_Core_Payment_Controller {
         $membership_id  = 'WLC-' . gmdate( 'Y' ) . '-' . str_pad( (string) $user_id, 6, '0', STR_PAD_LEFT );
         $invoice_number = 'INV-' . gmdate( 'Y' ) . '-' . strtoupper( wp_generate_password( 6, false, false ) );
 
-        // Update payment row
+        // Update or insert payment row in WordPress database
         if ( $order ) {
             $wpdb->update(
                 $table_payments,
@@ -294,6 +294,30 @@ class WLC_Core_Payment_Controller {
                     'paid_at'            => current_time( 'mysql' ),
                 ),
                 array( 'id' => $order->id )
+            );
+        } else {
+            $wpdb->insert(
+                $table_payments,
+                array(
+                    'order_id'           => $order_id ?: ( 'WLC_ORD_' . gmdate( 'Ymd' ) . '_' . strtoupper( wp_generate_password( 6, false, false ) ) ),
+                    'user_id'            => $user_id ?: 1,
+                    'tier'               => 'VIP Annual',
+                    'amount'             => self::FIXED_FINAL_PRICE,
+                    'base_amount'        => self::FIXED_BASE_AMOUNT,
+                    'gst_amount'         => self::FIXED_GST_AMOUNT,
+                    'tax_amount'         => self::FIXED_GST_AMOUNT,
+                    'currency'           => 'INR',
+                    'gateway'            => 'razorpay',
+                    'gateway_order_id'   => $razorpay_order_id,
+                    'gateway_payment_id' => $razorpay_payment_id,
+                    'gateway_signature'  => $razorpay_signature,
+                    'membership_id'      => $membership_id,
+                    'invoice_number'     => $invoice_number,
+                    'status'             => 'completed',
+                    'paid_at'            => current_time( 'mysql' ),
+                    'created_at'         => current_time( 'mysql' ),
+                ),
+                array( '%s', '%d', '%s', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
             );
         }
 
