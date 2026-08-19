@@ -11,8 +11,39 @@ const WP_BASE = (
   process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://cms.wellnessloversclub.com"
 ).replace(/\/$/, "");
 
-async function submitInquiryToWordPress(data, destinationName, offerName) {
-  const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
+async function submitInquiryToWordPress(data, destinationName, offerName, offerDiscount = "") {
+  // First attempt dedicated offerings endpoint, with seamless fallback to general contact endpoint
+  try {
+    const res = await fetch(`${WP_BASE}/wp-json/wlc/v1/offering-inquiry`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        destination_name: destinationName,
+        destination_slug: destinationName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        offer_title: offerName || "All Member Privileges",
+        offer_discount: offerDiscount || "Member Privilege",
+        travel_date: data.travelDate || "Flexible",
+        num_guests: "1-2",
+        message: data.message,
+        website: "", // Honeypot
+      }),
+    });
+
+    const json = await res.json();
+    if (res.ok && json.success) {
+      return json;
+    }
+  } catch (e) {
+    // Fallback to legacy endpoint
+  }
+
+  const fallbackRes = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,17 +55,15 @@ async function submitInquiryToWordPress(data, destinationName, offerName) {
       phone: data.phone,
       subject: `Exclusive Offer Booking - ${destinationName}${offerName ? ` (${offerName})` : ""}`,
       message: `Preferred Booking/Travel Date: ${data.travelDate || "Not Specified"}\n\nSelected Privilege: ${offerName || "All Member Privileges"}\n\nGuest Message: ${data.message}`,
-      website: "", // Honeypot field
+      website: "",
     }),
   });
 
-  const json = await res.json();
-
-  if (!res.ok || !json.success) {
-    throw new Error(json.message || "Failed to send message.");
+  const fallbackJson = await fallbackRes.json();
+  if (!fallbackRes.ok || !fallbackJson.success) {
+    throw new Error(fallbackJson.message || "Failed to send inquiry. Please try again.");
   }
-
-  return json;
+  return fallbackJson;
 }
 
 function ExploreOfferContent() {
@@ -42,11 +71,24 @@ function ExploreOfferContent() {
   const rawDest = searchParams.get("destination") || "Niraamaya Retreats Surya Samudra";
   const rawOffer = searchParams.get("offer") || "";
 
-  // Match the partner record from the partner dataset
+  // Match the partner record from the partner dataset with robust normalization
+  const cleanTarget = (rawDest || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const matchedPartner = PARTNERS_DATA.find((p) => {
     const pName = p.name.toLowerCase();
+    const cleanPName = pName.replace(/[^a-z0-9]/g, "");
+    const cleanSlug = p.slug.toLowerCase().replace(/[^a-z0-9]/g, "");
     const target = (rawDest || "").toLowerCase();
-    return pName.includes(target) || target.includes(pName) || p.slug.includes(target);
+
+    return (
+      pName.includes(target) ||
+      target.includes(pName) ||
+      cleanPName.includes(cleanTarget) ||
+      cleanTarget.includes(cleanPName) ||
+      cleanSlug.includes(cleanTarget) ||
+      cleanTarget.includes(cleanSlug) ||
+      (cleanTarget.includes("andaz") && (cleanSlug.includes("andaz") || cleanPName.includes("andaaz"))) ||
+      (cleanTarget.includes("andaaz") && (cleanSlug.includes("andaz") || cleanPName.includes("andaaz")))
+    );
   }) || PARTNERS_DATA[0]; // Defaults to Niraamaya Retreats Surya Samudra
 
   const formSectionRef = useRef(null);
@@ -106,7 +148,8 @@ function ExploreOfferContent() {
       await submitInquiryToWordPress(
         formData,
         matchedPartner.name,
-        selectedOffer ? selectedOffer.title : "All Member Privileges"
+        selectedOffer ? selectedOffer.title : "All Member Privileges",
+        selectedOffer ? selectedOffer.discount : ""
       );
       setIsSubmitted(true);
     } catch (err) {
@@ -154,28 +197,6 @@ function ExploreOfferContent() {
           <Link href="/destinations" className="partner-back-btn">
             ← Explore Destinations
           </Link>
-        </div>
-      </div>
-
-      {/* ─── Exclusive Member Inclusions Banner ──────────────────────────── */}
-      <div className="inclusions-banner-card">
-        <div className="inclusions-title">
-          <span>✨</span>
-          <span>Exclusive Member Inclusions for {matchedPartner.name}</span>
-        </div>
-        <div className="inclusions-list">
-          <div className="inclusion-item">
-            <div className="inclusion-label">Preferred Member Rates</div>
-            <div className="inclusion-desc">Exclusive bespoke luxury pricing reserved for active WLC members.</div>
-          </div>
-          <div className="inclusion-item">
-            <div className="inclusion-label">Complimentary Inclusions</div>
-            <div className="inclusion-desc">Wellness consultations, spa & salon credits with eligible stays.</div>
-          </div>
-          <div className="inclusion-item">
-            <div className="inclusion-label">VIP Hospitality</div>
-            <div className="inclusion-desc">Priority room upgrades, flexible check-in & check-out privileges.</div>
-          </div>
         </div>
       </div>
 

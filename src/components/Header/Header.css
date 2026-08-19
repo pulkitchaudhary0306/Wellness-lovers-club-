@@ -70,8 +70,28 @@
   background: #0d563f;
 }
 
-.mobile-only-member-btn {
-  display: none;
+/* ─── E-commerce Guest & User Actions ───────────────────────────────────── */
+.guest-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-signin-link {
+  font-family: 'Montserrat', -apple-system, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0d563f;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.header-signin-link:hover {
+  background: rgba(13, 86, 63, 0.08);
+  color: #06281e;
 }
 
 .header-member-btn {
@@ -79,6 +99,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  position: relative;
 }
 
 .member-button {
@@ -95,6 +116,8 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  cursor: pointer;
+  border: none;
 }
 
 .member-button:hover {
@@ -102,6 +125,180 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(13, 86, 63, 0.25);
   color: #ffffff !important;
+}
+
+/* ─── Logged In Member Button & Dropdown ───────────────────────────────── */
+.header-user-menu-wrapper {
+  position: relative;
+}
+
+.logged-in-member-btn {
+  background: #0d563f;
+  padding: 8px 16px 8px 10px;
+  border-radius: 30px;
+  gap: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 8px rgba(13, 86, 63, 0.15);
+}
+
+.logged-in-member-btn.active,
+.logged-in-member-btn:hover {
+  background: #06281e;
+}
+
+.user-avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4b896;
+}
+
+.user-btn-name {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-chevron {
+  transition: transform 0.25s ease;
+  color: #d4b896;
+}
+
+.dropdown-chevron.rotate {
+  transform: rotate(180deg);
+}
+
+.header-user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 240px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: 8px 0;
+  z-index: 1050;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-user-header {
+  padding: 12px 18px 10px 18px;
+}
+
+.dropdown-user-name {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #06281e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-user-email {
+  font-size: 12px;
+  color: #718096;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #edf2f7;
+  margin: 6px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.dropdown-item:hover {
+  background: #f7fafc;
+  color: #0d563f;
+}
+
+.dropdown-item.dropdown-logout {
+  color: #e53e3e;
+}
+
+.dropdown-item.dropdown-logout:hover {
+  background: #fff5f5;
+  color: #c53030;
+}
+
+/* ─── Mobile Menu Auth Elements ────────────────────────────────────────── */
+.mobile-only-member-btn {
+  display: none;
+}
+
+.mobile-auth-actions,
+.mobile-guest-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 0 5px 0;
+}
+
+.mobile-login-link {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d563f;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.mobile-logout-btn {
+  background: transparent;
+  border: 1px solid #fed7d7;
+  color: #c53030;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-menu-button {
@@ -136,11 +333,11 @@
 @media (max-width: 1050px) {
   .header-container {
     width: min(100% - 24px, 1000px);
-    gap: 20px;
+    gap: 16px;
   }
 
   .main-navigation {
-    gap: 22px;
+    gap: 20px;
   }
 
   .main-navigation a {
@@ -148,8 +345,13 @@
   }
 
   .member-button {
-    font-size: 14px;
+    font-size: 13.5px;
     padding: 8px 16px;
+  }
+
+  .header-signin-link {
+    font-size: 12.5px;
+    padding: 6px 8px;
   }
 }
 
@@ -159,42 +361,43 @@
   }
 
   .site-logo {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
   }
 
   .header-container {
     width: 100%;
+    padding: 0 16px;
     min-height: 52px;
-    padding: 10px 18px;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
   }
 
-  /* Hide the standalone desktop button from the header bar */
   .desktop-only {
     display: none !important;
   }
 
   .mobile-menu-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
+    display: inline-flex;
+  }
+
+  .mobile-only-member-btn {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    border-top: 1px solid #e2e8f0;
   }
 
   .main-navigation {
     display: none;
-    width: 100%;
-    order: 2;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
     flex-direction: column;
     align-items: stretch;
+    padding: 16px 20px 24px;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
     gap: 0;
-    background: #f8f8fb;
-    border-top: 1px solid #dedee3;
-    padding: 12px 4px 18px 4px;
   }
 
   .main-navigation.menu-open {
@@ -202,32 +405,24 @@
   }
 
   .main-navigation a {
-    width: 100%;
-    padding: 14px 10px;
-    border-bottom: 1px solid #e6e6e9;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f4;
     font-size: 16px;
-  }
-
-  .main-navigation a:last-of-type {
-    border-bottom: none;
   }
 
   .main-navigation a.active-link::after {
     display: none;
   }
 
-  /* Show Member button cleanly inside the opened mobile navigation */
-  .mobile-only-member-btn {
-    display: block;
-    margin-top: 16px;
-    padding: 0 4px;
+  .main-navigation a.active-link {
+    color: #0d563f;
+    font-weight: 700;
   }
 
   .mobile-member-button {
     width: 100%;
-    padding: 13px 20px;
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    border-radius: 6px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 12px 18px;
   }
 }

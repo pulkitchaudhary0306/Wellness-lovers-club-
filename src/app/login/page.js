@@ -260,7 +260,7 @@ export default function LoginPage() {
           <div style={{ marginTop: "2rem" }}>
             <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.4)", margin: 0 }}>
               New to the Club?{" "}
-              <Link href="/register" style={{ color: "#0f8554", fontWeight: 700, textDecoration: "none" }}>
+              <Link href="/membership" style={{ color: "#0f8554", fontWeight: 700, textDecoration: "none" }}>
                 Become a member
               </Link>
             </p>

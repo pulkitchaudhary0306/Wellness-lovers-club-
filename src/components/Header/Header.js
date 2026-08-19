@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import "./Header.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { User, LayoutDashboard, Award, LogOut, ChevronDown } from "lucide-react";
 
 function Header() {
   const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -17,13 +21,40 @@ function Header() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setIsUserDropdownOpen(false);
+  };
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    closeMenu();
+    try {
+      await logout();
+      router.push("/");
+    } catch (err) {
+      router.push("/");
+    }
   };
 
   const isActive = (path) => pathname === path;
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // Automatically close menu when path changes
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsUserDropdownOpen(false);
   }, [pathname]);
 
   // Close menu when resizing to desktop layout
@@ -36,6 +67,8 @@ function Header() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const displayName = user?.firstName || user?.display_name || user?.username || "Member";
 
   return (
     <header className="site-header">
@@ -109,27 +142,108 @@ function Header() {
               Contact Us
             </Link>
             
-            {/* Mobile Only: Member button placed inside the menu */}
+            {/* Mobile Only: Member action buttons placed inside mobile drawer */}
             <div className="mobile-only-member-btn">
-              <Link
-                href="/membership"
-                className="member-button mobile-member-button"
-                onClick={closeMenu}
-              >
-                BECOME A MEMBER →
-              </Link>
+              {isAuthenticated ? (
+                <div className="mobile-auth-actions">
+                  <Link
+                    href="/dashboard"
+                    className="member-button mobile-member-button"
+                    onClick={closeMenu}
+                  >
+                    <LayoutDashboard size={16} style={{ marginRight: 6 }} />
+                    DASHBOARD ({displayName})
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="mobile-logout-btn"
+                  >
+                    <LogOut size={15} style={{ marginRight: 6 }} />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="mobile-guest-actions">
+                  <Link
+                    href="/login"
+                    className="mobile-login-link"
+                    onClick={closeMenu}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/membership"
+                    className="member-button mobile-member-button"
+                    onClick={closeMenu}
+                  >
+                    BECOME A MEMBER →
+                  </Link>
+                </div>
+              )}
             </div>
           </nav>
 
-          {/* Desktop Only: Member button */}
-          <div className="header-member-btn desktop-only">
-            <Link
-              href="/membership"
-              className="member-button"
-              onClick={closeMenu}
-            >
-              BECOME A MEMBER →
-            </Link>
+          {/* Desktop Only: Dynamic E-commerce Auth & Member Button */}
+          <div className="header-member-btn desktop-only" ref={dropdownRef}>
+            {isAuthenticated ? (
+              <div className="header-user-menu-wrapper">
+                <button
+                  type="button"
+                  onClick={toggleUserDropdown}
+                  className={`member-button logged-in-member-btn ${isUserDropdownOpen ? "active" : ""}`}
+                  aria-expanded={isUserDropdownOpen}
+                >
+                  <span className="user-avatar-circle">
+                    <User size={14} />
+                  </span>
+                  <span className="user-btn-name">Hi, {displayName}</span>
+                  <ChevronDown size={14} className={`dropdown-chevron ${isUserDropdownOpen ? "rotate" : ""}`} />
+                </button>
+
+                {isUserDropdownOpen && (
+                  <div className="header-user-dropdown">
+                    <div className="dropdown-user-header">
+                      <div className="dropdown-user-name">{user?.firstName ? `${user.firstName} ${user.lastName || ""}` : displayName}</div>
+                      <div className="dropdown-user-email">{user?.email || "Active Member"}</div>
+                    </div>
+                    <div className="dropdown-divider"></div>
+                    <Link href="/dashboard" className="dropdown-item" onClick={closeMenu}>
+                      <LayoutDashboard size={16} />
+                      <span>Member Dashboard</span>
+                    </Link>
+                    <Link href="/dashboard?tab=profile" className="dropdown-item" onClick={closeMenu}>
+                      <User size={16} />
+                      <span>My Profile</span>
+                    </Link>
+                    <Link href="/dashboard?tab=membership" className="dropdown-item" onClick={closeMenu}>
+                      <Award size={16} />
+                      <span>My Membership</span>
+                    </Link>
+                    <div className="dropdown-divider"></div>
+                    <button type="button" onClick={handleLogout} className="dropdown-item dropdown-logout">
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="guest-header-actions">
+                <Link
+                  href="/login"
+                  className="header-signin-link"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/membership"
+                  className="member-button"
+                >
+                  BECOME A MEMBER →
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

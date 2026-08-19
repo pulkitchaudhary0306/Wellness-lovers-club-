@@ -65,6 +65,15 @@ class WLC_Core_Admin {
 
         add_submenu_page(
             'wlc-core-dashboard',
+            'Payments & Orders',
+            'Payments & Orders',
+            'manage_options',
+            'wlc-payments',
+            array( $this, 'render_payments_page' )
+        );
+
+        add_submenu_page(
+            'wlc-core-dashboard',
             'Email Settings',
             'Email Settings',
             'manage_options',
@@ -383,6 +392,90 @@ class WLC_Core_Admin {
                                         <a href="<?php echo wp_nonce_url( admin_url( 'admin.php?action=wlc_reject_member&user_id=' . $m->ID ), 'wlc_member_action_' . $m->ID ); ?>" class="button button-small" onclick="return confirm('Are you sure you want to deactivate this membership?');">Deactivate</a>
                                     <?php endif; ?>
                                 </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render Payments & Orders sub-page with full GST internal accounting details
+     */
+    public function render_payments_page() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wlc_payments';
+        $payments = $wpdb->get_results( "SELECT * FROM $table ORDER BY id DESC LIMIT 100" );
+        ?>
+        <div class="wrap">
+            <h1 class="wp-heading-inline">Membership Payments &amp; Razorpay Orders</h1>
+            <p style="color: #64748b; font-size: 13px;">
+                Internal accounting breakdown for statutory 18% GST compliance (Selling Price: ₹29,000 including 18% GST).
+            </p>
+            <hr class="wp-header-end">
+
+            <!-- GST Accounting Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0;">
+                <div style="background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #0f8554; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; letter-spacing: 0.05em;">Final Selling Price</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #0f8554; margin-top: 4px;">₹29,000.00</div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Fixed Tax-Inclusive Price</div>
+                </div>
+                <div style="background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; letter-spacing: 0.05em;">Base Amount (Excl. GST)</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #1e293b; margin-top: 4px;">₹24,576.27</div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">₹29,000 ÷ 1.18</div>
+                </div>
+                <div style="background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; letter-spacing: 0.05em;">Statutory GST @ 18%</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #f59e0b; margin-top: 4px;">₹4,423.73</div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">18% Included Tax Component</div>
+                </div>
+            </div>
+
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th style="width: 140px;">Order ID</th>
+                        <th style="width: 160px;">Customer</th>
+                        <th style="width: 130px;">Razorpay Order ID</th>
+                        <th style="width: 130px;">Razorpay Payment ID</th>
+                        <th style="width: 100px;">Base (Excl.)</th>
+                        <th style="width: 90px;">GST @ 18%</th>
+                        <th style="width: 100px;">Total Paid</th>
+                        <th style="width: 90px;">Status</th>
+                        <th style="width: 130px;">Date &amp; Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ( empty( $payments ) ) : ?>
+                        <tr><td colspan="9" style="text-align: center; padding: 20px;">No payment transactions recorded yet.</td></tr>
+                    <?php else : ?>
+                        <?php foreach ( $payments as $p ) : 
+                            $user = get_userdata( $p->user_id );
+                            $customer_name = $user ? ( $user->display_name ?: $user->first_name . ' ' . $user->last_name ) : 'Guest';
+                            $customer_email = $user ? $user->user_email : '-';
+                            $status_bg = $p->status === 'completed' ? '#dcfce7; color: #16a34a;' : ( $p->status === 'pending' ? '#fef3c7; color: #d97706;' : '#fee2e2; color: #ef4444;' );
+                            ?>
+                            <tr>
+                                <td><code><?php echo esc_html( $p->order_id ); ?></code></td>
+                                <td>
+                                    <strong><?php echo esc_html( $customer_name ); ?></strong><br>
+                                    <small style="color: #64748b;"><?php echo esc_html( $customer_email ); ?></small>
+                                </td>
+                                <td><small><code><?php echo esc_html( $p->gateway_order_id ?: '-' ); ?></code></small></td>
+                                <td><small><code><?php echo esc_html( $p->gateway_payment_id ?: '-' ); ?></code></small></td>
+                                <td>₹<?php echo number_format( (float) ( $p->base_amount ?: 24576.27 ), 2 ); ?></td>
+                                <td>₹<?php echo number_format( (float) ( $p->gst_amount ?: $p->tax_amount ?: 4423.73 ), 2 ); ?></td>
+                                <td><strong style="color: #0f8554;">₹<?php echo number_format( (float) $p->amount, 2 ); ?></strong></td>
+                                <td>
+                                    <span style="padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: <?php echo $status_bg; ?>">
+                                        <?php echo esc_html( ucfirst( $p->status ) ); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html( $p->created_at ); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

@@ -25,7 +25,6 @@ require_once WLC_CORE_PATH . 'includes/class-rate-limiter.php';
 require_once WLC_CORE_PATH . 'includes/class-sms.php';
 require_once WLC_CORE_PATH . 'includes/class-emails.php';
 require_once WLC_CORE_PATH . 'includes/class-auth-controller.php';
-require_once WLC_CORE_PATH . 'includes/class-payment-controller.php';
 require_once WLC_CORE_PATH . 'includes/class-profile-controller.php';
 require_once WLC_CORE_PATH . 'includes/class-contact-controller.php';
 require_once WLC_CORE_PATH . 'includes/class-newsletter-controller.php';

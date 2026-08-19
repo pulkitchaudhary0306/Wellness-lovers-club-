@@ -50,9 +50,6 @@ class WLC_Email_OTP_Plugin {
 
         // Initialize REST API endpoints
         add_action( 'rest_api_init', array( 'WLC_Email_OTP_REST_API', 'register_routes' ) );
-
-        // Handle CORS headers for Next.js frontend
-        add_action( 'rest_api_init', array( 'WLC_Email_OTP_REST_API', 'init_cors' ), 15 );
     }
 }
 

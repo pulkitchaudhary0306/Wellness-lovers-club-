@@ -16,13 +16,10 @@ class WLC_Zero_Failure_Pipeline {
     const GST_RATE       = 0.18; // 18% GST statutory tax
 
     public static function init() {
-        // 1. Setup CORS before REST handlers
-        add_action( 'rest_api_init', array( __CLASS__, 'setup_cors' ), 15 );
-
-        // 2. Register all REST API endpoints
+        // 1. Register all REST API endpoints
         add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
 
-        // 3. Register AJAX endpoints (fallback for classic admin-ajax.php)
+        // 2. Register AJAX endpoints (fallback for classic admin-ajax.php)
         add_action( 'wp_ajax_wlc_initiate_otp', array( __CLASS__, 'ajax_initiate_otp' ) );
         add_action( 'wp_ajax_nopriv_wlc_initiate_otp', array( __CLASS__, 'ajax_initiate_otp' ) );
         add_action( 'wp_ajax_wlc_verify_otp', array( __CLASS__, 'ajax_verify_otp' ) );
@@ -30,28 +27,7 @@ class WLC_Zero_Failure_Pipeline {
     }
 
     // =========================================================================
-    // 1. CORS PREFLIGHT & HEADERS (Solves Missing Headers / Rejection)
-    // =========================================================================
-    public static function setup_cors() {
-        remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
-        add_filter( 'rest_pre_serve_request', function( $value ) {
-            $origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? $_SERVER['HTTP_ORIGIN'] : '*';
-            header( "Access-Control-Allow-Origin: " . $origin );
-            header( "Access-Control-Allow-Credentials: true" );
-            header( "Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS" );
-            header( "Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept, X-Razorpay-Signature, X-Webhook-Signature" );
-
-            // Handle browser pre-flight OPTIONS request
-            if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS' ) {
-                status_header( 200 );
-                exit;
-            }
-            return $value;
-        } );
-    }
-
-    // =========================================================================
-    // 2. REST ROUTE REGISTRATION
+    // 1. REST ROUTE REGISTRATION
     // =========================================================================
     public static function register_rest_routes() {
         $ns = self::REST_NAMESPACE;
@@ -72,30 +48,6 @@ class WLC_Zero_Failure_Pipeline {
         register_rest_route( $ns, '/auth/validate', array(
             'methods'             => 'GET, POST',
             'callback'            => array( __CLASS__, 'rest_validate_session' ),
-            'permission_callback' => '__return_true',
-        ) );
-
-        // Phase 3: Payment Order & Dynamic QR Code
-        register_rest_route( $ns, '/payment/create-order', array(
-            'methods'             => 'POST',
-            'callback'            => array( __CLASS__, 'rest_create_payment_order' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $ns, '/payment/check-status', array(
-            'methods'             => 'GET',
-            'callback'            => array( __CLASS__, 'rest_check_payment_status' ),
-            'permission_callback' => '__return_true',
-        ) );
-
-        // Phase 4: Webhook & Payment Confirmation
-        register_rest_route( $ns, '/payment/webhook', array(
-            'methods'             => 'POST',
-            'callback'            => array( __CLASS__, 'rest_handle_webhook' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $ns, '/payment/confirm', array(
-            'methods'             => 'POST',
-            'callback'            => array( __CLASS__, 'rest_confirm_payment' ),
             'permission_callback' => '__return_true',
         ) );
     }

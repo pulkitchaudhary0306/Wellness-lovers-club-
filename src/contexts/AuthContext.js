@@ -94,6 +94,30 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ─── Google Authentication ──────────────────────────────────────────────────
+  const loginWithGoogle = async (googleData) => {
+    setLoading(true);
+    try {
+      const response = await authService.loginWithGoogle(googleData);
+      setUser(response.user);
+      setToken(response.token);
+      saveSession(response.token, response.refreshToken ?? "", response.user, true);
+
+      try {
+        const fullProfile = await authService.getProfile();
+        setUser(fullProfile);
+        updateStoredUser(fullProfile);
+        return fullProfile;
+      } catch {
+        return response.user;
+      }
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ─── Register ──────────────────────────────────────────────────────────────
   /**
    * Register does NOT return a token — JWT is only issued after OTP verification.
@@ -143,6 +167,10 @@ export function AuthProvider({ children }) {
    */
   const verifyOTP = async (otp, identifier) => {
     const response = await authService.verifyOTP(otp, identifier);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("wlc_otp_verified", "true");
+      localStorage.setItem("wlc_otp_verified", "true");
+    }
     if (response && response.token && response.user) {
       setUser(response.user);
       setToken(response.token);
@@ -215,6 +243,7 @@ export function AuthProvider({ children }) {
         loading,
         isAuthenticated: !!token,
         login,
+        loginWithGoogle,
         register,
         logout,
         sendOTP,

@@ -158,10 +158,18 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
       const targetEmail = activeEmail || (typeof window !== "undefined" ? sessionStorage.getItem("wlc_reg_email") : "") || "";
       await verifyOTP(otpCode, targetEmail);
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("wlc_otp_verified", "true");
+        localStorage.setItem("wlc_otp_verified", "true");
+        if (targetEmail) {
+          sessionStorage.setItem("wlc_reg_email", targetEmail);
+        }
+      }
+
       setIsSuccess(true);
       setTimeout(() => {
         router.push("/dashboard");
-      }, 1500);
+      }, 3000);
     } catch (err) {
       setApiError(err?.message || "Invalid or expired verification code. Please try again.");
       shake();
@@ -184,19 +192,46 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
         animate={{ opacity: 1, scale: 1 }}
         className={isEmbed ? "otp-card border-0 bg-transparent shadow-none" : "otp-card"}
       >
-        <div>
+        <div style={{ textAlign: "center", padding: "1rem 0" }}>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
             className="otp-success-icon"
+            style={{ margin: "0 auto 1.25rem" }}
           >
-            <CheckCircle2 size={32} />
+            <CheckCircle2 size={36} />
           </motion.div>
-          <h2 className="otp-success-title">Email Verified!</h2>
-          <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "14px", fontWeight: 300, lineHeight: "1.6" }}>
-            Your account is now verified and active. Redirecting you to your dashboard...
+          <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", color: "#10b981", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
+            Verification Complete
+          </span>
+          <h2 className="otp-success-title" style={{ fontSize: "24px", marginBottom: "8px" }}>
+            Welcome to the Club!
+          </h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.75)", fontSize: "14px", fontWeight: 300, lineHeight: "1.6", marginBottom: "1.75rem" }}>
+            Your VIP membership registration and email have been successfully verified.
           </p>
+
+          <Link
+            href="/dashboard"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              width: "100%",
+              background: "#0f8554",
+              color: "#ffffff",
+              padding: "14px 24px",
+              borderRadius: "10px",
+              fontWeight: "700",
+              fontSize: "14px",
+              textDecoration: "none",
+              boxShadow: "0 10px 25px rgba(15, 133, 84, 0.35)",
+            }}
+          >
+            <span>Go to Member Dashboard</span>
+          </Link>
         </div>
       </motion.div>
     );
@@ -297,8 +332,8 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
         </button>
 
         <div className="otp-footer-links">
-          <Link href="/register" className="otp-back-link">
-            <ArrowLeft size={13} /> Back to Registration
+          <Link href="/membership" className="otp-back-link">
+            <ArrowLeft size={13} /> Back to Membership Application
           </Link>
           <Link href="/login" className="otp-back-link">
             Back to Sign In

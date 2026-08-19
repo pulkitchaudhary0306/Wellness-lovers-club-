@@ -51,9 +51,6 @@ class WLC_Core_Db {
         $table_email_queue    = $wpdb->prefix . 'wlc_email_queue';
         $table_email_verify   = $wpdb->prefix . 'wlc_email_verification';
         $table_dual_verify    = $wpdb->prefix . 'wlc_dual_verification';
-        $table_payments       = $wpdb->prefix . 'wlc_payments';
-        $legacy_email_verify  = $wpdb->prefix . 'wlc_email_verifications';
-
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         // 1. Contacts Table
@@ -157,42 +154,6 @@ class WLC_Core_Db {
             KEY phone (phone)
         ) $charset_collate;";
         dbDelta( $sql_dual_verify );
-
-        // 7. Membership Orders & Payment Transactions Table
-        $sql_payments = "CREATE TABLE IF NOT EXISTS $table_payments (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            order_id varchar(64) NOT NULL,
-            user_id bigint(20) NOT NULL,
-            membership_id varchar(50) DEFAULT '',
-            tier varchar(50) NOT NULL,
-            amount decimal(10,2) NOT NULL,
-            tax_amount decimal(10,2) DEFAULT 0.00 NOT NULL,
-            discount_amount decimal(10,2) DEFAULT 0.00 NOT NULL,
-            promo_code varchar(50) DEFAULT '',
-            currency varchar(10) DEFAULT 'INR' NOT NULL,
-            gateway varchar(50) DEFAULT 'upi_qr' NOT NULL,
-            gateway_order_id varchar(100) DEFAULT '',
-            gateway_payment_id varchar(100) DEFAULT '',
-            gateway_signature varchar(255) DEFAULT '',
-            upi_vpa varchar(100) DEFAULT '',
-            upi_qr_payload text DEFAULT '',
-            qr_expires_at datetime DEFAULT NULL,
-            status varchar(30) DEFAULT 'pending' NOT NULL,
-            invoice_number varchar(64) DEFAULT '',
-            webhook_payload longtext DEFAULT '',
-            paid_at datetime DEFAULT NULL,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-            PRIMARY KEY  (id),
-            UNIQUE KEY order_id (order_id),
-            KEY user_id (user_id),
-            KEY status (status)
-        ) $charset_collate;";
-        dbDelta( $sql_payments );
-
-        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy_email_verify ) ) === $legacy_email_verify ) {
-            $wpdb->query( "INSERT IGNORE INTO $table_email_verify SELECT * FROM $legacy_email_verify" );
-        }
     }
 
     /**

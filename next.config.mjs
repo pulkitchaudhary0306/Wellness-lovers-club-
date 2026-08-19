@@ -23,6 +23,11 @@ const nextConfig = {
         destination: "/our-philosophy",
         permanent: true,
       },
+      {
+        source: "/register",
+        destination: "/membership",
+        permanent: true,
+      },
     ];
   },
 };

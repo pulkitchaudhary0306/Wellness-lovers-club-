@@ -1,6 +1,9 @@
 .philosophy-section {
   background-color: var(--background);
 }
+.philosophy-section .eyebrow {
+  color: #fff;
+}
 
 .philosophy-container {
   display: grid;

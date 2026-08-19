@@ -57,7 +57,7 @@ export default function OurPhilosophyPage() {
       <section className="about-hero" aria-label="Our Philosophy Hero">
         <div className="about-hero-container">
           <span className="about-hero-eyebrow">CONSCIOUS LIVING & WELLBEING</span>
-          <h1 className="about-hero-title">Our Philosophy</h1>
+          <h1 className="about-hero-title" style={{ color: "#ffffff" }}>Our Philosophy</h1>
           <p className="about-hero-desc">
             A wellness movement dedicated to mindful luxury, world-class retreat sanctuaries, and holistic personal transformation.
           </p>

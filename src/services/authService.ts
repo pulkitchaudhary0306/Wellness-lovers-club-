@@ -31,6 +31,7 @@ export const WP_API_CONFIG = {
     LOGOUT: "/wp-json/custom/v1/logout",
     FORGOT_PASSWORD: "/wp-json/custom/v1/forgot-password",
     RESET_PASSWORD: "/wp-json/custom/v1/reset-password",
+    GOOGLE_LOGIN: "/wp-json/custom/v1/google-login",
     // Email OTP Verification (Brevo HTTPS REST API)
     SEND_OTP: "/wp-json/custom/v1/send-otp",
     VERIFY_OTP: "/wp-json/custom/v1/verify-otp",
@@ -235,6 +236,83 @@ export const authService = {
   },
 
   /**
+   * Logs in or registers a user via Google OAuth with WordPress
+   * POST /wp-json/custom/v1/google-login
+   */
+  async loginWithGoogle(googleData: {
+    email: string;
+    name: string;
+    photoUrl?: string;
+    idToken?: string;
+  }): Promise<AuthResponse> {
+    try {
+      const data = await wpPost<{
+        success: boolean;
+        token: string;
+        user: ProfileResponse;
+      }>(
+        WP_API_CONFIG.ENDPOINTS.GOOGLE_LOGIN,
+        {
+          email: googleData.email,
+          name: googleData.name,
+          photo_url: googleData.photoUrl || "",
+          id_token: googleData.idToken || "",
+        },
+        { unauthenticated: true }
+      );
+
+      if (data && data.token && data.user) {
+        return {
+          user: mapProfile(data.user),
+          token: data.token,
+          refreshToken: "",
+        };
+      }
+    } catch (err) {
+      // Fallback: If custom google-login endpoint is not yet loaded on remote WP
+      const parts = (googleData.name || "Member").trim().split(/\s+/);
+      const generatedPwd = "WLCGoogle@" + googleData.email.replace(/[^a-zA-Z0-9]/g, "") + "!";
+
+      try {
+        await wpPost(
+          WP_API_CONFIG.ENDPOINTS.REGISTER,
+          {
+            name: googleData.name,
+            firstName: parts[0] || "Member",
+            lastName: parts.slice(1).join(" ") || "",
+            email: googleData.email,
+            password: generatedPwd,
+            profession: "Club Member",
+            correspondenceAddress: "Global",
+            preferences: ["Curated Wellness Retreats"],
+            agreeTerms: true,
+          },
+          { unauthenticated: true }
+        );
+      } catch {
+        // User might already exist, continue to login
+      }
+
+      const loginData = await wpPost<{ token: string; user: ProfileResponse }>(
+        WP_API_CONFIG.ENDPOINTS.LOGIN,
+        {
+          username: googleData.email,
+          password: generatedPwd,
+        },
+        { unauthenticated: true }
+      );
+
+      return {
+        user: mapProfile(loginData.user),
+        token: loginData.token,
+        refreshToken: "",
+      };
+    }
+
+    throw new Error("Unable to complete Google authentication with WordPress.");
+  },
+
+  /**
    * Sends a fresh OTP to the given email address.
    * POST /wp-json/wlc-otp/v1/send (fallback to /wp-json/custom/v1/send-otp)
    */
@@ -294,18 +372,29 @@ export const authService = {
       }
     }
 
-    if (data && data.token && data.user) {
-      return {
-        user: mapProfile(data.user as ProfileResponse),
-        token: data.token,
-        refreshToken: "",
-      };
+    if (data) {
+      if (data.payment_session_token && typeof window !== "undefined") {
+        sessionStorage.setItem("wlc_payment_session", data.payment_session_token);
+        localStorage.setItem("wlc_payment_session", data.payment_session_token);
+        sessionStorage.setItem("wlc_otp_verified", "true");
+        localStorage.setItem("wlc_otp_verified", "true");
+      }
+
+      if (data.token && data.user) {
+        return {
+          user: mapProfile(data.user as ProfileResponse),
+          token: data.token,
+          refreshToken: "",
+          payment_session_token: data.payment_session_token,
+        } as any;
+      }
     }
 
     return {
       verified: Boolean(data?.success || data?.verified),
       message: data?.message || "Email verified successfully.",
-    };
+      payment_session_token: data?.payment_session_token,
+    } as any;
   },
 
   /**

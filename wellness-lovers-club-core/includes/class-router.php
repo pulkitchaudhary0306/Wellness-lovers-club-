@@ -41,22 +41,39 @@ class WLC_Core_Router {
     }
 
     /**
-     * CORS Filter setup for headless frontend compatibility
+     * CORS Filter setup with explicit production origin allowlist
      */
     public function register_cors() {
         remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
-        
-        add_filter( 'rest_pre_serve_request', function( $value ) {
-            if ( isset( $_SERVER['HTTP_ORIGIN'] ) ) {
-                header( "Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN'] );
-                header( "Access-Control-Allow-Credentials: true" );
-            } else {
-                header( "Access-Control-Allow-Origin: *" );
-            }
-            header( "Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS" );
-            header( "Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept" );
-            return $value;
-        } );
+        add_filter( 'rest_pre_serve_request', array( __CLASS__, 'handle_cors' ), 15 );
+    }
+
+    public static function get_allowed_origins() {
+        return array(
+            'https://wellnessloversclub.com',
+            'https://www.wellnessloversclub.com',
+        );
+    }
+
+    public static function handle_cors( $value ) {
+        $allowed_origins = self::get_allowed_origins();
+        $origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? trim( $_SERVER['HTTP_ORIGIN'] ) : '';
+
+        if ( $origin !== '' && in_array( $origin, $allowed_origins, true ) ) {
+            header( 'Access-Control-Allow-Origin: ' . $origin );
+            header( 'Access-Control-Allow-Credentials: true' );
+            header( 'Vary: Origin' );
+        }
+
+        header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
+        header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept, X-Razorpay-Signature, X-Webhook-Signature, X-Payment-Session' );
+
+        if ( isset( $_SERVER['REQUEST_METHOD'] ) && strtoupper( $_SERVER['REQUEST_METHOD'] ) === 'OPTIONS' ) {
+            status_header( 200 );
+            exit;
+        }
+
+        return $value;
     }
 
     /**
@@ -128,28 +145,6 @@ class WLC_Core_Router {
             'permission_callback' => '__return_true',
         ) );
 
-        // Payment Gateway, Dynamic UPI QR, and Webhook Endpoints
-        $payment = new WLC_Core_Payment_Controller();
-        register_rest_route( $namespace, '/payment/create-order', array(
-            'methods'             => 'POST',
-            'callback'            => array( $payment, 'create_order' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $namespace, '/payment/check-status', array(
-            'methods'             => 'GET',
-            'callback'            => array( $payment, 'check_status' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $namespace, '/payment/verify-payment', array(
-            'methods'             => 'POST',
-            'callback'            => array( $payment, 'verify_payment' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $namespace, '/payment/webhook', array(
-            'methods'             => 'POST',
-            'callback'            => array( $payment, 'handle_webhook' ),
-            'permission_callback' => '__return_true',
-        ) );
 
         // ─── Production Email OTP Verification Endpoints ─────────────────────────
         register_rest_route( $namespace, '/verify-otp', array(

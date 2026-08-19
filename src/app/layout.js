@@ -4,6 +4,12 @@ import Footer from "@/components/Footer/Footer";
 import AppShell from "@/components/AppShell/AppShell";
 import { AuthProvider } from "@/contexts/AuthContext";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata = {
   title: "Wellness Lovers Club",
   description: "Premium wellness services and membership experiences.",

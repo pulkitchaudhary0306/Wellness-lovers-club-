@@ -28,32 +28,16 @@ class WLC_OTP_Controller {
 
     private function __construct() {
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
-        add_action( 'rest_api_init', array( $this, 'handle_cors' ), 15 );
     }
 
     /**
-     * Manage CORS headers for Next.js frontend
+     * Manage CORS headers for Next.js frontend (Delegates to centralized WLC_Core_Router policy)
      */
-    public function handle_cors() {
-        $allowed = array(
-            'https://wellnessloversclub.com',
-            'https://www.wellnessloversclub.com',
-            'http://localhost:3000',
-            'http://localhost:3001',
-            'http://127.0.0.1:3000',
-        );
-        $origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? $_SERVER['HTTP_ORIGIN'] : '';
-        if ( in_array( $origin, $allowed, true ) ) {
-            header( "Access-Control-Allow-Origin: {$origin}" );
-            header( "Access-Control-Allow-Methods: POST, GET, OPTIONS" );
-            header( "Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept" );
-            header( "Access-Control-Allow-Credentials: true" );
+    public function handle_cors( $value = null ) {
+        if ( class_exists( 'WLC_Core_Router' ) && method_exists( 'WLC_Core_Router', 'handle_cors' ) ) {
+            return WLC_Core_Router::handle_cors( $value );
         }
-
-        if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
-            status_header( 200 );
-            exit;
-        }
+        return $value;
     }
 
     /**
@@ -375,9 +359,28 @@ class WLC_OTP_Controller {
             update_user_meta( $user_id, 'wlc_membership_status', 'Active' );
         }
 
+        // Generate JWT Token
+        $jwt_token = '';
+        if ( class_exists( 'WLC_Core_JWT' ) && $user_id ) {
+            $jwt_token = WLC_Core_JWT::generate_token( $user_id );
+        }
+
+        $user_data = array(
+            'id'    => $user_id,
+            'email' => $email,
+        );
+        if ( $user_id && class_exists( 'WLC_Core_Auth_Controller' ) ) {
+            $user_obj = get_user_by( 'id', $user_id );
+            if ( $user_obj ) {
+                $user_data = WLC_Core_Auth_Controller::build_user_data( $user_obj );
+            }
+        }
+
         return new WP_REST_Response( array(
             'success' => true,
             'message' => 'Email verified successfully.',
+            'token'   => $jwt_token,
+            'user'    => $user_data,
         ), 200 );
     }
 

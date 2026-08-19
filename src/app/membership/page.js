@@ -1,26 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, ChevronDown, Check, Loader2, Award, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 
 const registerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Mobile number is required").regex(/^\+?[0-9\s\-()]{7,15}$/, "Enter a valid phone number"),
-  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
   profession: z.string().min(1, "Profession is required"),
   companyName: z.string().optional(),
-  correspondenceAddress: z.string().min(1, "Address is required"),
+  correspondenceAddress: z.string().min(1, "Correspondence address is required"),
   preferences: z.array(z.string()).min(1, "Select at least one preference"),
-  password: z.string().min(8, "Min 8 characters").regex(/[A-Z]/, "Needs uppercase").regex(/[0-9]/, "Needs number").regex(/[^A-Za-z0-9]/, "Needs special char"),
+  password: z.string().min(8, "Min 8 characters").regex(/[A-Z]/, "Needs 1 uppercase letter").regex(/[0-9]/, "Needs 1 number").regex(/[^A-Za-z0-9]/, "Needs 1 special character"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
-  agreeTerms: z.literal(true, { errorMap: () => ({ message: "You must agree to Terms & Conditions" }) }),
+  agreeTerms: z.literal(true, { errorMap: () => ({ message: "You must agree to the Terms & Conditions" }) }),
   subscribeNewsletter: z.boolean().default(false),
 }).refine(d => d.password === d.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
 
@@ -100,43 +99,85 @@ function RegisterPanel({ onSwitchToLogin }) {
     if (opt === "All Of The Above") {
       next = checked ? [...PREFERENCE_OPTIONS, "All Of The Above"] : [];
     } else {
-      if (checked) { next.push(opt); if (PREFERENCE_OPTIONS.every(o => next.includes(o))) next.push("All Of The Above"); }
-      else { next = next.filter(p => p !== opt && p !== "All Of The Above"); }
+      if (checked) {
+        next.push(opt);
+        if (PREFERENCE_OPTIONS.every(o => next.includes(o))) next.push("All Of The Above");
+      } else {
+        next = next.filter(p => p !== opt && p !== "All Of The Above");
+      }
     }
     setSelectedPrefs(next);
     setValue("preferences", next, { shouldValidate: true });
   };
 
   const onSubmit = async (data) => {
-    setIsLoading(true); setApiError("");
+    setIsLoading(true);
+    setApiError("");
     const parts = data.name.trim().split(/\s+/);
+    const registrationPayload = {
+      name: data.name.trim(),
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
+      phone: data.phone || "",
+      email: data.email.toLowerCase().trim(),
+      password: data.password,
+      profession: data.profession,
+      companyName: data.companyName,
+      address: data.correspondenceAddress,
+      preferences: data.preferences,
+      subscribeNewsletter: Boolean(data.subscribeNewsletter),
+    };
+
     try {
-      await signup({ ...data, firstName: parts[0] || "", lastName: parts.slice(1).join(" ") || "" });
-      router.push("/verify-otp");
-    } catch (err) { setApiError(err.message || "Registration failed. Please try again."); }
-    finally { setIsLoading(false); }
+      await signup(registrationPayload);
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("wlc_reg_email", registrationPayload.email);
+        localStorage.setItem("wlc_reg_email", registrationPayload.email);
+        sessionStorage.setItem("wlc_reg_name", registrationPayload.name);
+        localStorage.setItem("wlc_reg_name", registrationPayload.name);
+        if (registrationPayload.phone) {
+          sessionStorage.setItem("wlc_reg_phone", registrationPayload.phone);
+          localStorage.setItem("wlc_reg_phone", registrationPayload.phone);
+        }
+      }
+      router.push("/verify-otp?email=" + encodeURIComponent(registrationPayload.email));
+    } catch (err) {
+      setApiError(err.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      {apiError && <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>{apiError}</div>}
+      {apiError && (
+        <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>
+          {apiError}
+        </div>
+      )}
 
       <div className="member-form-grid">
-        <FieldInput label="Full Name" error={errors.name?.message} {...register("name")} />
-        <FieldInput label="Mobile Number" type="tel" error={errors.phone?.message} {...register("phone")} />
-        <FieldInput label="Email Address" type="email" error={errors.email?.message} {...register("email")} />
-        <FieldInput label="Profession" error={errors.profession?.message} {...register("profession")} />
-        <FieldInput label="Company Name (Optional)" error={errors.companyName?.message} {...register("companyName")} />
-        <FieldInput label="Correspondence Address" error={errors.correspondenceAddress?.message} {...register("correspondenceAddress")} />
-        <FieldInput label="Password" type="password" placeholder="Min 8 chars" error={errors.password?.message} {...register("password")} />
-        <FieldInput label="Confirm Password" type="password" error={errors.confirmPassword?.message} {...register("confirmPassword")} />
+        <FieldInput label="Full Name" placeholder="e.g. Alexander Wright" error={errors.name?.message} {...register("name")} />
+        <FieldInput label="Mobile Number" type="tel" placeholder="+91 98765 43210" error={errors.phone?.message} {...register("phone")} />
+        <FieldInput label="Email Address" type="email" placeholder="alexander@example.com" error={errors.email?.message} {...register("email")} />
+        <FieldInput label="Profession" placeholder="e.g. Entrepreneur, Architect" error={errors.profession?.message} {...register("profession")} />
+        <FieldInput label="Company Name (Optional)" placeholder="Company or Studio" error={errors.companyName?.message} {...register("companyName")} />
+        <FieldInput label="Correspondence Address" placeholder="City, State, Country" error={errors.correspondenceAddress?.message} {...register("correspondenceAddress")} />
+        <FieldInput label="Password" type="password" placeholder="Min 8 chars, uppercase, number, symbol" error={errors.password?.message} {...register("password")} />
+        <FieldInput label="Confirm Password" type="password" placeholder="Confirm your password" error={errors.confirmPassword?.message} {...register("confirmPassword")} />
       </div>
 
-      {/* Preferences */}
+      {/* Preferences dropdown */}
       <div ref={dropdownRef} style={{ position: "relative" }}>
-        <label style={{ display: "block", fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Preferences</label>
-        <button type="button" onClick={() => setDropdownOpen(v => !v)} style={{ width: "100%", background: "transparent", border: "none", borderBottom: errors.preferences ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)", borderRadius: 0, padding: "8px 0", fontSize: 13, color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", outline: "none" }}>
-          <span style={{ color: selectedPrefs.length === 0 ? "rgba(255,255,255,0.3)" : "#fff" }}>
+        <label style={{ display: "block", fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
+          Preferences
+        </label>
+        <button
+          type="button"
+          onClick={() => setDropdownOpen(v => !v)}
+          style={{ width: "100%", background: "transparent", border: "none", borderBottom: errors.preferences ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)", borderRadius: 0, padding: "8px 0", fontSize: 13, color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", outline: "none" }}
+        >
+          <span style={{ color: selectedPrefs.length === 0 ? "rgba(255,255,255,0.3)" : "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 10 }}>
             {selectedPrefs.length === 0 ? "Choose your preferences" : selectedPrefs.includes("All Of The Above") ? "All Of The Above" : selectedPrefs.join(", ")}
           </span>
           <ChevronDown size={15} color="rgba(255,255,255,0.4)" />
@@ -200,17 +241,27 @@ function LoginPanel({ onSwitchToRegister }) {
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(loginSchema), defaultValues: { usernameOrEmail: "", password: "", rememberMe: false } });
 
   const onSubmit = async (data) => {
-    setIsLoading(true); setApiError("");
-    try { await login(data.usernameOrEmail, data.password, data.rememberMe); router.push("/dashboard"); }
-    catch (err) { setApiError(err.message || "Invalid credentials."); }
-    finally { setIsLoading(false); }
+    setIsLoading(true);
+    setApiError("");
+    try {
+      await login(data.usernameOrEmail, data.password, data.rememberMe);
+      router.push("/dashboard");
+    } catch (err) {
+      setApiError(err.message || "Invalid credentials.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      {apiError && <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>{apiError}</div>}
-      <FieldInput label="Username or Email Address" type="text" error={errors.usernameOrEmail?.message} {...register("usernameOrEmail")} />
-      <FieldInput label="Password" type="password" error={errors.password?.message} {...register("password")} />
+      {apiError && (
+        <div style={{ padding: "10px 14px", background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, fontSize: 12, color: "#f87171", textAlign: "center" }}>
+          {apiError}
+        </div>
+      )}
+      <FieldInput label="Username or Email Address" type="text" placeholder="Your username or email" error={errors.usernameOrEmail?.message} {...register("usernameOrEmail")} />
+      <FieldInput label="Password" type="password" placeholder="Enter your password" error={errors.password?.message} {...register("password")} />
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
           <input type="checkbox" {...register("rememberMe")} style={{ accentColor: "#0f8554", width: 13, height: 13 }} />
@@ -221,6 +272,7 @@ function LoginPanel({ onSwitchToRegister }) {
       <button type="submit" disabled={isLoading} style={{ width: "100%", background: "#0f8554", color: "#fff", border: "none", borderRadius: 6, padding: "13px 24px", fontSize: 13, fontWeight: 700, cursor: isLoading ? "not-allowed" : "pointer", opacity: isLoading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
         {isLoading ? <><Loader2 size={15} style={{ animation: "spin 1s linear infinite" }} /> Please wait...</> : "Sign In"}
       </button>
+
       <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: "0.5rem" }}>
         New to the Club?{" "}
         <button type="button" onClick={onSwitchToRegister} style={{ background: "none", border: "none", color: "#0f8554", fontWeight: 700, cursor: "pointer", fontSize: 11, padding: 0 }}>Become a member</button>
@@ -229,9 +281,19 @@ function LoginPanel({ onSwitchToRegister }) {
   );
 }
 
-export default function MembershipPage() {
+function MembershipContent() {
   const { isAuthenticated, user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("register");
+  const searchParams = useSearchParams();
+  const queryTab = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(queryTab === "login" ? "login" : "register");
+
+  useEffect(() => {
+    if (queryTab === "login") {
+      setActiveTab("login");
+    } else if (queryTab === "register") {
+      setActiveTab("register");
+    }
+  }, [queryTab]);
 
   if (isAuthenticated) {
     return (
@@ -242,8 +304,8 @@ export default function MembershipPage() {
             <Award size={32} color="#bca374" />
           </div>
           <h3 style={{ fontSize: 22, fontWeight: 700, color: "#fff" }}>Active Club Membership</h3>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
-            Welcome back, <strong style={{ color: "#fff" }}>{user?.firstName} {user?.lastName}</strong>. Your {user?.membershipTier || "Lotus Club"} membership is fully active.
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
+            Welcome back, <strong style={{ color: "#fff" }}>{user?.firstName ? `${user.firstName} ${user.lastName || ""}` : (user?.display_name || "Valued Member")}</strong>. Your {user?.membershipTier || "Wellness Lovers Club"} membership is active.
           </p>
           <div style={{ display: "flex", gap: 12, width: "100%" }}>
             <Link href="/dashboard" style={{ flex: 1 }}>
@@ -271,7 +333,7 @@ export default function MembershipPage() {
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 0 }} />
 
       <div className="member-card-container">
-        {/* Left */}
+        {/* Left Col: Luxury Branding & Payment Info */}
         <div className="member-left-col">
           <div style={{ fontSize: 11, fontWeight: 700, color: "#0f8554", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>Wellness Lovers Club</div>
           <h2 style={{ fontFamily: "Arial, sans-serif", fontSize: 38, fontWeight: 800, color: "#fff", lineHeight: 1.1, marginBottom: "1.5rem" }}>
@@ -300,7 +362,7 @@ export default function MembershipPage() {
           </div>
         </div>
 
-        {/* Right */}
+        {/* Right Col: Registration & Login Tabs */}
         <div className="member-right-col">
           {/* Tabs */}
           <div style={{ display: "flex", gap: 4, marginBottom: "1.75rem" }}>
@@ -313,7 +375,6 @@ export default function MembershipPage() {
 
           {activeTab === "register" ? (
             <RegisterPanel onSwitchToLogin={() => setActiveTab("login")} />
-
           ) : (
             <LoginPanel onSwitchToRegister={() => setActiveTab("register")} />
           )}
@@ -390,5 +451,13 @@ export default function MembershipPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function MembershipPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#080c09", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>Loading Membership Portal...</div>}>
+      <MembershipContent />
+    </Suspense>
   );
 }

@@ -277,28 +277,28 @@ export const PARTNERS_DATA = [
   {
     id: 9,
     slug: "andaz-delhi-hyatt",
-    name: "Andaaz Delhi — Hyatt Hotel",
-    location: "Aerocity / Vasant Vihar, New Delhi",
+    name: "Andaaz Delhi, Hyatt Hotel, Vasant Vihar, Delhi",
+    location: "Vasant Vihar / Aerocity, New Delhi",
     shortDesc: "A luxury lifestyle Hyatt property blending contemporary Indian craftsmanship with urban wellness, heated pools, and artisanal spa sanctuaries.",
-    category: "Urban Luxury Spa",
+    category: "Urban Luxury Spa & Wellness",
     image: "/images/andaz-hyatt-spa.webp",
     flag: "🇮🇳",
     offers: [
       {
         id: "and-1",
-        title: "25% Off Regular Spa Treatments",
-        discount: "25% DISCOUNT",
+        title: "25% Off Regular Spa Treatments + 1 Hr Complimentary Gym/Pool",
+        discount: "25% OFF + 1 HR GYM/POOL",
         badge: "Spa & Fitness",
-        description: "25% off regular spa treatments at Andaz Spa, plus 1 hour of complimentary Gym and Swimming Pool access.",
-        terms: "Packages excluded. Valid on regular à la carte spa treatments with prior slot confirmation."
+        description: "25% off on regular spa treatments (Excluding packages) with one hour of Gym/pool complimentary.",
+        terms: "Excluding packages. Valid on regular spa treatments with prior appointment."
       },
       {
         id: "and-2",
-        title: "Complimentary 30-Minute Add-On Treatment",
+        title: "Complimentary 30-Minute Add-On with 90-Minute Treatment",
         discount: "FREE 30-MIN ADD-ON",
-        badge: "With 90-Min Service",
-        description: "Book any 90-minute treatment and receive 30 minutes complimentary of any ONE: Head massage, Face cleansing, Foot massage, or Chakra healing.",
-        terms: "Valid with any 90-minute treatment booking. Choose one add-on at check-in."
+        badge: "With 90-Min Treatment",
+        description: "With 90 minutes treatment add on 30 minutes of complimentary : head massage/ face cleansing/foot massage or Chakra healing.(any one)",
+        terms: "Valid with any 90-minute treatment. Choose any one: head massage, face cleansing, foot massage, or Chakra healing."
       }
     ]
   },

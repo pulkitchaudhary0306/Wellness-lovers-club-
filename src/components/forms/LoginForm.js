@@ -186,10 +186,10 @@ export default function LoginForm({ isEmbed = false }) {
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
           Don&apos;t have an account?{" "}
           <Link
-            href="/register"
+            href="/membership"
             className="text-blue-600 hover:text-blue-700 hover:underline ml-1"
           >
-            Create Account
+            Become a Member
           </Link>
         </p>
       </div>
