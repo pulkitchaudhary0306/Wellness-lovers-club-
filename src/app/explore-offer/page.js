@@ -469,7 +469,7 @@ function ExploreOfferContent() {
             ← Explore Destinations
           </Link>
           <Link href="/membership" className="btn btn-gold">
-            Membership Tiers
+            Become a Member
           </Link>
         </div>
       </section>

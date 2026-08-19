@@ -354,12 +354,6 @@ function MembershipContent() {
             ))}
           </div>
 
-          {/* Payment QR Section */}
-          <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.03)", padding: "1rem", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <img src="/QR images/Pinnacle_Connect_UPI_QR_29000.png" alt="Scan to Pay Membership Fee" style={{ width: "112px", height: "112px", borderRadius: "6px", border: "3px solid #fff" }} />
-            <span style={{ fontSize: "10px", fontWeight: 600, color: "#0f8554", letterSpacing: "0.05em", textTransform: "uppercase" }}>Scan to Pay</span>
-            <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", textAlign: "center" }}>Membership payment: ₹29,000.00 with GST 18%</span>
-          </div>
         </div>
 
         {/* Right Col: Registration & Login Tabs */}
