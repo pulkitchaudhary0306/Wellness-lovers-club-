@@ -13,9 +13,12 @@ import {
   Sparkles,
   ArrowRight,
   ArrowLeft,
+  RefreshCw,
+  Award,
   Crown,
   ChevronRight,
   Compass,
+  HeartHandshake,
   Sparkle,
   BedDouble,
   Flower2,
@@ -33,19 +36,10 @@ const STEPS = [
   { id: "payment", label: "Payment" },
 ];
 
-const STEP_BACKGROUNDS = [
-  "/images/hero-wellness.webp",         // Step 0: Welcome
-  "/images/membership-resort.webp",     // Step 1: Membership
-  "/images/wellness-retreat.webp",       // Step 2: Benefits
-  "/images/philosophy-pool.webp",       // Step 3: Review
-  "/images/membership-spa.webp",        // Step 4: Payment
-  "/images/exclusive-privileges.webp",  // Step 5: Confirmed
-];
-
 function MembershipEnrollmentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0); // 0: welcome, 1: membership, 2: benefits, 3: review, 4: payment, 5: success
   const [customerEmail, setCustomerEmail] = useState("");
@@ -123,7 +117,7 @@ function MembershipEnrollmentContent() {
 
       const options = {
         key: activeKeyId,
-        amount: orderData.amount_paise || 100,
+        amount: orderData.amount_paise || 2900000,
         currency: orderData.currency || "INR",
         name: "Wellness Lovers Club",
         description: "VIP Annual Membership Pass",
@@ -189,33 +183,16 @@ function MembershipEnrollmentContent() {
   // ─────────────────────────────────────────────────────────────────────────────
   if (currentStepIndex === 5 && successDetails) {
     return (
-      <div style={{ minHeight: "100vh", position: "relative", color: "#ffffff", padding: "120px 20px 80px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        {/* Background Image */}
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundImage: `url('${STEP_BACKGROUNDS[5]}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            zIndex: 0,
-          }}
-        />
-        <div style={{ position: "fixed", inset: 0, background: "linear-gradient(135deg, rgba(7, 12, 9, 0.88) 0%, rgba(10, 16, 12, 0.94) 100%)", backdropFilter: "blur(6px)", zIndex: 0 }} />
-
+      <div style={{ minHeight: "100vh", background: "#070c09", color: "#ffffff", padding: "120px 20px 80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            position: "relative",
-            zIndex: 1,
             maxWidth: "580px",
             width: "100%",
-            background: "rgba(17, 26, 20, 0.85)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(188, 163, 116, 0.5)",
+            background: "linear-gradient(180deg, #111a14 0%, #0c120f 100%)",
+            border: "1px solid rgba(188, 163, 116, 0.4)",
             borderRadius: "24px",
             padding: "3.5rem 2.5rem",
             boxShadow: "0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(188, 163, 116, 0.15)",
@@ -230,7 +207,7 @@ function MembershipEnrollmentContent() {
               width: 80,
               height: 80,
               borderRadius: "50%",
-              background: "rgba(15, 133, 84, 0.25)",
+              background: "rgba(15, 133, 84, 0.18)",
               border: "2px solid #0f8554",
               display: "inline-flex",
               alignItems: "center",
@@ -248,14 +225,14 @@ function MembershipEnrollmentContent() {
           <h1 style={{ fontFamily: "Georgia, serif", fontSize: "36px", fontWeight: "700", color: "#ffffff", margin: "0 0 10px 0", letterSpacing: "-0.01em" }}>
             You&apos;re In
           </h1>
-          <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.75)", margin: "0 auto 2rem", maxWidth: "440px", lineHeight: 1.6 }}>
+          <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.7)", margin: "0 auto 2rem", maxWidth: "440px", lineHeight: 1.6 }}>
             Welcome to Wellness Lovers Club. Your VIP Annual Membership has been successfully activated.
           </p>
 
           <div
             style={{
-              background: "rgba(255, 255, 255, 0.04)",
-              border: "1px solid rgba(255, 255, 255, 0.09)",
+              background: "rgba(255, 255, 255, 0.03)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
               borderRadius: "16px",
               padding: "1.5rem",
               textAlign: "left",
@@ -320,54 +297,19 @@ function MembershipEnrollmentContent() {
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // MAIN MULTI-STEP ONBOARDING SHELL WITH DYNAMIC BACKGROUND IMAGES
+  // MAIN MULTI-STEP ONBOARDING SHELL
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: "100vh", position: "relative", color: "#ffffff", padding: "100px 20px 80px", overflow: "hidden" }}>
-      
-      {/* 1. Dynamic Crossfading Step Background Image */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={`bg-${currentStepIndex}`}
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.85, ease: "easeInOut" }}
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundImage: `url('${STEP_BACKGROUNDS[currentStepIndex] || STEP_BACKGROUNDS[0]}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        />
-      </AnimatePresence>
-
-      {/* 2. Luxury Dark Gradient Overlay Mask */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "linear-gradient(135deg, rgba(6, 10, 8, 0.84) 0%, rgba(9, 15, 11, 0.90) 50%, rgba(5, 8, 6, 0.94) 100%)",
-          backdropFilter: "blur(4px)",
-          WebkitBackdropFilter: "blur(4px)",
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* 3. Ambient Emerald Glow */}
-      <div style={{ position: "fixed", top: "15%", left: "50%", transform: "translateX(-50%)", width: "700px", height: "700px", background: "radial-gradient(circle, rgba(15, 133, 84, 0.16) 0%, rgba(8, 12, 9, 0) 70%)", pointerEvents: "none", zIndex: 0 }} />
+    <div style={{ minHeight: "100vh", background: "#080c09", color: "#ffffff", padding: "100px 20px 80px", position: "relative", overflow: "hidden" }}>
+      {/* Background Ambient Glow */}
+      <div style={{ position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)", width: "600px", height: "600px", background: "radial-gradient(circle, rgba(15, 133, 84, 0.12) 0%, rgba(8, 12, 9, 0) 70%)", pointerEvents: "none", zIndex: 0 }} />
 
       <div style={{ maxWidth: "1080px", margin: "0 auto", position: "relative", zIndex: 1 }}>
         
         {/* Subtle Progress Bar */}
         <div style={{ marginBottom: "3rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
           {/* Desktop Steps */}
-          <div className="enroll-progress-desktop" style={{ display: "flex", alignItems: "center", gap: "24px", background: "rgba(255, 255, 255, 0.04)", backdropFilter: "blur(16px)", padding: "10px 24px", borderRadius: "40px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+          <div className="enroll-progress-desktop" style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             {STEPS.map((step, idx) => {
               const isActive = idx === currentStepIndex;
               const isPast = idx < currentStepIndex;
@@ -379,7 +321,7 @@ function MembershipEnrollmentContent() {
                         width: 26,
                         height: 26,
                         borderRadius: "50%",
-                        background: isActive ? "#0f8554" : isPast ? "rgba(15, 133, 84, 0.3)" : "rgba(255, 255, 255, 0.08)",
+                        background: isActive ? "#0f8554" : isPast ? "rgba(15, 133, 84, 0.3)" : "rgba(255, 255, 255, 0.06)",
                         border: isActive ? "1px solid #4ade80" : isPast ? "1px solid #0f8554" : "1px solid rgba(255, 255, 255, 0.15)",
                         color: isActive || isPast ? "#fff" : "rgba(255, 255, 255, 0.4)",
                         display: "flex",
@@ -396,7 +338,7 @@ function MembershipEnrollmentContent() {
                       style={{
                         fontSize: "12px",
                         fontWeight: isActive ? "700" : "500",
-                        color: isActive ? "#ffffff" : isPast ? "#4ade80" : "rgba(255, 255, 255, 0.5)",
+                        color: isActive ? "#ffffff" : isPast ? "#4ade80" : "rgba(255, 255, 255, 0.45)",
                         textTransform: "uppercase",
                         letterSpacing: "0.08em",
                       }}
@@ -405,7 +347,7 @@ function MembershipEnrollmentContent() {
                     </span>
                   </div>
                   {idx < STEPS.length - 1 && (
-                    <div style={{ width: "32px", height: "1px", background: isPast ? "#0f8554" : "rgba(255, 255, 255, 0.15)" }} />
+                    <div style={{ width: "32px", height: "1px", background: isPast ? "#0f8554" : "rgba(255, 255, 255, 0.12)" }} />
                   )}
                 </React.Fragment>
               );
@@ -414,7 +356,7 @@ function MembershipEnrollmentContent() {
 
           {/* Mobile Progress Pill */}
           <div className="enroll-progress-mobile" style={{ display: "none" }}>
-            <div style={{ background: "rgba(255, 255, 255, 0.06)", backdropFilter: "blur(12px)", border: "1px solid rgba(255, 255, 255, 0.12)", padding: "6px 18px", borderRadius: "30px", fontSize: "11px", color: "#bca374", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+            <div style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", padding: "6px 16px", borderRadius: "30px", fontSize: "11px", color: "#bca374", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.1em" }}>
               Step {currentStepIndex + 1} of 5 • {STEPS[currentStepIndex]?.label}
             </div>
           </div>
@@ -424,7 +366,7 @@ function MembershipEnrollmentContent() {
         <AnimatePresence mode="wait">
           
           {/* ─────────────────────────────────────────────────────────────
-              STEP 0: WELCOME SCREEN (Background: Hero Wellness Sanctuary)
+              STEP 0: WELCOME SCREEN
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 0 && (
             <motion.div
@@ -434,38 +376,36 @@ function MembershipEnrollmentContent() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               style={{
-                background: "rgba(17, 26, 20, 0.82)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
+                background: "linear-gradient(180deg, rgba(17, 26, 20, 0.85) 0%, rgba(12, 18, 14, 0.95) 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: "24px",
                 overflow: "hidden",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
               }}
             >
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
-                {/* Hero Visual Showcase */}
+                {/* Hero Visual Banner */}
                 <div
                   style={{
-                    minHeight: "420px",
-                    backgroundImage: "url('/images/hero-wellness.webp')",
+                    minHeight: "380px",
+                    backgroundImage: "url('/images/buddha-bg.webp')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     position: "relative",
                   }}
                 >
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8, 12, 9, 0.15) 0%, rgba(8, 12, 9, 0.85) 100%)" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8, 12, 9, 0.2) 0%, rgba(8, 12, 9, 0.8) 100%)" }} />
                   <div style={{ position: "absolute", bottom: "2rem", left: "2rem", right: "2rem" }}>
                     <span style={{ fontSize: "11px", fontWeight: "700", color: "#bca374", letterSpacing: "0.15em", textTransform: "uppercase" }}>
                       Curated Sanctuary
                     </span>
-                    <h3 style={{ fontFamily: "Georgia, serif", fontSize: "26px", color: "#fff", margin: "6px 0 0" }}>
+                    <h3 style={{ fontFamily: "Georgia, serif", fontSize: "24px", color: "#fff", margin: "6px 0 0" }}>
                       Elevated Wellbeing
                     </h3>
                   </div>
                 </div>
 
-                {/* Welcome Editorial Content */}
+                {/* Welcome Editorial Copy */}
                 <div style={{ padding: "3.5rem 3rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#4ade80", fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "1rem" }}>
                     <Crown size={14} />
@@ -476,11 +416,11 @@ function MembershipEnrollmentContent() {
                     Welcome to Wellness Lovers Club
                   </h1>
 
-                  <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.75)", lineHeight: 1.7, margin: "0 0 1.5rem" }}>
+                  <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.7, margin: "0 0 1.5rem" }}>
                     Your journey toward elevated wellness begins here. You have completed email verification, and your bespoke VIP membership dossier is ready for activation.
                   </p>
 
-                  <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.09)", borderRadius: "12px", padding: "14px 18px", marginBottom: "2.5rem", display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "12px 16px", marginBottom: "2.5rem", display: "flex", alignItems: "center", gap: 10 }}>
                     <Sparkles size={18} color="#bca374" style={{ flexShrink: 0 }} />
                     <span style={{ fontSize: "13px", color: "#e6dfd5" }}>Your VIP Annual Membership awaits.</span>
                   </div>
@@ -514,7 +454,7 @@ function MembershipEnrollmentContent() {
           )}
 
           {/* ─────────────────────────────────────────────────────────────
-              STEP 1: DISCOVER YOUR MEMBERSHIP (Background: Luxury Resort Vista)
+              STEP 1: DISCOVER YOUR MEMBERSHIP
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 1 && (
             <motion.div
@@ -524,13 +464,11 @@ function MembershipEnrollmentContent() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               style={{
-                background: "rgba(17, 26, 20, 0.84)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
+                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: "24px",
                 padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
               }}
             >
               <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem" }}>
@@ -540,7 +478,7 @@ function MembershipEnrollmentContent() {
                 <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
                   A Membership Designed Around You
                 </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>
+                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
                   Wellness Lovers Club grants private access to curated wellness experiences, world-class resort sanctuaries, and bespoke privileges.
                 </p>
               </div>
@@ -551,10 +489,10 @@ function MembershipEnrollmentContent() {
                   maxWidth: "520px",
                   margin: "0 auto 3rem",
                   background: "linear-gradient(135deg, rgba(20, 32, 24, 0.95) 0%, rgba(10, 16, 12, 0.95) 100%)",
-                  border: "1px solid rgba(188, 163, 116, 0.6)",
+                  border: "1px solid rgba(188, 163, 116, 0.5)",
                   borderRadius: "20px",
                   padding: "2.5rem",
-                  boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 30px rgba(188, 163, 116, 0.1)",
+                  boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 30px rgba(188, 163, 116, 0.08)",
                   textAlign: "center",
                 }}
               >
@@ -566,11 +504,11 @@ function MembershipEnrollmentContent() {
                 <h3 style={{ fontFamily: "Georgia, serif", fontSize: "26px", color: "#fff", margin: "0 0 6px" }}>
                   Annual VIP Membership
                 </h3>
-                <p style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.55)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.5rem" }}>
+                <p style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.5rem" }}>
                   365 Days of Unrestricted Privileges
                 </p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", textAlign: "left", background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.07)", borderRadius: "12px", padding: "1.25rem", marginBottom: "2rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", textAlign: "left", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "12px", padding: "1.25rem", marginBottom: "2rem" }}>
                   {["Exclusive Curated Experiences", "Priority Spa & Sanctuary Bookings", "Handpicked Luxury Stays", "Global Wellness Community Access"].map((item, idx) => (
                     <div key={idx} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <CheckCircle2 size={15} color="#4ade80" style={{ flexShrink: 0 }} />
@@ -594,7 +532,7 @@ function MembershipEnrollmentContent() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.06)", border: "1px solid rgba(255, 255, 255, 0.18)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
                 >
                   <ArrowLeft size={16} />
                   <span>Back</span>
@@ -612,7 +550,7 @@ function MembershipEnrollmentContent() {
           )}
 
           {/* ─────────────────────────────────────────────────────────────
-              STEP 2: MEMBERSHIP BENEFITS (Background: Nature Retreat Sanctuary)
+              STEP 2: MEMBERSHIP BENEFITS
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 2 && (
             <motion.div
@@ -622,13 +560,11 @@ function MembershipEnrollmentContent() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               style={{
-                background: "rgba(17, 26, 20, 0.84)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
+                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: "24px",
                 padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
               }}
             >
               <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 3rem" }}>
@@ -638,7 +574,7 @@ function MembershipEnrollmentContent() {
                 <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
                   Membership Privileges
                 </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>
+                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
                   Every benefit is meticulously crafted to support a lifestyle of vitality, mindful balance, and tranquil restoration.
                 </p>
               </div>
@@ -680,8 +616,8 @@ function MembershipEnrollmentContent() {
                   <div
                     key={idx}
                     style={{
-                      background: "rgba(255, 255, 255, 0.03)",
-                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      background: "rgba(255, 255, 255, 0.02)",
+                      border: "1px solid rgba(255, 255, 255, 0.07)",
                       borderRadius: "16px",
                       padding: "1.75rem",
                       display: "flex",
@@ -690,13 +626,13 @@ function MembershipEnrollmentContent() {
                       transition: "transform 0.2s, border-color 0.2s",
                     }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: "10px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ width: 40, height: 40, borderRadius: "10px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       {card.icon}
                     </div>
                     <h4 style={{ fontSize: "16px", fontWeight: "700", color: "#fff", margin: 0 }}>
                       {card.title}
                     </h4>
-                    <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.5, margin: 0 }}>
+                    <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.6)", lineHeight: 1.5, margin: 0 }}>
                       {card.desc}
                     </p>
                   </div>
@@ -708,7 +644,7 @@ function MembershipEnrollmentContent() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.06)", border: "1px solid rgba(255, 255, 255, 0.18)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
                 >
                   <ArrowLeft size={16} />
                   <span>Back</span>
@@ -726,7 +662,7 @@ function MembershipEnrollmentContent() {
           )}
 
           {/* ─────────────────────────────────────────────────────────────
-              STEP 3: MEMBERSHIP REVIEW (Background: Tranquil Reflection Pool)
+              STEP 3: MEMBERSHIP REVIEW
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 3 && (
             <motion.div
@@ -736,13 +672,11 @@ function MembershipEnrollmentContent() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               style={{
-                background: "rgba(17, 26, 20, 0.84)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
+                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
                 borderRadius: "24px",
                 padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
               }}
             >
               <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem" }}>
@@ -752,7 +686,7 @@ function MembershipEnrollmentContent() {
                 <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
                   Almost There
                 </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6 }}>
+                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
                   Review your membership summary before completing your enrollment.
                 </p>
               </div>
@@ -762,8 +696,8 @@ function MembershipEnrollmentContent() {
                 style={{
                   maxWidth: "560px",
                   margin: "0 auto 3rem",
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(188, 163, 116, 0.45)",
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(188, 163, 116, 0.4)",
                   borderRadius: "20px",
                   padding: "2rem",
                   display: "flex",
@@ -778,19 +712,19 @@ function MembershipEnrollmentContent() {
                   <div style={{ fontSize: "20px", fontWeight: "700", color: "#fff", marginTop: 4 }}>
                     VIP Annual Membership
                   </div>
-                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.55)", marginTop: 2 }}>
+                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.5)", marginTop: 2 }}>
                     365 Days of Comprehensive Access
                   </div>
                 </div>
 
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem" }}>
-                  <span style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.45)", fontWeight: "600", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  <span style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.4)", fontWeight: "600", letterSpacing: "0.08em", textTransform: "uppercase" }}>
                     Registered Member
                   </span>
                   <div style={{ fontSize: "14px", fontWeight: "600", color: "#fff", marginTop: 4 }}>
                     {customerName || "Valued Member"}
                   </div>
-                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.65)", marginTop: 2 }}>
+                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.6)", marginTop: 2 }}>
                     {customerEmail}
                   </div>
                 </div>
@@ -809,7 +743,7 @@ function MembershipEnrollmentContent() {
                   </div>
                 </div>
 
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1rem", display: "flex", alignItems: "center", gap: 8, fontSize: "12px", color: "rgba(255, 255, 255, 0.5)" }}>
+                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1rem", display: "flex", alignItems: "center", gap: 8, fontSize: "12px", color: "rgba(255, 255, 255, 0.45)" }}>
                   <Lock size={14} color="#4ade80" />
                   <span>Secure 256-bit encrypted transaction powered by Razorpay.</span>
                 </div>
@@ -820,7 +754,7 @@ function MembershipEnrollmentContent() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.06)", border: "1px solid rgba(255, 255, 255, 0.18)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
                 >
                   <ArrowLeft size={16} />
                   <span>Back</span>
@@ -838,7 +772,7 @@ function MembershipEnrollmentContent() {
           )}
 
           {/* ─────────────────────────────────────────────────────────────
-              STEP 4: SECURE PAYMENT SCREEN (Background: Warm Spa Sanctuary)
+              STEP 4: SECURE PAYMENT SCREEN
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 4 && (
             <motion.div
@@ -848,26 +782,24 @@ function MembershipEnrollmentContent() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               style={{
-                background: "rgba(17, 26, 20, 0.86)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                border: "1px solid rgba(15, 133, 84, 0.4)",
+                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
+                border: "1px solid rgba(15, 133, 84, 0.35)",
                 borderRadius: "24px",
                 padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
                 maxWidth: "640px",
                 margin: "0 auto",
               }}
             >
               <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(15, 133, 84, 0.18)", border: "1px solid rgba(15, 133, 84, 0.4)", borderRadius: "30px", padding: "5px 14px", fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", color: "#4ade80", textTransform: "uppercase", marginBottom: "1rem" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.35)", borderRadius: "30px", padding: "5px 14px", fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", color: "#4ade80", textTransform: "uppercase", marginBottom: "1rem" }}>
                   <Lock size={12} />
                   <span>Secure Payment</span>
                 </div>
                 <h2 style={{ fontFamily: "Georgia, serif", fontSize: "32px", color: "#fff", margin: "0 0 10px" }}>
                   Complete Your Membership
                 </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", margin: 0 }}>
+                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", margin: 0 }}>
                   Secure your place in the Wellness Lovers Club.
                 </p>
               </div>
@@ -875,8 +807,8 @@ function MembershipEnrollmentContent() {
               {/* Price Banner */}
               <div
                 style={{
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.09)",
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "16px",
                   padding: "1.75rem",
                   textAlign: "center",
@@ -889,7 +821,7 @@ function MembershipEnrollmentContent() {
                 <div style={{ fontSize: "44px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.03em" }}>
                   ₹1
                 </div>
-                <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.55)", marginTop: 4 }}>
+                <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
                   Test membership amount
                 </div>
               </div>
@@ -957,7 +889,7 @@ function MembershipEnrollmentContent() {
               </button>
 
               {/* Trust Badges */}
-              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 16, fontSize: "11px", color: "rgba(255, 255, 255, 0.55)", borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 16, fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <ShieldCheck size={14} color="#4ade80" />
                   <span>256-Bit SSL Encrypted</span>
@@ -966,7 +898,7 @@ function MembershipEnrollmentContent() {
                   <CreditCard size={14} color="#4ade80" />
                   <span>Razorpay Secure Checkout</span>
                 </div>
-                <div style={{ color: "rgba(255, 255, 255, 0.4)" }}>
+                <div style={{ color: "rgba(255, 255, 255, 0.35)" }}>
                   UPI • Cards • Net Banking
                 </div>
               </div>
@@ -977,7 +909,7 @@ function MembershipEnrollmentContent() {
                   type="button"
                   onClick={prevStep}
                   disabled={paymentLoading}
-                  style={{ background: "none", border: "none", color: "rgba(255, 255, 255, 0.55)", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
+                  style={{ background: "none", border: "none", color: "rgba(255, 255, 255, 0.5)", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
                 >
                   ← Back to Membership Review
                 </button>
