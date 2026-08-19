@@ -1,473 +1,364 @@
+import Link from "next/link";
 import "./privacy-policy.css";
 
 export const metadata = {
-  title: "Privacy Policy | Wellness Lovers Club",
-  description: "Understand how Wellness Lovers Club collects, uses, and protects your personal data in compliance with India's IT Act 2000, SPDI Rules 2011, and DPDPA 2023.",
+  title: "Privacy Policy | Wellness Lovers Club by GlobalSpa",
+  description: "Read how Wellness Lovers Club collects, uses, stores, and protects your personal data in compliance with Indian data protection laws including DPDPA 2023.",
 };
 
 export default function PrivacyPolicyPage() {
-  const cookies = [
-    {
-      type: "essential",
-      name: "Essential Cookies",
-      desc: "Required for the website to function properly. These cannot be disabled — they handle session management, authentication, and security.",
-    },
-    {
-      type: "analytics",
-      name: "Analytics Cookies",
-      desc: "Help us understand how visitors interact with our website by collecting anonymous usage statistics, improving the overall experience.",
-    },
-    {
-      type: "preference",
-      name: "Preference Cookies",
-      desc: "Remember your settings and choices (such as language or display preferences) so you don't have to re-enter them on each visit.",
-    },
-    {
-      type: "marketing",
-      name: "Marketing Cookies",
-      desc: "Used to deliver relevant content and offers based on your interests. You may opt out of these at any time via your browser settings.",
-    },
-  ];
-
-  const rights = [
-    {
-      icon: "🔍",
-      title: "Right to Access",
-      desc: "Request a copy of the personal data we hold about you at any time.",
-    },
-    {
-      icon: "✏️",
-      title: "Right to Correction",
-      desc: "Ask us to correct inaccurate or incomplete personal data we hold.",
-    },
-    {
-      icon: "🗑️",
-      title: "Right to Erasure",
-      desc: "Request deletion of your personal data, subject to legal retention requirements.",
-    },
-    {
-      icon: "🚫",
-      title: "Right to Withdraw Consent",
-      desc: "Withdraw your consent for data processing at any time without affecting past processing.",
-    },
-    {
-      icon: "⚖️",
-      title: "Right to Grievance Redressal",
-      desc: "Lodge a complaint with our Data Protection Officer or the Data Protection Board of India.",
-    },
-    {
-      icon: "👤",
-      title: "Right to Nominate",
-      desc: "Nominate another person to exercise your data rights in the event of your death or incapacity.",
-    },
-  ];
-
-  const retention = [
-    {
-      category: "Active Member Data",
-      period: "Duration of membership + 2 years",
-      reason: "Service continuity, dispute resolution, and legal compliance",
-    },
-    {
-      category: "Membership Enquiries",
-      period: "1 year from date of enquiry",
-      reason: "Follow-up communications and service improvement",
-    },
-    {
-      category: "Financial & Transaction Records",
-      period: "7 years",
-      reason: "Mandatory under Indian financial and tax regulations",
-    },
-    {
-      category: "Communication Records",
-      period: "2 years",
-      reason: "Customer support, dispute resolution",
-    },
+  const sections = [
+    { id: "who-we-are", num: "1", title: "Who We Are" },
+    { id: "information-we-collect", num: "2", title: "Information We Collect" },
+    { id: "how-we-use", num: "3", title: "How We Use Your Information" },
+    { id: "how-we-share", num: "4", title: "How We Share Your Information" },
+    { id: "data-storage", num: "5", title: "Data Storage & Security" },
+    { id: "data-retention", num: "6", title: "Data Retention" },
+    { id: "cookies-policy", num: "7", title: "Cookies Policy" },
+    { id: "your-rights", num: "8", title: "Your Rights" },
+    { id: "childrens-privacy", num: "9", title: "Children's Privacy" },
+    { id: "third-party-links", num: "10", title: "Third-Party Links" },
+    { id: "changes-to-policy", num: "11", title: "Changes to This Policy" },
+    { id: "governing-law", num: "12", title: "Governing Law" },
+    { id: "contact-us", num: "13", title: "Contact Us" },
   ];
 
   return (
     <div className="pp-page">
-
-      {/* ─── Hero ─────────────────────────────────────────── */}
+      {/* ─── Hero Header ─────────────────────────────────────────── */}
       <section className="pp-hero" aria-label="Privacy Policy Header">
-        <span className="pp-hero-eyebrow">Legal · Data Privacy</span>
+        <span className="pp-hero-eyebrow">WLC · WELLNESS LOVERS CLUB · BY GLOBALSPA</span>
         <h1 className="pp-hero-title">Privacy Policy</h1>
         <p className="pp-hero-subtitle">
-          Wellness Lovers Club · wellnessloversclub.com
+          Your privacy is sacred to us — read how we protect it
         </p>
       </section>
 
+      {/* ─── Dynamic Last Updated Date Bar ──────────────────────── */}
+      <div className="pp-date-bar">
+        Last updated: July 2025 <span>·</span> Effective from: July 2025 <span>·</span> Applies to: wellnessloversclub.com
+      </div>
 
-
-      {/* ─── Layout Container ────────────────────────────── */}
+      {/* ─── Main Content Shell ─────────────────────────────────── */}
       <div className="pp-container">
-
-        {/* Sidebar Sticky Navigation */}
-        <aside className="pp-sidebar">
-          <nav className="pp-toc-wrapper" aria-label="Table of Contents">
-            <h2 className="pp-toc-title">Policy Sections</h2>
-            <ul className="pp-toc-list">
-              <li className="pp-toc-item"><a href="#who-we-are"><span>01</span> Who We Are</a></li>
-              <li className="pp-toc-item"><a href="#information-we-collect"><span>02</span> Information We Collect</a></li>
-              <li className="pp-toc-item"><a href="#how-we-use"><span>03</span> How We Use Your Info</a></li>
-              <li className="pp-toc-item"><a href="#how-we-share"><span>04</span> How We Share Your Info</a></li>
-              <li className="pp-toc-item"><a href="#data-security"><span>05</span> Data Storage &amp; Security</a></li>
-              <li className="pp-toc-item"><a href="#data-retention"><span>06</span> Data Retention</a></li>
-              <li className="pp-toc-item"><a href="#cookies"><span>07</span> Cookies Policy</a></li>
-              <li className="pp-toc-item"><a href="#your-rights"><span>08</span> Your Rights</a></li>
-              <li className="pp-toc-item"><a href="#children"><span>09</span> Children's Privacy</a></li>
-              <li className="pp-toc-item"><a href="#third-party"><span>10</span> Third-Party Links</a></li>
-              <li className="pp-toc-item"><a href="#changes"><span>11</span> Policy Changes</a></li>
-              <li className="pp-toc-item"><a href="#governing-law"><span>12</span> Governing Law</a></li>
-              <li className="pp-toc-item"><a href="#contact"><span>13</span> Contact Us</a></li>
+        {/* Sticky Desktop Table of Contents Sidebar */}
+        <aside className="pp-sidebar" aria-label="Table of Contents">
+          <div className="pp-sidebar-title">Table of Contents</div>
+          <nav>
+            <ul className="pp-nav-list">
+              {sections.map((s) => (
+                <li key={s.id}>
+                  <a href={`#${s.id}`} className="pp-nav-link">
+                    {s.num}. {s.title}
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
         </aside>
 
-        {/* Main Content Pane */}
+        {/* Legal Text Sections */}
         <main className="pp-content">
+          <div className="pp-lead-box">
+            <p className="pp-text" style={{ margin: 0 }}>
+              Wellness Lovers Club (referred to as <strong>&apos;WLC&apos;</strong>, <strong>&apos;we&apos;</strong>, <strong>&apos;us&apos;</strong>, or <strong>&apos;our&apos;</strong>) is operated by Pinnacle Connect under the GlobalSpa brand. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, store, share, and protect your personal data when you visit our website, become a member, or engage with our services.
+            </p>
+            <p className="pp-text" style={{ margin: "14px 0 0 0" }}>
+              By accessing our website or becoming a member of WLC, you agree to the terms outlined in this Privacy Policy. If you do not agree, please discontinue use of our services.
+            </p>
+          </div>
 
-          {/* ── 1. Who We Are ───────────────────────────────── */}
+          {/* Section 1: Who We Are */}
           <section id="who-we-are" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">01</span>
-              <h2 className="pp-section-title">Who We Are</h2>
-            </div>
+            <h2 className="pp-section-heading">1. Who We Are</h2>
             <p className="pp-text">
-              <strong>Wellness Lovers Club (WLC)</strong> is a premium members club curating elevated wellness experiences across India and internationally. WLC is nurtured by <strong>GlobalSpa</strong> — India's leading wellness and luxury lifestyle media brand — and operated under the umbrella of <strong>Pinnacle Connect</strong>.
+              Wellness Lovers Club is India&apos;s premier wellness and lifestyle membership community, powered by GlobalSpa — India&apos;s leading wellness and luxury lifestyle media brand. We operate at:
             </p>
-            <p className="pp-text">
-              This Privacy Policy explains how WLC collects, uses, stores, and protects the personal data you share with us when you visit our website, enquire about membership, or become a WLC member.
-            </p>
-            <div className="pp-highlight">
-              <p>
-                <strong>Data Controller:</strong> Wellness Lovers Club (Pinnacle Connect)<br />
-                <strong>Website:</strong> wellnessloversclub.com<br />
-                <strong>Registered Country:</strong> India<br />
-                <strong>Contact:</strong> <a href="mailto:privacy@wellnessloversclub.com" style={{ color: 'var(--wlc-emerald)', fontWeight: 500 }}>privacy@wellnessloversclub.com</a>
-              </p>
-            </div>
+            <ul className="pp-list">
+              <li>
+                <strong>Website:</strong>{" "}
+                <Link href="https://www.wellnessloversclub.com" target="_blank" className="pp-link">
+                  www.wellnessloversclub.com
+                </Link>
+              </li>
+              <li>
+                <strong>Email:</strong>{" "}
+                <a href="mailto:wlc@pinnacleconnect.in" className="pp-link">
+                  wlc@pinnacleconnect.in
+                </a>
+              </li>
+              <li>
+                <strong>Contact:</strong>{" "}
+                <a href="mailto:vinit@pinnacleconnect.in" className="pp-link">
+                  vinit@pinnacleconnect.in
+                </a>
+              </li>
+            </ul>
           </section>
 
-          <div className="pp-divider" />
-
-          {/* ── 2. Information We Collect ────────────────────── */}
+          {/* Section 2: Information We Collect */}
           <section id="information-we-collect" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">02</span>
-              <h2 className="pp-section-title">Information We Collect</h2>
-            </div>
+            <h2 className="pp-section-heading">2. Information We Collect</h2>
+            <p className="pp-text">
+              We collect information you provide directly to us, as well as information collected automatically when you use our website or services.
+            </p>
 
-            <div className="pp-subsection">
-              <h3 className="pp-subsection-title">Information You Provide Directly</h3>
-              <ul className="pp-list">
-                <li>Full name, email address, phone number, and residential city</li>
-                <li>Membership application details and wellness preferences</li>
-                <li>Payment and billing information (processed securely via PCI-DSS compliant gateways)</li>
-                <li>Feedback, survey responses, and support communications</li>
-                <li>Information shared when attending WLC events or retreats</li>
-              </ul>
-            </div>
+            <h3 className="pp-section-subheading">2.1 Information You Provide</h3>
+            <ul className="pp-list">
+              <li>Full name, email address, phone number, and city when you fill out our membership application or contact form</li>
+              <li>Payment and billing information when you purchase a membership (processed securely via our payment partners)</li>
+              <li>Wellness preferences, health interests, and lifestyle information shared during onboarding or surveys</li>
+              <li>Communications you send to us via email, WhatsApp, or through our website contact form</li>
+              <li>Photos or content shared with us for community features or events</li>
+            </ul>
 
-            <div className="pp-subsection">
-              <h3 className="pp-subsection-title">Automatically Collected Data</h3>
-              <ul className="pp-list">
-                <li>IP address, browser type, operating system, and device identifiers</li>
-                <li>Pages visited, time spent, referral URLs, and click behaviour</li>
-                <li>Cookie data and session information (see Section 7)</li>
-                <li>Geographic location data (country / city level only)</li>
-              </ul>
-            </div>
+            <h3 className="pp-section-subheading">2.2 Information Collected Automatically</h3>
+            <ul className="pp-list">
+              <li>IP address, browser type, device type, and operating system</li>
+              <li>Pages visited, time spent on pages, and links clicked on our website</li>
+              <li>Referral source — how you arrived at our website</li>
+              <li>Cookies and similar tracking technologies (see Section 7 for details)</li>
+            </ul>
 
-            <div className="pp-subsection">
-              <h3 className="pp-subsection-title">Data from Third Parties</h3>
-              <ul className="pp-list">
-                <li>Information from GlobalSpa's platforms where you have consented to data sharing</li>
-                <li>Analytics data from Google Analytics and similar tools</li>
-                <li>Payment verification data from our payment gateway providers</li>
-              </ul>
-            </div>
+            <h3 className="pp-section-subheading">2.3 Information From Third Parties</h3>
+            <ul className="pp-list">
+              <li>If you connect via social media (Instagram, Facebook), we may receive basic profile information</li>
+              <li>Information from our partners when you redeem a WLC benefit or attend a partner event</li>
+              <li>Analytics data from tools such as Google Analytics</li>
+            </ul>
           </section>
 
-          <div className="pp-divider" />
-
-          {/* ── 3. How We Use Your Information ──────────────── */}
+          {/* Section 3: How We Use Your Information */}
           <section id="how-we-use" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">03</span>
-              <h2 className="pp-section-title">How We Use Your Information</h2>
-            </div>
-            <p className="pp-text">We use your information only for legitimate and clearly defined purposes:</p>
+            <h2 className="pp-section-heading">3. How We Use Your Information</h2>
+            <p className="pp-text">
+              We use the personal information we collect for the following purposes:
+            </p>
+
+            <h3 className="pp-section-subheading">3.1 To Provide and Manage Your Membership</h3>
             <ul className="pp-list">
-              <li><strong>Membership Management</strong> — processing applications, onboarding, and managing your active membership</li>
-              <li><strong>Service Delivery</strong> — booking wellness experiences, retreats, and partner benefits on your behalf</li>
-              <li><strong>Communications</strong> — sending membership updates, curated wellness content, event invitations, and service notifications</li>
-              <li><strong>Payments</strong> — processing membership fees and transactional communications</li>
-              <li><strong>Service Improvement</strong> — analysing usage patterns to enhance our website, content, and offerings</li>
-              <li><strong>Personalisation</strong> — tailoring recommendations based on your stated wellness preferences</li>
-              <li><strong>Legal Compliance</strong> — fulfilling obligations under applicable Indian laws, resolving disputes, and enforcing our Terms of Service</li>
+              <li>Process your membership application and set up your account</li>
+              <li>Send you your membership welcome kit, credentials, and onboarding information</li>
+              <li>Manage renewals, upgrades, and cancellations</li>
+              <li>Personalise your member experience based on your wellness preferences</li>
             </ul>
-            <div className="pp-highlight">
-              <p>
-                We will always request your <strong>explicit consent</strong> before using your data for marketing communications. You may withdraw this consent at any time by contacting us or clicking 'unsubscribe' in any email we send you.
-              </p>
-            </div>
+
+            <h3 className="pp-section-subheading">3.2 To Communicate With You</h3>
+            <ul className="pp-list">
+              <li>Send you event invitations, masterclass schedules, and exclusive partner offers</li>
+              <li>Respond to your queries, requests, and complaints</li>
+              <li>Share our newsletter, wellness content, and community updates</li>
+              <li>Send important service notifications such as renewal reminders</li>
+            </ul>
+
+            <h3 className="pp-section-subheading">3.3 To Improve Our Services</h3>
+            <ul className="pp-list">
+              <li>Analyse website traffic and usage patterns to improve our platform</li>
+              <li>Conduct surveys and gather feedback to enhance member experience</li>
+              <li>Develop new offerings and curate better wellness experiences</li>
+            </ul>
+
+            <h3 className="pp-section-subheading">3.4 For Legal and Compliance Purposes</h3>
+            <ul className="pp-list">
+              <li>Comply with applicable Indian laws, regulations, and legal obligations</li>
+              <li>Prevent fraud, misuse, or unauthorised access to our platform</li>
+              <li>Enforce our Terms &amp; Conditions and membership agreements</li>
+            </ul>
           </section>
 
-          <div className="pp-divider" />
-
-          {/* ── 4. How We Share Your Information ────────────── */}
+          {/* Section 4: How We Share Your Information */}
           <section id="how-we-share" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">04</span>
-              <h2 className="pp-section-title">How We Share Your Information</h2>
-            </div>
-            <p className="pp-text">WLC only shares your personal data in the following circumstances:</p>
-            <ul className="pp-list">
-              <li><strong>Wellness Partners &amp; Destinations</strong> — shared only to the extent required to fulfil your booked experience or membership benefit</li>
-              <li><strong>GlobalSpa</strong> — as our parent media brand, GlobalSpa may receive aggregated, anonymised insights. Individual member data is shared only where explicitly consented to</li>
-              <li><strong>Service Providers</strong> — trusted third parties such as payment processors, email platforms, and website hosting providers, all contractually bound to data protection obligations</li>
-              <li><strong>Legal Requirements</strong> — when required by law, court order, or a request from government authorities under applicable Indian legislation</li>
-            </ul>
-
-            <div className="pp-notice">
-              <span className="pp-notice-icon">🔒</span>
-              <p>
-                <strong>WLC does not sell, rent, or trade your personal data</strong> to any third party for commercial or marketing purposes. Your information is never monetised.
-              </p>
-            </div>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 5. Data Storage & Security ───────────────────── */}
-          <section id="data-security" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">05</span>
-              <h2 className="pp-section-title">Data Storage &amp; Security</h2>
-            </div>
+            <h2 className="pp-section-heading">4. How We Share Your Information</h2>
             <p className="pp-text">
-              We take the security of your personal data seriously and implement multiple layers of protection:
+              WLC does not sell, rent, or trade your personal information. We may share your data only in the following limited circumstances:
             </p>
-            <ul className="pp-list">
-              <li><strong>SSL / TLS Encryption</strong> — all data transmitted between your browser and our servers is encrypted using industry-standard SSL/TLS protocols</li>
-              <li><strong>Restricted Access</strong> — personal data is accessible only to authorised WLC personnel on a strict need-to-know basis</li>
-              <li><strong>Payment Security</strong> — all payment transactions are processed through PCI-DSS compliant payment gateways. WLC does not store card numbers, CVVs, or full payment credentials on our servers</li>
-              <li><strong>Secure Infrastructure</strong> — our systems are hosted on secure, reputable cloud infrastructure with regular security audits</li>
-              <li><strong>Data Minimisation</strong> — we collect only the data necessary for the stated purposes</li>
-            </ul>
+
+            <h3 className="pp-section-subheading">4.1 With Trusted Partners</h3>
             <p className="pp-text">
-              While we implement robust safeguards, no method of internet transmission is entirely infallible. We encourage you to use a strong password and keep your account credentials confidential.
+              When you redeem a WLC member benefit or book an experience through our partner spas, retreats, or wellness brands, we share only the minimum information required (such as your name and contact details) to facilitate the booking or benefit. All partners are required to maintain appropriate data protection standards.
+            </p>
+
+            <h3 className="pp-section-subheading">4.2 With GlobalSpa</h3>
+            <p className="pp-text">
+              As WLC operates under the GlobalSpa brand, certain operational and administrative functions may be shared with the GlobalSpa team. Your data is treated with the same level of privacy and protection across both entities.
+            </p>
+
+            <h3 className="pp-section-subheading">4.3 With Service Providers</h3>
+            <p className="pp-text">
+              We work with trusted third-party service providers for functions such as email communications, payment processing, website analytics, and event management. These providers are bound by confidentiality obligations and may only use your data to perform services on our behalf.
+            </p>
+
+            <h3 className="pp-section-subheading">4.4 When Required by Law</h3>
+            <p className="pp-text">
+              We may disclose your information if required to do so by law, court order, or government authority, or if we believe disclosure is necessary to protect the rights, safety, or property of WLC, our members, or the public.
             </p>
           </section>
 
-          <div className="pp-divider" />
+          {/* Section 5: Data Storage & Security */}
+          <section id="data-storage" className="pp-section">
+            <h2 className="pp-section-heading">5. Data Storage &amp; Security</h2>
+            <p className="pp-text">
+              We take the security of your personal data seriously and implement appropriate technical and organisational measures to protect it against unauthorised access, loss, destruction, or alteration.
+            </p>
+            <ul className="pp-list">
+              <li>All data is stored on secure servers with access restricted to authorised personnel only</li>
+              <li>Payment information is processed through PCI-DSS compliant payment gateways and is never stored on our servers</li>
+              <li>We use SSL encryption on our website to protect data in transit</li>
+              <li>We conduct regular reviews of our data handling practices and security measures</li>
+            </ul>
+            <p className="pp-text">
+              While we take all reasonable precautions, no method of transmission over the internet or electronic storage is 100% secure. We encourage you to use strong, unique passwords and to contact us immediately if you suspect any unauthorised access to your account.
+            </p>
+          </section>
 
-          {/* ── 6. Data Retention ────────────────────────────── */}
+          {/* Section 6: Data Retention */}
           <section id="data-retention" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">06</span>
-              <h2 className="pp-section-title">Data Retention</h2>
-            </div>
+            <h2 className="pp-section-heading">6. Data Retention</h2>
             <p className="pp-text">
-              We retain your personal data only for as long as necessary to fulfil the purposes for which it was collected, or as required by applicable law:
-            </p>
-            <div className="pp-retention-table-wrapper">
-              <table className="pp-retention-table">
-                <thead>
-                  <tr>
-                    <th>Data Category</th>
-                    <th>Retention Period</th>
-                    <th>Reason</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {retention.map((row, idx) => (
-                    <tr key={idx}>
-                      <td><strong>{row.category}</strong></td>
-                      <td>{row.period}</td>
-                      <td>{row.reason}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="pp-text">
-              After the applicable retention period, your data is securely deleted or anonymised so it can no longer be linked to you.
-            </p>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 7. Cookies Policy ────────────────────────────── */}
-          <section id="cookies" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">07</span>
-              <h2 className="pp-section-title">Cookies Policy</h2>
-            </div>
-            <p className="pp-text">
-              Our website uses cookies — small text files stored on your device — to improve your browsing experience, analyse site traffic, and deliver relevant content. We use the following four types of cookies:
-            </p>
-            <div className="pp-cookie-grid">
-              {cookies.map((cookie, idx) => (
-                <div className="pp-cookie-card" key={idx}>
-                  <span className={`pp-cookie-badge ${cookie.type}`}>{cookie.type}</span>
-                  <div className="pp-cookie-name">{cookie.name}</div>
-                  <p className="pp-cookie-desc">{cookie.desc}</p>
-                </div>
-              ))}
-            </div>
-            <p className="pp-text">
-              You can manage or disable non-essential cookies at any time through your browser settings. Please note that disabling certain cookies may affect the functionality of our website.
-            </p>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 8. Your Rights ───────────────────────────────── */}
-          <section id="your-rights" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">08</span>
-              <h2 className="pp-section-title">Your Rights</h2>
-            </div>
-            <p className="pp-text">
-              Under India's <strong>Digital Personal Data Protection Act 2023 (DPDPA)</strong>, you have the following rights as a data principal:
-            </p>
-            <div className="pp-rights-grid">
-              {rights.map((right, idx) => (
-                <div className="pp-right-card" key={idx}>
-                  <span className="pp-right-icon">{right.icon}</span>
-                  <div className="pp-right-title">{right.title}</div>
-                  <p className="pp-right-desc">{right.desc}</p>
-                </div>
-              ))}
-            </div>
-            <p className="pp-text">
-              To exercise any of these rights, please contact us at <a href="mailto:privacy@wellnessloversclub.com" style={{ color: 'var(--wlc-emerald)', fontWeight: 500 }}>privacy@wellnessloversclub.com</a>. We will respond to all verified requests within <strong>30 days</strong>.
-            </p>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 9. Children's Privacy ────────────────────────── */}
-          <section id="children" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">09</span>
-              <h2 className="pp-section-title">Children&apos;s Privacy</h2>
-            </div>
-            <p className="pp-text">
-              WLC is an <strong>18+ members club</strong>. Our services, website, and communications are directed exclusively at adults. We do not knowingly collect personal data from individuals under the age of 18.
-            </p>
-            <p className="pp-text">
-              If we become aware that personal data has been submitted by or on behalf of a minor, we will delete it promptly. If you believe a minor has submitted personal data to us, please contact us immediately at <a href="mailto:privacy@wellnessloversclub.com" style={{ color: 'var(--wlc-emerald)', fontWeight: 500 }}>privacy@wellnessloversclub.com</a>.
-            </p>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 10. Third-Party Links ─────────────────────────── */}
-          <section id="third-party" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">10</span>
-              <h2 className="pp-section-title">Third-Party Links</h2>
-            </div>
-            <p className="pp-text">
-              Our website may contain links to external sites, including <strong>GlobalSpa</strong> (globalspaonline.com) and our wellness partner destinations. These websites operate independently and have their own privacy policies.
-            </p>
-            <p className="pp-text">
-              WLC is not responsible for the privacy practices or content of any third-party website. We encourage you to read the privacy policy of any external site you visit. The inclusion of a link on our site does not imply our endorsement of that site's data practices.
-            </p>
-          </section>
-
-          <div className="pp-divider" />
-
-          {/* ── 11. Changes to This Policy ───────────────────── */}
-          <section id="changes" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">11</span>
-              <h2 className="pp-section-title">Changes to This Policy</h2>
-            </div>
-            <p className="pp-text">
-              We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or for other operational reasons. When we do:
+              We retain your personal data for as long as your membership is active and for a reasonable period thereafter, or as required by law. Specifically:
             </p>
             <ul className="pp-list">
-              <li>The updated policy will be published on this page with a revised "Last Updated" date</li>
-              <li>For material changes, we will notify active members by email at least 14 days before the changes take effect</li>
-              <li>Continued use of WLC's services after the effective date constitutes acceptance of the updated policy</li>
+              <li>Active member data is retained for the duration of membership plus 2 years</li>
+              <li>Enquiry and contact form data is retained for up to 1 year</li>
+              <li>Financial and transactional records are retained for 7 years as required by Indian tax and accounting laws</li>
+              <li>You may request deletion of your data at any time (see Section 8 — Your Rights)</li>
+            </ul>
+          </section>
+
+          {/* Section 7: Cookies Policy */}
+          <section id="cookies-policy" className="pp-section">
+            <h2 className="pp-section-heading">7. Cookies Policy</h2>
+            <p className="pp-text">
+              Our website uses cookies — small text files placed on your device — to improve your browsing experience and understand how our site is used.
+            </p>
+            <h3 className="pp-section-subheading">Types of Cookies We Use</h3>
+            <ul className="pp-list">
+              <li>
+                <strong>Essential Cookies</strong> — Required for the website to function. These cannot be disabled.
+              </li>
+              <li>
+                <strong>Analytics Cookies</strong> — Help us understand visitor behaviour (e.g. Google Analytics). These are anonymised.
+              </li>
+              <li>
+                <strong>Preference Cookies</strong> — Remember your settings and personalisation choices.
+              </li>
+              <li>
+                <strong>Marketing Cookies</strong> — Used to serve relevant content. Only activated with your consent.
+              </li>
             </ul>
             <p className="pp-text">
-              We encourage you to review this page periodically to stay informed about how we protect your information.
+              You can manage or disable cookies through your browser settings at any time. Note that disabling certain cookies may affect the functionality of our website.
             </p>
           </section>
 
-          <div className="pp-divider" />
+          {/* Section 8: Your Rights */}
+          <section id="your-rights" className="pp-section">
+            <h2 className="pp-section-heading">8. Your Rights</h2>
+            <p className="pp-text">
+              As a user or member of WLC, you have the following rights with respect to your personal data, in accordance with applicable Indian data protection law (including the Digital Personal Data Protection Act, 2023):
+            </p>
+            <ul className="pp-list">
+              <li>
+                <strong>Right to Access</strong> — Request a copy of the personal data we hold about you
+              </li>
+              <li>
+                <strong>Right to Correction</strong> — Request correction of inaccurate or incomplete data
+              </li>
+              <li>
+                <strong>Right to Erasure</strong> — Request deletion of your personal data, subject to legal retention requirements
+              </li>
+              <li>
+                <strong>Right to Withdraw Consent</strong> — Withdraw your consent to marketing communications at any time
+              </li>
+              <li>
+                <strong>Right to Grievance Redressal</strong> — Raise a complaint about how your data is handled
+              </li>
+              <li>
+                <strong>Right to Nominate</strong> — Nominate a person to exercise your data rights on your behalf in the event of death or incapacity
+              </li>
+            </ul>
+            <p className="pp-text">
+              To exercise any of these rights, please write to us at{" "}
+              <a href="mailto:wlc@pinnacleconnect.in" className="pp-link">
+                wlc@pinnacleconnect.in
+              </a>
+              . We will respond within 30 days of receiving your request.
+            </p>
+          </section>
 
-          {/* ── 12. Governing Law ────────────────────────────── */}
+          {/* Section 9: Children's Privacy */}
+          <section id="childrens-privacy" className="pp-section">
+            <h2 className="pp-section-heading">9. Children&apos;s Privacy</h2>
+            <p className="pp-text">
+              WLC&apos;s services are intended for individuals aged 18 years and above. We do not knowingly collect personal information from anyone under the age of 18. If we become aware that a minor has provided us with personal data, we will take immediate steps to delete that information. If you believe a minor has submitted data to us, please contact us at{" "}
+              <a href="mailto:wlc@pinnacleconnect.in" className="pp-link">
+                wlc@pinnacleconnect.in
+              </a>
+              .
+            </p>
+          </section>
+
+          {/* Section 10: Third-Party Links */}
+          <section id="third-party-links" className="pp-section">
+            <h2 className="pp-section-heading">10. Third-Party Links</h2>
+            <p className="pp-text">
+              Our website may contain links to third-party websites, including our partner spas, retreats, and GlobalSpa. This Privacy Policy applies only to wellnessloversclub.com. We are not responsible for the privacy practices of external websites and encourage you to review their respective privacy policies before sharing any personal information.
+            </p>
+          </section>
+
+          {/* Section 11: Changes to This Policy */}
+          <section id="changes-to-policy" className="pp-section">
+            <h2 className="pp-section-heading">11. Changes to This Policy</h2>
+            <p className="pp-text">
+              We may update this Privacy Policy from time to time to reflect changes in our practices, legal requirements, or services. When we make significant changes, we will notify you via email or by posting a prominent notice on our website. The &apos;Last Updated&apos; date at the top of this page will always reflect the most recent version.
+            </p>
+            <p className="pp-text">
+              We encourage you to review this policy periodically to stay informed about how we are protecting your data.
+            </p>
+          </section>
+
+          {/* Section 12: Governing Law */}
           <section id="governing-law" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">12</span>
-              <h2 className="pp-section-title">Governing Law</h2>
-            </div>
+            <h2 className="pp-section-heading">12. Governing Law</h2>
             <p className="pp-text">
-              This Privacy Policy is governed by and construed in accordance with the laws of India. Your use of our services is subject to the following legislation:
-            </p>
-            <div className="pp-law-badges">
-              <span className="pp-law-badge">Information Technology Act, 2000</span>
-              <span className="pp-law-badge">IT (SPDI) Rules, 2011</span>
-              <span className="pp-law-badge">DPDPA, 2023</span>
-            </div>
-            <p className="pp-text">
-              Any disputes arising from this policy shall be subject to the exclusive jurisdiction of the courts located in New Delhi, India.
+              This Privacy Policy is governed by the laws of India, including the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and the Digital Personal Data Protection Act, 2023. Any disputes arising from this policy shall be subject to the exclusive jurisdiction of the courts in India.
             </p>
           </section>
 
-          <div className="pp-divider" />
-
-          {/* ── 13. Contact Us ───────────────────────────────── */}
-          <section id="contact" className="pp-section">
-            <div className="pp-section-header">
-              <span className="pp-section-num">13</span>
-              <h2 className="pp-section-title">Contact Us</h2>
-            </div>
+          {/* Section 13: Contact Us */}
+          <section id="contact-us" className="pp-section">
+            <h2 className="pp-section-heading">13. Contact Us</h2>
             <p className="pp-text">
-              For any questions, requests, or concerns about this Privacy Policy or how your personal data is handled, please reach out to our Privacy team:
+              If you have any questions, concerns, or requests regarding this Privacy Policy or the handling of your personal data, please contact our Privacy Team:
             </p>
 
             <div className="pp-contact-box">
-              <h3 className="pp-contact-title">Privacy &amp; Data Protection</h3>
-              <p className="pp-contact-subtitle">Wellness Lovers Club · Pinnacle Connect</p>
-              <div className="pp-contact-items">
-                <div className="pp-contact-item">
-                  <span className="pp-contact-icon">📧</span>
-                  <div>
-                    <span className="pp-contact-label">Privacy Enquiries</span>
-                    <div className="pp-contact-value">
-                      <a href="mailto:privacy@wellnessloversclub.com">privacy@wellnessloversclub.com</a>
-                    </div>
-                  </div>
-                </div>
-                <div className="pp-contact-item">
-                  <span className="pp-contact-icon">📨</span>
-                  <div>
-                    <span className="pp-contact-label">General Contact</span>
-                    <div className="pp-contact-value">
-                      <a href="mailto:wlc@pinnacleconnect.in">wlc@pinnacleconnect.in</a>
-                    </div>
-                  </div>
-                </div>
-                <div className="pp-contact-item">
-                  <span className="pp-contact-icon">⏱️</span>
-                  <div>
-                    <span className="pp-contact-label">Response Time</span>
-                    <div className="pp-contact-value">Within 30 business days</div>
-                  </div>
-                </div>
-              </div>
+              <div className="pp-contact-tag">DATA PRIVACY CONTACT</div>
+              <h3 className="pp-contact-title">Wellness Lovers Club by GlobalSpa</h3>
+              <p>
+                <strong>Email:</strong>{" "}
+                <a href="mailto:wlc@pinnacleconnect.in">wlc@pinnacleconnect.in</a>
+                {"  "}|{"  "}
+                <a href="mailto:vinit@pinnacleconnect.in">vinit@pinnacleconnect.in</a>
+              </p>
+              <p>
+                <strong>Website:</strong>{" "}
+                <Link href="https://www.wellnessloversclub.com" target="_blank">
+                  www.wellnessloversclub.com
+                </Link>
+              </p>
+              <p style={{ marginTop: 14, fontSize: 13, color: "rgba(255, 255, 255, 0.75)" }}>
+                For all privacy-related queries, requests, or complaints, please write to us at the email above. We will respond within 30 days.
+              </p>
             </div>
           </section>
-
         </main>
       </div>
+
+      {/* ─── Footer ─────────────────────────────────────────────── */}
+      <footer className="pp-footer">
+        © 2025 Wellness Lovers Club by GlobalSpa · All rights reserved · wellnessloversclub.com
+      </footer>
     </div>
   );
 }
