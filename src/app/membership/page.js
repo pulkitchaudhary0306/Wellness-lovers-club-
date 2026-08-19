@@ -36,8 +36,8 @@ function FieldInput({ label, error, type = "text", placeholder, ...rest }) {
   const [showPwd, setShowPwd] = useState(false);
   const isPwd = type === "password";
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <label style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <label style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
         {label}
       </label>
       <div style={{ position: "relative" }}>
@@ -45,22 +45,34 @@ function FieldInput({ label, error, type = "text", placeholder, ...rest }) {
           type={isPwd ? (showPwd ? "text" : "password") : type}
           placeholder={placeholder || "Your answer"}
           style={{
-            width: "100%", background: "transparent", border: "none",
-            borderBottom: error ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)",
-            borderRadius: 0, padding: isPwd ? "8px 32px 8px 0" : "8px 0",
-            fontSize: 13, color: "#fff", outline: "none", boxSizing: "border-box",
+            width: "100%",
+            background: "rgba(255,255,255,0.04)",
+            border: error ? "1.5px solid #f87171" : "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 8,
+            padding: isPwd ? "11px 36px 11px 14px" : "11px 14px",
+            fontSize: 13,
+            color: "#fff",
+            outline: "none",
+            boxSizing: "border-box",
+            transition: "border-color 0.2s, background 0.2s",
           }}
-          onFocus={e => { e.target.style.borderBottomColor = "#0f8554"; }}
-          onBlur={e => { e.target.style.borderBottomColor = error ? "#f87171" : "rgba(255,255,255,0.2)"; }}
+          onFocus={e => {
+            e.target.style.borderColor = "#0f8554";
+            e.target.style.background = "rgba(255,255,255,0.07)";
+          }}
+          onBlur={e => {
+            e.target.style.borderColor = error ? "#f87171" : "rgba(255,255,255,0.12)";
+            e.target.style.background = "rgba(255,255,255,0.04)";
+          }}
           {...rest}
         />
         {isPwd && (
-          <button type="button" onClick={() => setShowPwd(v => !v)} style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", padding: 2 }}>
-            {showPwd ? <EyeOff size={15} /> : <Eye size={15} />}
+          <button type="button" onClick={() => setShowPwd(v => !v)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", padding: 4 }}>
+            {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         )}
       </div>
-      {error && <span style={{ fontSize: 10, color: "#f87171" }}>{error}</span>}
+      {error && <span style={{ fontSize: 11, color: "#f87171", marginTop: 2 }}>{error}</span>}
     </div>
   );
 }
@@ -167,42 +179,93 @@ function RegisterPanel({ onSwitchToLogin }) {
         <FieldInput label="Confirm Password" type="password" placeholder="Confirm your password" error={errors.confirmPassword?.message} {...register("confirmPassword")} />
       </div>
 
-      {/* Preferences dropdown */}
-      <div ref={dropdownRef} style={{ position: "relative" }}>
-        <label style={{ display: "block", fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>
-          Preferences
-        </label>
+      {/* Luxury Preferences Multi-Select Grid */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "0.25rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            Wellness Preferences
+          </label>
+          <span style={{ fontSize: 11, color: selectedPrefs.length > 0 ? "#4ade80" : "rgba(255,255,255,0.4)" }}>
+            {selectedPrefs.length > 0 ? `${selectedPrefs.length} selected` : "Select preferences"}
+          </span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "8px" }}>
+          {PREFERENCE_OPTIONS.map(opt => {
+            const isSelected = selectedPrefs.includes(opt);
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => togglePref(opt, !isSelected)}
+                style={{
+                  background: isSelected ? "rgba(15, 133, 84, 0.2)" : "rgba(255, 255, 255, 0.03)",
+                  border: isSelected ? "1px solid #0f8554" : "1px solid rgba(255, 255, 255, 0.1)",
+                  color: isSelected ? "#4ade80" : "rgba(255, 255, 255, 0.75)",
+                  padding: "9px 12px",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: isSelected ? 600 : 400,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <span>{opt}</span>
+                <div
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: "4px",
+                    border: isSelected ? "1px solid #0f8554" : "1px solid rgba(255, 255, 255, 0.25)",
+                    background: isSelected ? "#0f8554" : "transparent",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  {isSelected && <Check size={11} color="#fff" />}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* All of the above toggle */}
         <button
           type="button"
-          onClick={() => setDropdownOpen(v => !v)}
-          style={{ width: "100%", background: "transparent", border: "none", borderBottom: errors.preferences ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)", borderRadius: 0, padding: "8px 0", fontSize: 13, color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", outline: "none" }}
+          onClick={() => togglePref("All Of The Above", !selectedPrefs.includes("All Of The Above"))}
+          style={{
+            background: selectedPrefs.includes("All Of The Above") ? "rgba(188, 163, 116, 0.15)" : "rgba(255, 255, 255, 0.02)",
+            border: selectedPrefs.includes("All Of The Above") ? "1px solid #bca374" : "1px solid rgba(255, 255, 255, 0.08)",
+            color: selectedPrefs.includes("All Of The Above") ? "#bca374" : "rgba(255, 255, 255, 0.6)",
+            padding: "8px 14px",
+            borderRadius: "8px",
+            fontSize: "11px",
+            fontWeight: "600",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            marginTop: "2px",
+            transition: "all 0.2s ease",
+          }}
         >
-          <span style={{ color: selectedPrefs.length === 0 ? "rgba(255,255,255,0.3)" : "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 10 }}>
-            {selectedPrefs.length === 0 ? "Choose your preferences" : selectedPrefs.includes("All Of The Above") ? "All Of The Above" : selectedPrefs.join(", ")}
-          </span>
-          <ChevronDown size={15} color="rgba(255,255,255,0.4)" />
+          <span>All Of The Above (Full Access Package)</span>
+          {selectedPrefs.includes("All Of The Above") && <Check size={13} color="#bca374" />}
         </button>
-        {errors.preferences && <span style={{ fontSize: 10, color: "#f87171" }}>{errors.preferences.message}</span>}
-        {dropdownOpen && (
-          <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#0d1410", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "12px", zIndex: 999, boxShadow: "0 20px 40px rgba(0,0,0,0.8)", display: "flex", flexDirection: "column", gap: 8 }}>
-            {PREFERENCE_OPTIONS.map(opt => (
-              <label key={opt} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "3px 0" }}>
-                <input type="checkbox" checked={selectedPrefs.includes(opt)} onChange={e => togglePref(opt, e.target.checked)} style={{ accentColor: "#0f8554", width: 14, height: 14, cursor: "pointer" }} />
-                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.75)" }}>{opt}</span>
-              </label>
-            ))}
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", marginTop: 4, paddingTop: 8 }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-                <input type="checkbox" checked={selectedPrefs.includes("All Of The Above")} onChange={e => togglePref("All Of The Above", e.target.checked)} style={{ accentColor: "#0f8554", width: 14, height: 14, cursor: "pointer" }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>All Of The Above</span>
-              </label>
-            </div>
-          </div>
-        )}
+
+        {errors.preferences && <span style={{ fontSize: 11, color: "#f87171" }}>{errors.preferences.message}</span>}
       </div>
 
       {/* Checkboxes */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginTop: "0.25rem" }}>
         <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
           <input type="checkbox" {...register("agreeTerms")} style={{ accentColor: "#0f8554", width: 14, height: 14, marginTop: 1, cursor: "pointer", flexShrink: 0 }} />
           <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
@@ -384,23 +447,23 @@ function MembershipContent() {
           z-index: 1;
           display: flex;
           width: 100%;
-          max-width: 960px;
-          border-radius: 16px;
-          box-shadow: 0 30px 70px rgba(0,0,0,0.7);
-          border: 1px solid rgba(255,255,255,0.08);
-          margin-top: 2rem;
+          max-width: 1040px;
+          border-radius: 20px;
+          box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+          border: 1px solid rgba(255,255,255,0.1);
+          margin-top: 1.5rem;
           overflow: hidden;
         }
 
         .member-left-col {
-          width: 42%;
-          background: rgba(0,0,0,0.4);
+          width: 38%;
+          background: rgba(0,0,0,0.45);
           backdrop-filter: blur(24px);
-          padding: 4rem 3rem;
+          padding: 3.5rem 2.5rem;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          border-radius: 16px 0 0 16px;
+          border-radius: 20px 0 0 20px;
           overflow: hidden;
           flex-shrink: 0;
         }
@@ -408,8 +471,8 @@ function MembershipContent() {
         .member-right-col {
           flex: 1;
           background: #080c09;
-          padding: 3rem 2.5rem;
-          border-radius: 0 16px 16px 0;
+          padding: 2.75rem 2.75rem;
+          border-radius: 0 20px 20px 0;
           display: flex;
           flex-direction: column;
           position: relative;
