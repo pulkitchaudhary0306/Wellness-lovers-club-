@@ -168,8 +168,8 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
 
       setIsSuccess(true);
       setTimeout(() => {
-        router.push("/dashboard");
-      }, 3000);
+        router.push("/membership/enroll");
+      }, 1200);
     } catch (err) {
       setApiError(err?.message || "Invalid or expired verification code. Please try again.");
       shake();
@@ -203,17 +203,17 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
             <CheckCircle2 size={36} />
           </motion.div>
           <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", color: "#10b981", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
-            Verification Complete
+            Identity Verified
           </span>
           <h2 className="otp-success-title" style={{ fontSize: "24px", marginBottom: "8px" }}>
-            Welcome to the Club!
+            Welcome to the Club
           </h2>
           <p style={{ color: "rgba(255, 255, 255, 0.75)", fontSize: "14px", fontWeight: 300, lineHeight: "1.6", marginBottom: "1.75rem" }}>
-            Your VIP membership registration and email have been successfully verified.
+            Your account is verified. Entering your personalized membership enrollment...
           </p>
 
           <Link
-            href="/dashboard"
+            href="/membership/enroll"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -230,7 +230,7 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
               boxShadow: "0 10px 25px rgba(15, 133, 84, 0.35)",
             }}
           >
-            <span>Go to Member Dashboard</span>
+            <span>Discover Your Membership →</span>
           </Link>
         </div>
       </motion.div>

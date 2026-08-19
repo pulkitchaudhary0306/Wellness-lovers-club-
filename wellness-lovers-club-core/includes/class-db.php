@@ -51,7 +51,61 @@ class WLC_Core_Db {
         $table_email_queue    = $wpdb->prefix . 'wlc_email_queue';
         $table_email_verify   = $wpdb->prefix . 'wlc_email_verification';
         $table_dual_verify    = $wpdb->prefix . 'wlc_dual_verification';
+        $table_payments       = $wpdb->prefix . 'wlc_payments';
+        $table_pay_sessions   = $wpdb->prefix . 'wlc_payment_sessions';
+
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        // 0. Payment Sessions Table (Short-lived 30min OTP payment authorizations)
+        $sql_pay_sessions = "CREATE TABLE IF NOT EXISTS $table_pay_sessions (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            session_token_hash varchar(64) NOT NULL,
+            session_token varchar(128) DEFAULT '',
+            user_id bigint(20) NOT NULL,
+            verified_email varchar(100) NOT NULL,
+            verified_phone varchar(50) DEFAULT '',
+            status varchar(30) DEFAULT 'authorized' NOT NULL,
+            expires_at datetime NOT NULL,
+            used_at datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY session_token_hash (session_token_hash),
+            KEY session_token (session_token),
+            KEY user_id (user_id),
+            KEY verified_email (verified_email),
+            KEY status (status)
+        ) $charset_collate;";
+        dbDelta( $sql_pay_sessions );
+
+        // 0.1 Payments Table (Strict ₹29,000 live membership ledger)
+        $sql_payments = "CREATE TABLE IF NOT EXISTS $table_payments (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            order_id varchar(64) NOT NULL,
+            user_id bigint(20) NOT NULL,
+            membership_id varchar(50) DEFAULT '',
+            tier varchar(50) NOT NULL,
+            amount decimal(10,2) NOT NULL,
+            base_amount decimal(10,2) DEFAULT 24576.27 NOT NULL,
+            gst_amount decimal(10,2) DEFAULT 4423.73 NOT NULL,
+            tax_amount decimal(10,2) DEFAULT 0.00 NOT NULL,
+            currency varchar(10) DEFAULT 'INR' NOT NULL,
+            gateway varchar(50) DEFAULT 'razorpay' NOT NULL,
+            gateway_order_id varchar(100) DEFAULT '',
+            gateway_payment_id varchar(100) DEFAULT '',
+            gateway_signature varchar(255) DEFAULT '',
+            status varchar(30) DEFAULT 'pending' NOT NULL,
+            invoice_number varchar(64) DEFAULT '',
+            webhook_payload longtext DEFAULT '',
+            paid_at datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY order_id (order_id),
+            KEY user_id (user_id),
+            KEY gateway_payment_id (gateway_payment_id),
+            KEY status (status)
+        ) $charset_collate;";
+        dbDelta( $sql_payments );
 
         // 1. Contacts Table
         $sql_contacts = "CREATE TABLE IF NOT EXISTS $table_contacts (

@@ -365,6 +365,30 @@ class WLC_OTP_Controller {
             $jwt_token = WLC_Core_JWT::generate_token( $user_id );
         }
 
+        // Create Secure Short-Lived Server-Side Payment Session Token (30 mins)
+        $pay_sessions_table = $wpdb->prefix . 'wlc_payment_sessions';
+        $payment_session_token = 'wlc_pay_' . bin2hex( random_bytes( 32 ) );
+        $token_hash = hash( 'sha256', $payment_session_token );
+        $expires_at = gmdate( 'Y-m-d H:i:s', time() + 1800 ); // 30 minutes
+        $phone = $user_id ? ( get_user_meta( $user_id, 'phone', true ) ?: get_user_meta( $user_id, 'wlc_phone', true ) ?: '' ) : '';
+
+        if ( $user_id ) {
+            $wpdb->insert(
+                $pay_sessions_table,
+                array(
+                    'session_token_hash' => $token_hash,
+                    'session_token'      => $payment_session_token,
+                    'user_id'            => $user_id,
+                    'verified_email'     => $email,
+                    'verified_phone'     => $phone,
+                    'status'             => 'authorized',
+                    'expires_at'         => $expires_at,
+                    'created_at'         => gmdate( 'Y-m-d H:i:s' ),
+                ),
+                array( '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' )
+            );
+        }
+
         $user_data = array(
             'id'    => $user_id,
             'email' => $email,
@@ -377,10 +401,11 @@ class WLC_OTP_Controller {
         }
 
         return new WP_REST_Response( array(
-            'success' => true,
-            'message' => 'Email verified successfully.',
-            'token'   => $jwt_token,
-            'user'    => $user_data,
+            'success'               => true,
+            'message'               => 'Email verified successfully.',
+            'token'                 => $jwt_token,
+            'payment_session_token' => $payment_session_token,
+            'user'                  => $user_data,
         ), 200 );
     }
 

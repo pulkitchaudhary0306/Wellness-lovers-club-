@@ -135,6 +135,11 @@ export async function handleVerifyOTP({ otpCode, type = "email", contactInfo }) 
         localStorage.setItem("wlc_otp_verified", "true");
       }
 
+      if (wpResponse.payment_session_token && typeof window !== "undefined") {
+        sessionStorage.setItem("wlc_payment_session", wpResponse.payment_session_token);
+        localStorage.setItem("wlc_payment_session", wpResponse.payment_session_token);
+      }
+
       if (wpResponse.token) {
         storeToken(wpResponse.token);
       }
@@ -143,6 +148,7 @@ export async function handleVerifyOTP({ otpCode, type = "email", contactInfo }) 
         success: true,
         message: wpResponse.message || "Email verified successfully!",
         token: wpResponse.token,
+        payment_session_token: wpResponse.payment_session_token,
         user: wpResponse.user,
       };
     }
@@ -164,3 +170,86 @@ export async function handleVerifyOTP({ otpCode, type = "email", contactInfo }) 
     };
   }
 }
+
+/**
+ * 3. handleCreatePaymentOrder(params)
+ * Creates a server-side order with strictly verified ₹29,000 (2,900,000 paise).
+ */
+export async function handleCreatePaymentOrder(params = {}) {
+  try {
+    let sessionToken = "";
+    let email = params.email || "";
+
+    if (typeof window !== "undefined") {
+      sessionToken = sessionStorage.getItem("wlc_payment_session") || localStorage.getItem("wlc_payment_session") || "";
+      if (!email) {
+        email = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email") || "";
+      }
+    }
+
+    const headers = {};
+    if (sessionToken) {
+      headers["X-Payment-Session"] = sessionToken;
+    }
+
+    const res = await wpFetch("/wp-json/custom/v1/payment/create-order", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        email,
+        payment_session_token: sessionToken,
+        ...params,
+      }),
+      unauthenticated: !getStoredToken(),
+    });
+
+    return {
+      success: true,
+      ...(res.data || res),
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message || "Failed to generate payment order.",
+    };
+  }
+}
+
+/**
+ * 4. handleVerifyPaymentResponse(payload)
+ * Sends Razorpay signature to WordPress backend for HMAC-SHA256 verification.
+ */
+export async function handleVerifyPaymentResponse(payload) {
+  try {
+    let sessionToken = "";
+    if (typeof window !== "undefined") {
+      sessionToken = sessionStorage.getItem("wlc_payment_session") || localStorage.getItem("wlc_payment_session") || "";
+    }
+
+    const headers = {};
+    if (sessionToken) {
+      headers["X-Payment-Session"] = sessionToken;
+    }
+
+    const res = await wpFetch("/wp-json/custom/v1/payment/verify-payment", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        ...payload,
+        payment_session_token: sessionToken,
+      }),
+      unauthenticated: !getStoredToken(),
+    });
+
+    return {
+      success: true,
+      ...(res.data || res),
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message || "Payment signature verification failed.",
+    };
+  }
+}
+

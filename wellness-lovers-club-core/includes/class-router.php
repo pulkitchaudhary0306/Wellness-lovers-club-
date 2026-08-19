@@ -145,6 +145,59 @@ class WLC_Core_Router {
             'permission_callback' => '__return_true',
         ) );
 
+        // ─── Razorpay Payment Gateway & Order Endpoints ─────────────────────────
+        $payment = new WLC_Core_Payment_Controller();
+        register_rest_route( $namespace, '/payment/config', array(
+            'methods'             => 'GET',
+            'callback'            => array( $payment, 'get_config' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/payment/create-order', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'create_order' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/payment/verify-payment', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'verify_payment' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/payment/verify', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'verify_payment' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/payment/check-status', array(
+            'methods'             => 'GET',
+            'callback'            => array( $payment, 'check_status' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/payment/webhook', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'handle_webhook' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/razorpay/create-order', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'create_order' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/razorpay/verify', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'verify_payment' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/razorpay/check-status', array(
+            'methods'             => 'GET',
+            'callback'            => array( $payment, 'check_status' ),
+            'permission_callback' => '__return_true',
+        ) );
+        register_rest_route( $namespace, '/razorpay/webhook', array(
+            'methods'             => 'POST',
+            'callback'            => array( $payment, 'handle_webhook' ),
+            'permission_callback' => '__return_true',
+        ) );
+
 
         // ─── Production Email OTP Verification Endpoints ─────────────────────────
         register_rest_route( $namespace, '/verify-otp', array(

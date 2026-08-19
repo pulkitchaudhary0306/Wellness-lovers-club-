@@ -170,6 +170,10 @@ export function AuthProvider({ children }) {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("wlc_otp_verified", "true");
       localStorage.setItem("wlc_otp_verified", "true");
+      if (response?.payment_session_token) {
+        sessionStorage.setItem("wlc_payment_session", response.payment_session_token);
+        localStorage.setItem("wlc_payment_session", response.payment_session_token);
+      }
     }
     if (response && response.token && response.user) {
       setUser(response.user);
