@@ -134,62 +134,12 @@ function MembershipEnrollmentContent() {
           color: "#0f8554",
           backdrop_color: "rgba(8, 12, 9, 0.9)",
         },
-        method: {
-          upi: true,
-          card: true,
-          netbanking: true,
-          wallet: true,
-          emi: false,
-          paylater: false,
-        },
         config: {
           display: {
-            language: "en",
             hide: [
               { method: "emi" },
               { method: "paylater" },
             ],
-            preferences: {
-              show_default_blocks: true,
-            },
-            sequence: ["block.upi", "block.wallets", "block.cards", "block.netbanking"],
-            blocks: {
-              upi: {
-                name: "Pay using UPI Apps (Google Pay, PhonePe, Paytm, Amazon Pay)",
-                instruments: [
-                  {
-                    method: "upi",
-                    flows: ["intent", "qr", "collect"],
-                    apps: ["google_pay", "phonepe", "paytm", "amazonpay", "bhim", "cred"],
-                  },
-                ],
-              },
-              wallets: {
-                name: "Amazon Pay & Wallets",
-                instruments: [
-                  {
-                    method: "wallet",
-                    wallets: ["amazonpay", "paytm", "mobikwik", "phonepe", "airtelmoney"],
-                  },
-                ],
-              },
-              cards: {
-                name: "Credit & Debit Cards",
-                instruments: [
-                  {
-                    method: "card",
-                  },
-                ],
-              },
-              netbanking: {
-                name: "Net Banking",
-                instruments: [
-                  {
-                    method: "netbanking",
-                  },
-                ],
-              },
-            },
           },
         },
         modal: {
@@ -881,43 +831,6 @@ function MembershipEnrollmentContent() {
                 </div>
                 <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
                   Final membership amount (All-inclusive)
-                </div>
-              </div>
-
-              {/* Supported Direct Payment Apps Banner */}
-              <div
-                style={{
-                  background: "rgba(255, 255, 255, 0.03)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
-                  marginBottom: "1.75rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                }}
-              >
-                <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 6 }}>
-                  <Sparkles size={13} color="#4ade80" />
-                  <span>Direct Payment Apps Supported via Razorpay</span>
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {["Google Pay", "PhonePe", "Paytm", "Amazon Pay", "BHIM UPI", "CRED", "Debit / Credit Cards", "Net Banking"].map((app, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        background: "rgba(255, 255, 255, 0.06)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        borderRadius: "6px",
-                        padding: "3px 8px",
-                        fontSize: "11px",
-                        color: "#e2e8f0",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {app}
-                    </span>
-                  ))}
                 </div>
               </div>
 
