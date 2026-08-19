@@ -103,8 +103,8 @@ export const paymentService = {
         return {
           key_id: payload.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
           currency: payload.currency || "INR",
-          amount: payload.amount || 29000,
-          amount_paise: payload.amount_paise || 2900000,
+          amount: payload.amount || 1,
+          amount_paise: payload.amount_paise || 100,
           item_name: payload.item_name || "Wellness Lovers Club - VIP Annual Membership",
           description: payload.description || "Annual Luxury VIP Membership Access & Privileges",
           is_tax_inclusive: true,
@@ -117,8 +117,8 @@ export const paymentService = {
     return {
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
       currency: "INR",
-      amount: 29000,
-      amount_paise: 2900000,
+      amount: 1,
+      amount_paise: 100,
       item_name: "Wellness Lovers Club - VIP Annual Membership",
       description: "Annual Luxury VIP Membership Access & Privileges",
       is_tax_inclusive: true,

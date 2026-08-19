@@ -261,7 +261,7 @@ function MembershipEnrollmentContent() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Amount Paid</span>
-              <strong style={{ color: "#ffffff", fontSize: "15px" }}>₹29,000</strong>
+              <strong style={{ color: "#ffffff", fontSize: "15px" }}>₹1</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Status</span>
@@ -519,10 +519,10 @@ function MembershipEnrollmentContent() {
 
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "1.5rem" }}>
                   <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
-                    Annual Membership
+                    Annual Membership (Testing)
                   </div>
                   <div style={{ fontSize: "38px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
-                    ₹29,000
+                    ₹1
                   </div>
                 </div>
               </div>
@@ -732,10 +732,10 @@ function MembershipEnrollmentContent() {
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                      Amount Payable
+                      Amount Payable (Testing)
                     </span>
                     <div style={{ fontSize: "32px", fontWeight: "800", color: "#fff", letterSpacing: "-0.02em" }}>
-                      ₹29,000
+                      ₹1
                     </div>
                   </div>
                   <div style={{ fontSize: "11px", background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.4)", color: "#4ade80", padding: "6px 12px", borderRadius: "8px", fontWeight: "600" }}>
@@ -816,13 +816,13 @@ function MembershipEnrollmentContent() {
                 }}
               >
                 <div style={{ fontSize: "11px", color: "#bca374", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "700", marginBottom: 6 }}>
-                  VIP Annual Membership
+                  VIP Annual Membership (Testing Mode)
                 </div>
                 <div style={{ fontSize: "44px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.03em" }}>
-                  ₹29,000
+                  ₹1
                 </div>
                 <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
-                  Final membership amount
+                  Test membership amount
                 </div>
               </div>
 
@@ -882,7 +882,7 @@ function MembershipEnrollmentContent() {
                 ) : (
                   <>
                     <Lock size={18} />
-                    <span>Pay ₹29,000</span>
+                    <span>Pay ₹1</span>
                     <ChevronRight size={20} />
                   </>
                 )}
