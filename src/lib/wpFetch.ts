@@ -104,7 +104,7 @@ export async function wpFetch<T = unknown>(
     throw new WPApiError(
       errorBody?.code ?? "unknown_error",
       errorBody?.message ??
-        (typeof body === "string" && body.trim()
+        (typeof body === "string" && body.trim().length > 0
           ? body
           : `Request failed (${response.status})`),
       errorBody?.data?.status ?? response.status
