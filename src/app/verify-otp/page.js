@@ -4,7 +4,6 @@ import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import OTPVerificationForm from "@/components/forms/OTPVerificationForm";
 import "./verify-otp.css";
-import Head from "next/head";
 
 function VerifyOTPContent() {
   const searchParams = useSearchParams();
@@ -20,19 +19,12 @@ function VerifyOTPContent() {
 
 export default function OTPVerificationPage() {
   return (
-    <>
-      <Head>
-        <title>Verify OTP – Wellness Lovers Club</title>
-        <meta name="description" content="Enter the OTP sent to your phone or email to complete registration for the Wellness Lovers Club." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <div className="otp-root">
-        <div className="otp-glow-1"></div>
-        <div className="otp-glow-2"></div>
-        <Suspense fallback={<div className="text-white text-center p-8">Loading…</div>}>
-          <VerifyOTPContent />
-        </Suspense>
-      </div>
-    </>
+    <div className="otp-root">
+      <div className="otp-glow-1"></div>
+      <div className="otp-glow-2"></div>
+      <Suspense fallback={<div className="text-white text-center p-8">Loading…</div>}>
+        <VerifyOTPContent />
+      </Suspense>
+    </div>
   );
 }

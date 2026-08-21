@@ -278,7 +278,27 @@ class WLC_Core_Payment_Controller {
         }
 
         $user_id = $order ? $order->user_id : WLC_Core_JWT::get_current_user_id();
-        $membership_id  = 'WLC-' . gmdate( 'Y' ) . '-' . str_pad( (string) $user_id, 6, '0', STR_PAD_LEFT );
+
+        // ── Sequential WLC-4099+ Membership Number Allocation ──
+        $existing_membership_id = $user_id ? get_user_meta( $user_id, 'wlc_membership_number', true ) : '';
+        if ( empty( $existing_membership_id ) && $user_id ) {
+            $existing_membership_id = get_user_meta( $user_id, 'wlc_membership_id', true );
+        }
+
+        if ( ! empty( $existing_membership_id ) && strpos( $existing_membership_id, 'WLC-' ) === 0 ) {
+            $membership_id = $existing_membership_id;
+        } else {
+            $last_no = intval( get_option( 'wlc_last_membership_number', 0 ) );
+            $next_no = ( $last_no < 4104 ) ? 4104 : ( $last_no + 1 );
+            update_option( 'wlc_last_membership_number', $next_no );
+            $membership_id = 'WLC-' . $next_no;
+        }
+
+        $duration_months = intval( get_option( 'wlc_membership_duration_months', 12 ) );
+        if ( $duration_months <= 0 ) $duration_months = 12;
+
+        $start_date = current_time( 'Y-m-d' );
+        $valid_till = gmdate( 'Y-m-d', strtotime( "+{$duration_months} months", strtotime( $start_date ) ) );
         $invoice_number = 'INV-' . gmdate( 'Y' ) . '-' . strtoupper( wp_generate_password( 6, false, false ) );
 
         // Update or insert payment row in WordPress database
@@ -326,8 +346,11 @@ class WLC_Core_Payment_Controller {
             update_user_meta( $user_id, 'wlc_membership_status', 'Active' );
             update_user_meta( $user_id, 'membership_status', 'Active' );
             update_user_meta( $user_id, 'wlc_membership_id', $membership_id );
-            update_user_meta( $user_id, 'wlc_membership_tier', 'VIP Annual' );
-            update_user_meta( $user_id, 'wlc_membership_expiry', gmdate( 'Y-m-d H:i:s', strtotime( '+1 year' ) ) );
+            update_user_meta( $user_id, 'wlc_membership_number', $membership_id );
+            update_user_meta( $user_id, 'wlc_membership_tier', 'Lotus Club' );
+            update_user_meta( $user_id, 'wlc_membership_start_date', $start_date );
+            update_user_meta( $user_id, 'wlc_membership_valid_till', $valid_till );
+            update_user_meta( $user_id, 'wlc_membership_expiry', $valid_till . ' 23:59:59' );
         }
 
         // Dispatch Official Welcome & Thank You Email

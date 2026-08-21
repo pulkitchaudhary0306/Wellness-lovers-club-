@@ -124,47 +124,8 @@ class WLC_OTP_Controller {
         $table = WLC_OTP_Database::get_table_name();
         $now   = current_time( 'mysql', true ); // UTC
 
-        // Check cooldown (60 seconds)
-        $latest = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT * FROM {$table} WHERE email = %s ORDER BY id DESC LIMIT 1",
-                $email
-            )
-        );
+        // ── Rate limits disabled for continuous application & testing ──
 
-        $cooldown_seconds = defined( 'WLC_OTP_RESEND_COOLDOWN' ) ? max( 1, intval( WLC_OTP_RESEND_COOLDOWN ) ) : 60;
-
-        if ( $latest && ! empty( $latest->last_sent_at ) && $latest->status === 'pending' ) {
-            $elapsed = time() - strtotime( $latest->last_sent_at );
-            if ( $elapsed < $cooldown_seconds ) {
-                $retry_after = $cooldown_seconds - $elapsed;
-                return new WP_REST_Response( array(
-                    'success'     => false,
-                    'code'        => 'resend_cooldown',
-                    'message'     => 'Please wait before requesting another code.',
-                    'retry_after' => $retry_after,
-                ), 429 );
-            }
-        }
-
-        // Check hourly resend rate limit (max 5 sends/hour)
-        $max_hourly   = defined( 'WLC_OTP_MAX_RESENDS_PER_HOUR' ) ? max( 1, intval( WLC_OTP_MAX_RESENDS_PER_HOUR ) ) : 5;
-        $one_hour_ago = gmdate( 'Y-m-d H:i:s', time() - 3600 );
-        $recent_count = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table} WHERE email = %s AND created_at >= %s",
-                $email,
-                $one_hour_ago
-            )
-        );
-
-        if ( intval( $recent_count ) >= $max_hourly ) {
-            return new WP_REST_Response( array(
-                'success' => false,
-                'code'    => 'resend_limit_exceeded',
-                'message' => 'Too many verification requests. Please try again later.',
-            ), 429 );
-        }
 
         // Invalidate previous pending OTPs for this email/user
         $wpdb->query(

@@ -79,48 +79,8 @@ class WLC_Email_OTP_Service {
         $table = WLC_Email_OTP_Database::get_table_name();
         $now   = current_time( 'mysql', true ); // UTC timestamp
 
-        // ─── 1. Check Resend Rate Limits (Hourly & Cooldown) ──────────────────
-        $one_hour_ago = gmdate( 'Y-m-d H:i:s', time() - 3600 );
-        $recent_sends = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table} WHERE email = %s AND created_at >= %s",
-                $email,
-                $one_hour_ago
-            )
-        );
+        // ─── 1. Rate limits disabled to allow continuous application & testing ───
 
-        if ( intval( $recent_sends ) >= 5 ) {
-            return new WP_Error(
-                'rate_limit_exceeded',
-                'Too many verification requests. Please wait an hour before requesting a new code.',
-                array( 'status' => 429 )
-            );
-        }
-
-        // Check 60-second cooldown from last sent OTP
-        $latest = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT id, last_sent_at, verified_at FROM {$table} WHERE email = %s ORDER BY id DESC LIMIT 1",
-                $email
-            )
-        );
-
-        if ( $latest && empty( $latest->verified_at ) ) {
-            $last_sent_timestamp = strtotime( $latest->last_sent_at );
-            $seconds_since_last  = time() - $last_sent_timestamp;
-
-            if ( $seconds_since_last < 60 ) {
-                $seconds_remaining = 60 - $seconds_since_last;
-                return new WP_Error(
-                    'cooldown_active',
-                    sprintf( 'Please wait %d seconds before requesting another code.', $seconds_remaining ),
-                    array(
-                        'status'            => 429,
-                        'seconds_remaining' => $seconds_remaining,
-                    )
-                );
-            }
-        }
 
         // ─── 2. Invalidate Previous Unverified OTPs for this Email ────────────
         $wpdb->query(

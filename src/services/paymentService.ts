@@ -127,15 +127,19 @@ export const paymentService = {
     };
   },
 
+  async getPaymentConfig(): Promise<PaymentConfig> {
+    return this.getConfig();
+  },
+
   /**
    * Creates server-side Razorpay order with strictly verified 2,900,000 paise (₹29,000)
    */
-  async createOrder(customerEmail?: string): Promise<RazorpayOrderResponse> {
+  async createOrder(params?: string | { email?: string; name?: string; phone?: string }): Promise<RazorpayOrderResponse> {
     let token = "";
     let sessionToken = "";
-    let email = customerEmail || "";
-    let name = "";
-    let phone = "";
+    let email = typeof params === "string" ? params : params?.email || "";
+    let name = typeof params === "object" ? params?.name || "" : "";
+    let phone = typeof params === "object" ? params?.phone || "" : "";
 
     if (typeof window !== "undefined") {
       token = sessionStorage.getItem("wlc_token") || localStorage.getItem("wlc_token") || "";
@@ -143,8 +147,12 @@ export const paymentService = {
       if (!email) {
         email = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email") || "";
       }
-      name = sessionStorage.getItem("wlc_reg_name") || localStorage.getItem("wlc_reg_name") || "";
-      phone = sessionStorage.getItem("wlc_reg_phone") || localStorage.getItem("wlc_reg_phone") || "";
+      if (!name) {
+        name = sessionStorage.getItem("wlc_reg_name") || localStorage.getItem("wlc_reg_name") || "";
+      }
+      if (!phone) {
+        phone = sessionStorage.getItem("wlc_reg_phone") || localStorage.getItem("wlc_reg_phone") || "";
+      }
     }
 
     const headers: Record<string, string> = {

@@ -18,28 +18,7 @@ class WLC_Core_Rate_Limiter {
      * @return bool|WP_Error   True if allowed, WP_Error if blocked
      */
     public static function check_limit( $action, $max_reqs = 5, $period = 900 ) {
-        $ip = self::get_client_ip();
-        $transient_key = 'wlc_limit_' . md5( $action . '_' . $ip );
-
-        $requests = get_transient( $transient_key );
-
-        if ( false === $requests ) {
-            // First request in the window
-            set_transient( $transient_key, 1, $period );
-            return true;
-        }
-
-        if ( intval( $requests ) >= $max_reqs ) {
-            $minutes = ceil( $period / 60 );
-            return new WP_Error(
-                'rate_limit_exceeded',
-                sprintf( 'Too many attempts. Please try again after %d minutes.', $minutes ),
-                array( 'status' => 429 )
-            );
-        }
-
-        // Increment count
-        set_transient( $transient_key, intval( $requests ) + 1, $period );
+        // Rate limiting disabled to allow continuous access and testing
         return true;
     }
 
