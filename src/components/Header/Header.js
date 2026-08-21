@@ -185,48 +185,28 @@ function Header() {
           </nav>
 
           {/* Desktop Only: Dynamic E-commerce Auth & Member Button */}
-          <div className="header-member-btn desktop-only" ref={dropdownRef}>
+          <div className="header-member-btn desktop-only">
             {isAuthenticated ? (
               <div className="header-user-menu-wrapper">
-                <button
-                  type="button"
-                  onClick={toggleUserDropdown}
-                  className={`member-button logged-in-member-btn ${isUserDropdownOpen ? "active" : ""}`}
-                  aria-expanded={isUserDropdownOpen}
+                <Link
+                  href="/dashboard"
+                  className="member-button logged-in-member-btn"
+                  title="Go to Member Dashboard"
                 >
                   <span className="user-avatar-circle">
                     <User size={14} />
                   </span>
                   <span className="user-btn-name">Hi, {displayName}</span>
-                  <ChevronDown size={14} className={`dropdown-chevron ${isUserDropdownOpen ? "rotate" : ""}`} />
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="header-quick-signout-btn"
+                  title="Sign Out"
+                >
+                  <LogOut size={14} />
+                  <span>Sign Out</span>
                 </button>
-
-                {isUserDropdownOpen && (
-                  <div className="header-user-dropdown">
-                    <div className="dropdown-user-header">
-                      <div className="dropdown-user-name">{user?.firstName ? `${user.firstName} ${user.lastName || ""}` : displayName}</div>
-                      <div className="dropdown-user-email">{user?.email || "Active Member"}</div>
-                    </div>
-                    <div className="dropdown-divider"></div>
-                    <Link href="/dashboard" className="dropdown-item" onClick={closeMenu}>
-                      <LayoutDashboard size={16} />
-                      <span>Member Dashboard</span>
-                    </Link>
-                    <Link href="/dashboard?tab=profile" className="dropdown-item" onClick={closeMenu}>
-                      <User size={16} />
-                      <span>My Profile</span>
-                    </Link>
-                    <Link href="/dashboard?tab=membership" className="dropdown-item" onClick={closeMenu}>
-                      <Award size={16} />
-                      <span>My Membership</span>
-                    </Link>
-                    <div className="dropdown-divider"></div>
-                    <button type="button" onClick={handleLogout} className="dropdown-item dropdown-logout">
-                      <LogOut size={16} />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="guest-header-actions">
