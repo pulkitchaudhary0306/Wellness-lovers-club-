@@ -162,22 +162,33 @@
   letter-spacing: 0.5px;
 }
 
+/* Action buttons row */
+.dest-actions-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 /* Translucent Pill/Capsule button */
 .dest-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 12.5px 24px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 140px;
+  padding: 11px 20px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 30px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11.5px;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   text-decoration: none;
@@ -200,4 +211,30 @@
 
 .dest-btn:hover span {
   transform: translateX(4px);
+}
+
+.dest-website-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 18px;
+  background-color: rgba(188, 163, 116, 0.25);
+  border: 1px solid #bca374;
+  border-radius: 30px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f7e6c4 !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.dest-website-btn:hover {
+  background-color: #bca374;
+  color: #06281e !important;
+  box-shadow: 0 6px 16px rgba(188, 163, 116, 0.3);
 }

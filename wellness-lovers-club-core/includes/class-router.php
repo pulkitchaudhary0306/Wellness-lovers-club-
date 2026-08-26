@@ -333,6 +333,16 @@ class WLC_Core_Router {
             'callback'            => array( $profile, 'get_membership' ),
             'permission_callback' => array( $this, 'require_auth' ),
         ) );
+        register_rest_route( $namespace, '/membership-card', array(
+            'methods'             => 'GET',
+            'callback'            => array( $profile, 'get_membership_card' ),
+            'permission_callback' => array( $this, 'require_auth' ),
+        ) );
+        register_rest_route( $namespace, '/admin/membership-card/(?P<user_id>\d+)', array(
+            'methods'             => 'PUT',
+            'callback'            => array( $profile, 'admin_update_membership_card' ),
+            'permission_callback' => array( $this, 'require_admin_auth' ),
+        ) );
         register_rest_route( $namespace, '/orders', array(
             'methods'             => 'GET',
             'callback'            => array( $profile, 'get_orders' ),
@@ -350,5 +360,19 @@ class WLC_Core_Router {
      */
     public function require_auth( $request ) {
         return WLC_Core_JWT::authenticate_request( $request );
+    }
+
+    /**
+     * Route permission callback checking Administrator capability
+     */
+    public function require_admin_auth( $request ) {
+        $auth_result = WLC_Core_JWT::authenticate_request( $request );
+        if ( is_wp_error( $auth_result ) ) {
+            return $auth_result;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return new WP_Error( 'forbidden', 'Administrator permissions required.', array( 'status' => 403 ) );
+        }
+        return true;
     }
 }

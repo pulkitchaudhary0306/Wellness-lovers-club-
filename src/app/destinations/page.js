@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { PARTNERS_DATA } from "@/data/partnerOffers";
 import "./destinations.css";
 
 export default function DestinationsPage() {
@@ -21,11 +22,11 @@ export default function DestinationsPage() {
   const markers = [
     {
       id: "himalayas",
-      name: "Himalayas",
+      name: "Himalayas & North",
       region: "NORTH INDIA",
       x: 130,
       y: 100,
-      details: "Serene mountain retreats for renewal and mindful living."
+      details: "Delhi NCR, Vasant Kunj, Karma Lakelands, luxury urban retreats and wellness spas."
     },
     {
       id: "delhi",
@@ -33,39 +34,23 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       x: 129,
       y: 150,
-      details: "Urban luxury, holistic wellness, and premium experiences."
+      details: "Andaz Hyatt, Shangri-La Eros, Sawadhee Thai Spa, Silhouette Salon, and The Wellness Co."
     },
     {
-      id: "rajasthan",
-      name: "Rajasthan",
-      region: "WEST INDIA",
-      x: 90,
-      y: 185,
-      details: "Royal heritage stays and immersive wellness escapes."
-    },
-    {
-      id: "mumbai",
+      id: "maharashtra",
       name: "Maharashtra",
       region: "WEST INDIA",
       x: 104,
       y: 285,
-      details: "Luxury coastal retreats, wellness resorts, and vibrant city escapes."
+      details: "Swastik Luxury Wellbeing (Pune), Viveda (Nashik), Dhun Wellness Spa & IOSIS (Mumbai)."
     },
     {
-      id: "goa",
-      name: "Goa",
-      region: "WEST INDIA",
-      x: 80,
-      y: 345,
-      details: "Beachfront sanctuaries blending relaxation and rejuvenation."
-    },
-    {
-      id: "bengaluru",
-      name: "Karnataka",
+      id: "hyderabad",
+      name: "Telangana & East",
       region: "SOUTH INDIA",
-      x: 125,
-      y: 380,
-      details: "Nature-inspired retreats and contemporary wellness destinations."
+      x: 135,
+      y: 340,
+      details: "Trē Wellness (Hyderabad) and Pema Wellness (Visakhapatnam)."
     },
     {
       id: "kerala",
@@ -73,133 +58,40 @@ export default function DestinationsPage() {
       region: "SOUTH INDIA",
       x: 115,
       y: 425,
-      details: "The home of Ayurveda, backwaters, and deep healing."
+      details: "Niraamaya Surya Samudra (Kovalam) and Niraamaya Backwaters & Beyond (Kumarakom)."
     }
   ];
 
   const regions = [
     {
       region: "NORTH INDIA",
-      title: "Himalayan & Alpine",
-      cities: "Rishikesh · Shimla · Dharamshala",
-      stats: "6 properties"
+      title: "Delhi NCR & Longevity",
+      cities: "Delhi · Gurgaon · Karma Lakelands",
+      stats: `${PARTNERS_DATA.filter((p) => p.region === "NORTH INDIA").length} partners`
     },
     {
       region: "SOUTH INDIA",
-      title: "Ayurvedic & Coastal",
-      cities: "Kerala · Gokarna · Coorg",
-      stats: "8 properties"
+      title: "Ayurvedic & Holistic",
+      cities: "Kovalam · Kumarakom · Hyderabad",
+      stats: `${PARTNERS_DATA.filter((p) => p.region === "SOUTH INDIA").length} partners`
     },
     {
       region: "WEST INDIA",
-      title: "Heritage & Wellness",
-      cities: "Rajasthan · Goa · Maharashtra",
-      stats: "5 properties"
+      title: "Sanctuary & Naturopathy",
+      cities: "Pune · Nashik · Mumbai · Ahmedabad",
+      stats: `${PARTNERS_DATA.filter((p) => p.region === "WEST INDIA").length} partners`
     },
     {
       region: "EAST INDIA",
-      title: "Nature & Spiritual",
-      cities: "Darjeeling · Gangtok · Assam",
-      stats: "3 properties"
-    }
-  ];
-
-  const partnerProperties = [
-    {
-      name: "Niraamaya Retreats Surya Samudra",
-      region: "SOUTH INDIA",
-      location: "Kovalam, Trivandrum, Kerala",
-      category: "Wellness Retreat",
-      img: "/images/niraamaya-retreat-real.webp",
-      link: "/explore-offer?destination=Niraamaya%20Retreats%20Surya%20Samudra"
+      title: "Coastal Lifestyle Medicine",
+      cities: "Visakhapatnam · Bay of Bengal",
+      stats: `${PARTNERS_DATA.filter((p) => p.region === "EAST INDIA").length} partners`
     },
     {
-      name: "Swastik Luxury Wellbeing Sanctuary",
-      region: "WEST INDIA",
-      location: "Pune, Maharashtra",
-      category: "Wellness Retreat",
-      img: "/images/swastik-sanctuary-real.webp",
-      link: "/explore-offer?destination=Swastik%20Luxury%20Wellbeing%20Sanctuary"
-    },
-    {
-      name: "The Wellness Co",
-      region: "NORTH INDIA",
-      location: "Karma Lakelands, Gurgaon",
-      category: "Spa & Therapies",
-      img: "/images/wellness-co-real.webp",
-      link: "/explore-offer?destination=The%20Wellness%20Co"
-    },
-    {
-      name: "Viveda Wellness Resort",
-      region: "WEST INDIA",
-      location: "Nashik, Maharashtra",
-      category: "Wellness Retreat",
-      img: "/images/viveda-resort-real.webp",
-      link: "/explore-offer?destination=Viveda%20Wellness%20Resort"
-    },
-    {
-      name: "Niraamaya Retreats Backwaters & Beyond",
-      region: "SOUTH INDIA",
-      location: "Kumarakom, Kerala",
-      category: "Spa & Therapies",
-      img: "/images/niraamaya-backwaters-spa.webp",
-      link: "/explore-offer?destination=Niraamaya%20Retreats%20Backwaters%20%26%20Beyond"
-    },
-    {
-      name: "Pema Wellness",
-      region: "EAST INDIA",
-      location: "Visakhapatnam, Andhra Pradesh",
-      category: "Spa / Luxury Stay",
-      img: "/images/pema-wellness-spa.webp",
-      link: "/explore-offer?destination=Pema%20Wellness"
-    },
-    {
-      name: "Silhouette Salon",
-      region: "NORTH INDIA",
-      location: "Gurgaon, Haryana",
-      category: "Spa & Salon",
-      img: "/images/silhouette-salon-spa.webp",
-      link: "/explore-offer?destination=Silhouette%20Salon"
-    },
-    {
-      name: "Andaaz Delhi — Hyatt Hotel",
-      region: "NORTH INDIA",
-      location: "Aerocity, New Delhi",
-      category: "Urban Luxury Spa",
-      img: "/images/andaz-hyatt-spa.webp",
-      link: "/explore-offer?destination=Andaaz%20Delhi%20—%20Hyatt%20Hotel"
-    },
-    {
-      name: "Shangri-La Eros",
-      region: "NORTH INDIA",
-      location: "Connaught Place, New Delhi",
-      category: "5-Star Hotel & Club",
-      img: "/images/shangri-la-stay.webp",
-      link: "/explore-offer?destination=Shangri-La%20Eros"
-    },
-    {
-      name: "Dhun Wellness Spa",
-      region: "WEST INDIA",
-      location: "Mumbai, Maharashtra",
-      category: "Biohacking & Spa",
-      img: "/images/dhun-wellness-spa.webp",
-      link: "/explore-offer?destination=Dhun%20Wellness%20Spa"
-    },
-    {
-      name: "Florian Hurel Hair Couture & Spa",
-      region: "WEST INDIA",
-      location: "Mumbai · Pune · Ahmedabad",
-      category: "Hair Couture & Spa",
-      img: "/images/community-experiences-lounge.webp",
-      link: "/explore-offer?destination=Florian%20Hurel%20Hair%20Couture%20%26%20Spa"
-    },
-    {
-      name: "Viva Mayr",
       region: "INTERNATIONAL",
-      location: "Maria Wörth, Austria",
-      category: "Medical Longevity",
-      img: "/images/vivamayr-austria-real.webp",
-      link: "/explore-offer?destination=Viva%20Mayr"
+      title: "Global Sanctuaries",
+      cities: "Austria · Thailand · Croatia · Bhutan · Dubai",
+      stats: `${PARTNERS_DATA.filter((p) => p.region === "INTERNATIONAL").length} partners`
     }
   ];
 
@@ -207,18 +99,13 @@ export default function DestinationsPage() {
     (reg) => activeFilter === "ALL" || reg.region === activeFilter
   );
 
-  const filteredProperties = partnerProperties.filter(
+  const filteredProperties = PARTNERS_DATA.filter(
     (prop) => activeFilter === "ALL" || prop.region === activeFilter
   );
 
-  const internationalDestinations = [
-    { flag: "🇮🇩", name: "Bali, Indonesia", type: "WELLNESS RETREATS" },
-    { flag: "🇲🇻", name: "Maldives", type: "LUXURY SPA RESORTS" },
-    { flag: "🇹🇭", name: "Thailand", type: "HOLISTIC HEALING" },
-    { flag: "🇨🇭", name: "Switzerland", type: "ALPINE WELLNESS" },
-    { flag: "🇱🇰", name: "Sri Lanka", type: "AYURVEDA & NATURE" },
-    { flag: "🇦🇪", name: "Dubai, UAE", type: "LUXURY SPA & STAYS" }
-  ];
+  const internationalPartners = PARTNERS_DATA.filter(
+    (p) => p.region === "INTERNATIONAL"
+  );
 
   const handleFilterClick = (value) => {
     setActiveFilter(value);
@@ -243,7 +130,7 @@ export default function DestinationsPage() {
           <span className="destinations-hero-eyebrow">CURATED SANCTUARIES & DESTINATIONS</span>
           <h1 className="destinations-hero-title">Discover Your Next <br /> Wellness Escape</h1>
           <p className="destinations-hero-desc">
-            From the Himalayas to coastal sanctuaries, from ancient Ayurvedic retreats to modern luxury spas — every WLC destination is handpicked for members who seek transformation.
+            From the coastal cliffs of Kerala to Austrian medical institutes, from Croatian pine island sanctuaries to serene Himalayan lodges — every WLC destination is handpicked for transformation.
           </p>
         </div>
 
@@ -277,7 +164,7 @@ export default function DestinationsPage() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Stylized outline of India replaced with dotted map image */}
+              {/* Stylized outline of India */}
               <image
                 href="/images/india-dotted.webp"
                 x="0"
@@ -290,12 +177,10 @@ export default function DestinationsPage() {
 
               {/* Dotted Constellation Lines */}
               <line x1="130" y1="100" x2="129" y2="150" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="129" y1="150" x2="90" y2="185" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="90" y1="185" x2="104" y2="285" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="104" y1="285" x2="80" y2="345" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="80" y1="345" x2="115" y2="425" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="115" y1="425" x2="125" y2="380" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
-              <line x1="125" y1="380" x2="129" y2="150" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
+              <line x1="129" y1="150" x2="104" y2="285" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
+              <line x1="104" y1="285" x2="135" y2="340" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
+              <line x1="135" y1="340" x2="115" y2="425" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
+              <line x1="115" y1="425" x2="129" y2="150" stroke="rgba(200, 146, 58, 0.45)" strokeDasharray="3,3" />
 
               {/* Interactive SVG Markers */}
               {markers.map((marker) => {
@@ -315,9 +200,9 @@ export default function DestinationsPage() {
                     <circle cx={marker.x} cy={marker.y} r="10" fill="rgba(13, 86, 63, 0.18)" />
                     <circle cx={marker.x} cy={marker.y} r="4.5" fill="#0d563f" />
                     <text
-                      x={marker.x + (marker.id === "goa" || marker.id === "rajasthan" ? -16 : marker.id === "kerala" || marker.id === "himalayas" ? 0 : 16)}
+                      x={marker.x + (marker.id === "maharashtra" ? -16 : marker.id === "kerala" || marker.id === "himalayas" ? 0 : 16)}
                       y={marker.y + (marker.id === "kerala" ? 22 : marker.id === "himalayas" ? -18 : 4)}
-                      textAnchor={marker.id === "goa" || marker.id === "rajasthan" ? "end" : marker.id === "kerala" || marker.id === "himalayas" ? "middle" : "start"}
+                      textAnchor={marker.id === "maharashtra" ? "end" : marker.id === "kerala" || marker.id === "himalayas" ? "middle" : "start"}
                       fill="#0d563f"
                       fontSize="9px"
                       fontFamily="Montserrat"
@@ -348,7 +233,7 @@ export default function DestinationsPage() {
 
             <div className="map-legend">
               <span className="legend-dot" />
-              <span>WLC Destination</span>
+              <span>WLC Partner Sanctuary</span>
             </div>
           </div>
         </div>
@@ -393,27 +278,24 @@ export default function DestinationsPage() {
         <div className="properties-header-wrapper">
           <div>
             <h2 className="properties-section-title">
-              {activeFilter === "ALL" ? "All Handpicked Escapes" : `Featured in ${activeFilter}`}
+              {activeFilter === "ALL" ? "All Handpicked Partners & Sanctuaries" : `Featured in ${activeFilter}`}
             </h2>
             <p className="properties-section-subtitle">
-              Exclusive properties offering tailored experiences and premium member privileges.
+              Exclusive properties offering all-inclusive member privileges, preferential rates, and direct booking support.
             </p>
           </div>
         </div>
 
         <div className="properties-grid">
           {filteredProperties.length > 0 ? (
-            filteredProperties.map((prop, idx) => (
-              <Link
-                href={prop.link}
-                className="property-card"
-                key={idx}
-                style={{ textDecoration: "none" }}
-              >
+            filteredProperties.map((prop) => (
+              <div className="property-card" key={prop.id}>
                 <div className="property-img-container">
-                  <span className="property-category-badge">{prop.category}</span>
+                  <span className="property-category-badge">
+                    {prop.flag} {prop.category}
+                  </span>
                   <Image
-                    src={prop.img}
+                    src={prop.image}
                     alt={prop.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -425,11 +307,64 @@ export default function DestinationsPage() {
                   <div className="property-card-location">
                     <span>📍</span> {prop.location}
                   </div>
-                  <span className="property-card-link">
-                    Explore Details & Privileges <span>→</span>
-                  </span>
+                  <p style={{ fontSize: "13px", color: "#666", lineHeight: "1.5", margin: "4px 0 12px 0" }}>
+                    {prop.shortDesc}
+                  </p>
+
+                  {/* Highlights of Member Offers */}
+                  {Array.isArray(prop.offers) && prop.offers.length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
+                      {prop.offers.map((off) => (
+                        <span
+                          key={off.id}
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            color: "#0d563f",
+                            background: "rgba(13, 86, 63, 0.08)",
+                            border: "1px solid rgba(13, 86, 63, 0.15)",
+                            borderRadius: "14px",
+                            padding: "3px 10px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px"
+                          }}
+                        >
+                          <span style={{ color: "#9c8458" }}>✦</span> {off.discount || off.badge || off.title}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "auto", alignItems: "center", justifyContent: "space-between" }}>
+                    <Link
+                      href={`/explore-offer?destination=${encodeURIComponent(prop.name)}`}
+                      className="property-card-link"
+                      style={{ fontSize: "12px", fontWeight: 700, color: "#0d563f" }}
+                    >
+                      View All Privileges <span>→</span>
+                    </Link>
+
+                    {prop.website && (
+                      <a
+                        href={prop.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: "11.5px",
+                          fontWeight: 700,
+                          color: "#9c8458",
+                          textDecoration: "none",
+                          borderBottom: "1px solid #9c8458",
+                          paddingBottom: "1px"
+                        }}
+                      >
+                        Official Website ↗
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))
           ) : (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "60px", color: "#666666", fontFamily: "Montserrat" }}>
@@ -448,24 +383,76 @@ export default function DestinationsPage() {
       >
         <div className="international-header-wrapper">
           <span className="eyebrow">BEYOND INDIA</span>
-          <h2>Global Wellness Destinations</h2>
+          <h2>Global Wellness Sanctuaries</h2>
           <p>
-            For members who seek wellness beyond borders — our curated international partners bring the WLC standard of excellence to the world's finest destinations.
+            For members who seek wellness beyond borders — our curated international partners bring the WLC standard of excellence to the world&apos;s finest medical health institutes, island resorts, and Himalayan sanctuaries.
           </p>
         </div>
 
         <div className="global-grid">
-          {internationalDestinations.map((dest, idx) => (
-            <Link
-              href="/explore-offer?destination=Viva%20Mayr"
-              className="global-card"
-              key={idx}
-              style={{ textDecoration: "none" }}
-            >
-              <span className="global-flag">{dest.flag}</span>
-              <h3 className="global-name">{dest.name}</h3>
-              <span className="global-type">{dest.type}</span>
-            </Link>
+          {internationalPartners.map((dest) => (
+            <div className="global-card" key={dest.id} style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <span className="global-flag">{dest.flag}</span>
+                <h3 className="global-name">{dest.name}</h3>
+                <span className="global-type">{dest.location}</span>
+                <p style={{ fontSize: "12.5px", color: "#555", marginTop: "8px", lineHeight: "1.4" }}>
+                  {dest.shortDesc}
+                </p>
+
+                {/* Offer Highlights */}
+                {Array.isArray(dest.offers) && dest.offers.length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", margin: "10px 0 14px 0", justifyContent: "center" }}>
+                    {dest.offers.map((off) => (
+                      <span
+                        key={off.id}
+                        style={{
+                          fontSize: "10.5px",
+                          fontWeight: 700,
+                          color: "#0d563f",
+                          background: "rgba(13, 86, 63, 0.08)",
+                          border: "1px solid rgba(13, 86, 63, 0.15)",
+                          borderRadius: "12px",
+                          padding: "2px 8px"
+                        }}
+                      >
+                        {off.discount || off.badge || off.title}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "16px", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}>
+                <Link
+                  href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: "#0d563f",
+                    textDecoration: "none"
+                  }}
+                >
+                  Explore Privileges →
+                </Link>
+
+                {dest.website && (
+                  <a
+                    href={dest.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontSize: "11.5px",
+                      fontWeight: 700,
+                      color: "#9c8458",
+                      textDecoration: "none"
+                    }}
+                  >
+                    Resort Website ↗
+                  </a>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       </section>
@@ -473,7 +460,7 @@ export default function DestinationsPage() {
       {/* ─── Bottom Quote & CTA Strip ────────────────────────────────────── */}
       <section className="quote-cta-strip" aria-label="Member Quote">
         <div className="quote-cta-container">
-          <p className="quote-text">"Every destination, curated for your transformation."</p>
+          <p className="quote-text">&ldquo;Every destination, curated for your transformation.&rdquo;</p>
           <Link href="/membership" className="btn btn-gold">
             BECOME A MEMBER
           </Link>

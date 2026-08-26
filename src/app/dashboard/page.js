@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -10,10 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   LayoutDashboard, User as UserIcon, Award, ShoppingBag,
-  CreditCard, Download, Heart, Bell, LifeBuoy,
+  CreditCard, Heart, Bell, LifeBuoy,
   Settings as SettingsIcon, LogOut, Menu, X,
-  CheckCircle, FileText, Calendar, Loader2, Sparkles, LogIn,
-  ShieldAlert, Users, Hash, Clock
+  CheckCircle, FileText, Calendar, Loader2, Sparkles, LogIn
 } from "lucide-react";
 import { authService } from "@/services/authService";
 import { paymentService, loadRazorpayScript } from "@/services/paymentService";
@@ -38,16 +37,14 @@ const passwordSchema = z.object({
 }).refine(d => d.newPassword === d.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
 
 const menuItems = [
-  { id: "dashboard",     label: "My Membership",  icon: Award },
-  { id: "profile",       label: "My Profile",     icon: UserIcon },
-  { id: "payments",      label: "Payments",       icon: CreditCard },
-  { id: "orders",        label: "Orders",         icon: ShoppingBag },
-  { id: "downloads",     label: "Downloads",      icon: Download },
-  { id: "wishlist",      label: "Wishlist",       icon: Heart },
-  { id: "notifications", label: "Notifications",  icon: Bell },
-  { id: "support",       label: "Support",        icon: LifeBuoy },
-  { id: "admin",         label: "Admin Sequence", icon: ShieldAlert },
-  { id: "settings",      label: "Settings",       icon: SettingsIcon },
+  { id: "dashboard", label: "My Membership", icon: Award },
+  { id: "profile", label: "My Profile", icon: UserIcon },
+  { id: "payments", label: "Payments", icon: CreditCard },
+  { id: "orders", label: "Orders", icon: ShoppingBag },
+  { id: "wishlist", label: "Wishlist", icon: Heart },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "support", label: "Support", icon: LifeBuoy },
+  { id: "settings", label: "Settings", icon: SettingsIcon },
 ];
 
 /* ─── Payment Config ─────────────────────────────────────── */
@@ -60,7 +57,7 @@ const paymentInfo = {
   accountNumber: "0312619723",
   ifsc: "KKBK0004591",
   address: "M-3 Hauz Khas Enclave, Aurobindo Marg, New Delhi - 110016",
-  qrPath: "/QR images/Pinnacle_Connect_UPI_QR_29000.png",
+  qrPath: "/QR images/Pinnacle_Connect_UPI_QR_29000.webp",
 };
 
 export function getTodayDateFormatted() {
@@ -82,20 +79,22 @@ export function getOneYearValidTillFormatted(startDate) {
 }
 
 const defaultMember = {
-  id: "4104",
-  firstName: "John",
-  lastName: "Smith",
-  fullName: "John Smith",
-  email: "john.smith@wellnessloversclub.com",
-  phone: "+91 98765 43210",
-  profession: "Wellness Enthusiast",
-  companyName: "Wellness Lovers Club",
-  country: "India",
-  membershipStatus: "Active",
-  membershipNumber: "WLC-4104",
-  membershipTier: "Lotus Club",
-  startDate: getTodayDateFormatted(),
-  validTill: getOneYearValidTillFormatted(),
+  id: "",
+  firstName: "",
+  lastName: "",
+  fullName: "",
+  email: "",
+  phone: "",
+  profession: "",
+  companyName: "",
+  country: "",
+  membershipStatus: "Inactive",
+  membershipNumber: "",
+  membershipId: "",
+  membershipTier: "",
+  startDate: "",
+  validTill: "",
+  validUntil: "",
 };
 
 function toArray(value) {
@@ -125,11 +124,13 @@ function normalizeMembership(m, index, user, paymentInfo) {
   };
 }
 
-function SidebarNav({ activeTab, setActiveTab, onLogout, onClose, isAuthenticated }) {
+function SidebarNav({ activeTab, onTabChange, onLogout, onClose, isAuthenticated }) {
   return (
     <>
       <div className="db-sidebar-logo">
-        <img loading="lazy" src="/logo/logo.png" alt="WLC" />
+        <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+          <img loading="lazy" src="/logo/logo.webp" alt="WLC" />
+        </Link>
         <span className="db-sidebar-logo-badge">Club Hub</span>
       </div>
       <div className="db-nav-label">Navigation</div>
@@ -137,8 +138,9 @@ function SidebarNav({ activeTab, setActiveTab, onLogout, onClose, isAuthenticate
         {menuItems.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
+            type="button"
             className={`db-nav-btn${activeTab === id ? " active" : ""}`}
-            onClick={() => { setActiveTab(id); onClose?.(); }}
+            onClick={() => { onTabChange(id); onClose?.(); }}
           >
             <Icon size={16} />
             <span>{label}</span>
@@ -147,7 +149,7 @@ function SidebarNav({ activeTab, setActiveTab, onLogout, onClose, isAuthenticate
       </nav>
       <div className="db-sidebar-divider" />
       {isAuthenticated ? (
-        <button className="db-logout-btn" onClick={onLogout}>
+        <button type="button" className="db-logout-btn" onClick={onLogout}>
           <LogOut size={16} />
           <span>Logout</span>
         </button>
@@ -161,11 +163,26 @@ function SidebarNav({ activeTab, setActiveTab, onLogout, onClose, isAuthenticate
   );
 }
 
-/* ─── Main Component ─────────────────────────────────────── */
-export default function DashboardPage() {
+function DashboardLoading() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "80vh", gap: "1.25rem", color: "var(--gold-dark, #bca374)" }}>
+      <div className="wlc-btn-spinner" style={{ width: 40, height: 40, borderWidth: 3, borderColor: "rgba(188,163,116,0.2)", borderTopColor: "var(--gold, #bca374)" }} />
+      <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "14px", letterSpacing: "1px", color: "var(--text-muted, #8fa89b)" }}>Loading membership details...</p>
+    </div>
+  );
+}
+
+/* ─── Main Content Component ─────────────────────────────────────── */
+function DashboardContent() {
   const { user, logout, loading, updateProfile, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const searchParams = useSearchParams();
+
+  const queryTab = searchParams.get("tab");
+  const initialTab = (queryTab === "membership" ? "dashboard" : queryTab) || "dashboard";
+  const [activeTab, setActiveTab] = useState(
+    menuItems.some((item) => item.id === initialTab) ? initialTab : "dashboard"
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -176,21 +193,36 @@ export default function DashboardPage() {
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
-  // Admin sequence states
-  const [lastAssignedSeq, setLastAssignedSeq] = useState(4104);
-  const [durationMonths, setDurationMonths] = useState(12);
-
   const effectiveUser = user || defaultMember;
 
   const customerFullName = (
     effectiveUser.fullName ||
     `${effectiveUser.firstName || ""} ${effectiveUser.lastName || ""}`.trim() ||
     effectiveUser.name ||
-    "John Smith"
+    "Valued Member"
   );
 
   const { register: rProfile, handleSubmit: hProfile, setValue: sProfile, formState: { errors: eProfile } } = useForm({ resolver: zodResolver(profileSchema) });
   const { register: rPwd, handleSubmit: hPwd, reset: resetPwd, formState: { errors: ePwd } } = useForm({ resolver: zodResolver(passwordSchema), defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" } });
+
+  // Sync tab with URL query param
+  useEffect(() => {
+    if (queryTab) {
+      const normalized = queryTab === "membership" ? "dashboard" : queryTab;
+      if (menuItems.some((item) => item.id === normalized)) {
+        setActiveTab(normalized);
+      }
+    }
+  }, [queryTab]);
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    if (newTab === "dashboard") {
+      router.replace("/dashboard", { scroll: false });
+    } else {
+      router.replace(`/dashboard?tab=${newTab}`, { scroll: false });
+    }
+  };
 
   useEffect(() => {
     if (effectiveUser) {
@@ -205,22 +237,111 @@ export default function DashboardPage() {
     }
   }, [effectiveUser, sProfile]);
 
+  const [membershipCard, setMembershipCard] = useState(null);
+
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (loading || !isAuthenticated) return;
+    let isMounted = true;
     (async () => {
       try {
-        const [ordersData, paymentsData, membershipsData] = await Promise.all([
-          authService.getOrders(),
-          authService.getPayments(),
-          authService.getMemberships(),
+        const [ordersData, paymentsData, membershipsData, cardData] = await Promise.all([
+          authService.getOrders().catch(() => []),
+          authService.getPayments().catch(() => []),
+          authService.getMemberships().catch(() => []),
+          authService.getMembershipCard().catch(() => null),
         ]);
 
-        setOrders(toArray(ordersData));
-        setPayments(toArray(paymentsData));
-        setMemberships(toArray(membershipsData));
-      } catch (e) { console.error(e); }
+        if (isMounted) {
+          setOrders(toArray(ordersData));
+          setPayments(toArray(paymentsData));
+          setMemberships(toArray(membershipsData));
+          if (cardData) {
+            setMembershipCard(cardData);
+          }
+        }
+      } catch (e) {
+        console.error("Dashboard data load error:", e);
+      }
     })();
-  }, [isAuthenticated]);
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, loading]);
+
+  // Membership number MUST come exclusively from the WordPress backend.
+  // Priority: live membershipCard API -> user.membershipNumber || user.membershipId || user.wlc_membership_number || "Pending Allocation"
+  const dynamicMembershipNo = formatMembershipNo(
+    effectiveUser,
+    membershipCard?.membershipNumber ||
+    membershipCard?.membershipId ||
+    effectiveUser?.membershipNumber ||
+    effectiveUser?.membershipId ||
+    effectiveUser?.wlc_membership_number ||
+    effectiveUser?.wlc_membership_id ||
+    effectiveUser?.membership_id ||
+    ""
+  );
+  // Valid Till MUST come from WordPress backend — do not auto-calculate a date.
+  const dynamicValidTill = formatValidTillDate(
+    membershipCard?.validUntil ||
+    membershipCard?.validTill ||
+    effectiveUser?.validTill ||
+    effectiveUser?.validUntil ||
+    memberships?.[0]?.endDate ||
+    ""
+  );
+
+  // Dynamic Full Name with top priority given to authoritative live membershipCard API
+  const dynamicName =
+    membershipCard?.displayName ||
+    membershipCard?.name ||
+    (membershipCard?.firstName
+      ? `${membershipCard.firstName} ${membershipCard?.lastName || ""}`.trim()
+      : "") ||
+    effectiveUser?.displayName ||
+    effectiveUser?.fullName ||
+    effectiveUser?.name ||
+    (effectiveUser?.firstName
+      ? `${effectiveUser.firstName} ${effectiveUser?.lastName || ""}`.trim()
+      : "") ||
+    "VALUED MEMBER";
+
+  const currentLabel = menuItems.find(i => i.id === activeTab)?.label || "My Membership";
+  const hasSuccessfulMembershipPayment = ["Active", "Lifetime"].includes(effectiveUser.membershipStatus);
+  const confirmedMembershipPayment = {
+    id: `PAY-${effectiveUser.id || Date.now()}`,
+    method: "UPI / Razorpay Verified",
+    date: new Date().toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    status: "Successful",
+    amount: `${paymentInfo.amount} (${paymentInfo.gst})`,
+  };
+  const displayedPayments =
+    payments.length > 0
+      ? payments
+      : hasSuccessfulMembershipPayment
+        ? [confirmedMembershipPayment]
+        : [];
+  const fallbackMembership = {
+    id: `membership-${effectiveUser.id || "active"}`,
+    tier: effectiveUser.membershipTier || "Lotus Club",
+    status: effectiveUser.membershipStatus || "Active",
+    startDate: effectiveUser.membershipStartDate || effectiveUser.startDate || getTodayDateFormatted(),
+    endDate: dynamicValidTill || getOneYearValidTillFormatted(),
+    price: paymentInfo.amount,
+    billingCycle: "Annual",
+  };
+  const displayedMemberships =
+    memberships.length > 0
+      ? memberships.map((membership, index) =>
+        normalizeMembership(membership, index, effectiveUser, paymentInfo)
+      )
+      : hasSuccessfulMembershipPayment
+        ? [fallbackMembership]
+        : [];
 
   const handleLogout = () => { router.push("/logout"); };
 
@@ -269,7 +390,7 @@ export default function DashboardPage() {
         currency: orderData.currency || "INR",
         name: "Wellness Lovers Club",
         description: "VIP Annual Membership Pass",
-        image: "/logo/logo.png",
+        image: "/logo/logo.webp",
         order_id: orderData.razorpay_order_id,
         prefill: {
           name: customerFullName,
@@ -300,7 +421,7 @@ export default function DashboardPage() {
             };
             setPayments((prev) => [newPaymentEntry, ...prev]);
             setTimeout(() => {
-              setActiveTab("dashboard");
+              handleTabChange("dashboard");
             }, 1800);
           } catch (verErr) {
             alert("Payment verification failed: " + (verErr.message || "Please contact concierge."));
@@ -317,48 +438,6 @@ export default function DashboardPage() {
     }
   };
 
-  const currentLabel = menuItems.find(i => i.id === activeTab)?.label || "My Membership";
-  const hasSuccessfulMembershipPayment = ["Active", "Lifetime"].includes(effectiveUser.membershipStatus);
-  const confirmedMembershipPayment = {
-    id: `WLC-${effectiveUser.id || "4099"}-29000`,
-    method: "UPI / Razorpay Verified",
-    date: new Date().toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }),
-    status: "Successful",
-    amount: `${paymentInfo.amount} (${paymentInfo.gst})`,
-  };
-  const displayedPayments =
-    payments.length > 0
-      ? payments
-      : hasSuccessfulMembershipPayment
-        ? [confirmedMembershipPayment]
-        : [];
-  const fallbackMembership = {
-    id: `membership-${effectiveUser.id || "4104"}`,
-    tier: effectiveUser.membershipTier || "Lotus Club",
-    status: effectiveUser.membershipStatus || "Active",
-    startDate: getTodayDateFormatted(),
-    endDate: getOneYearValidTillFormatted(),
-    price: paymentInfo.amount,
-    billingCycle: "Annual",
-  };
-  const displayedMemberships =
-    memberships.length > 0
-      ? memberships.map((membership, index) =>
-          normalizeMembership(membership, index, effectiveUser, paymentInfo)
-        )
-      : hasSuccessfulMembershipPayment
-        ? [fallbackMembership]
-        : [];
-
-  const dynamicMembershipNo = formatMembershipNo(effectiveUser, effectiveUser?.membershipNumber || effectiveUser?.membershipId || "WLC-4104");
-  const dynamicValidTill = formatValidTillDate(
-    effectiveUser?.validTill || effectiveUser?.validUntil || memberships?.[0]?.endDate || getOneYearValidTillFormatted()
-  );
-
   return (
     <div className="db-root">
 
@@ -366,7 +445,7 @@ export default function DashboardPage() {
       <aside className="db-sidebar">
         <SidebarNav
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          onTabChange={handleTabChange}
           onLogout={handleLogout}
           isAuthenticated={isAuthenticated}
         />
@@ -391,14 +470,16 @@ export default function DashboardPage() {
               transition={{ type: "spring", stiffness: 280, damping: 30 }}
             >
               <button
+                type="button"
                 className="db-drawer-close"
                 onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
               >
                 <X size={20} />
               </button>
               <SidebarNav
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                onTabChange={handleTabChange}
                 onLogout={handleLogout}
                 onClose={() => setMobileOpen(false)}
                 isAuthenticated={isAuthenticated}
@@ -430,8 +511,8 @@ export default function DashboardPage() {
 
         {/* Mobile top bar */}
         <header className="db-mobile-header">
-          <img loading="lazy" src="/logo/logo.png" alt="WLC" style={{ height: 28 }} />
-          <button className="db-mobile-menu-btn" onClick={() => setMobileOpen(true)}>
+          <img loading="lazy" src="/logo/logo.webp" alt="WLC" style={{ height: 28 }} />
+          <button type="button" className="db-mobile-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Open menu">
             <Menu size={20} />
           </button>
         </header>
@@ -459,91 +540,34 @@ export default function DashboardPage() {
                   {/* ── Personalized Digital Membership Card ── */}
                   <MembershipCard
                     user={effectiveUser}
-                    name={customerFullName}
+                    membershipCard={membershipCard}
+                    name={dynamicName}
                     membershipNo={dynamicMembershipNo}
-                    validTo={getOneYearValidTillFormatted()}
+                    validTo={dynamicValidTill}
                   />
-                </div>
-              </motion.div>
-            )}
 
-            {/* ═══ ADMIN SEQUENCE CONTROL TAB ══════════════ */}
-            {activeTab === "admin" && (
-              <motion.div key="admin" className="db-fadein" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                <div className="db-card db-card-pad">
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "1.5rem" }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(188,163,116,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--gold)" }}>
-                      <Hash size={24} />
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Montserrat', sans-serif" }}>Membership Number Control</h3>
-                      <p style={{ fontSize: 12, color: "var(--text-faint)" }}>Manage sequential WLC-4099+ assignment and duration settings.</p>
-                    </div>
-                  </div>
-
-                  <div className="db-admin-stat-grid">
-                    <div className="db-admin-stat-box">
-                      <span className="db-admin-stat-label">Current Last Assigned Number</span>
-                      <strong className="db-admin-stat-val gold">WLC-{lastAssignedSeq}</strong>
-                      <small className="db-admin-stat-sub">Persisted in database sequence</small>
-                    </div>
-                    <div className="db-admin-stat-box">
-                      <span className="db-admin-stat-label">Next Available Number</span>
-                      <strong className="db-admin-stat-val green">WLC-{lastAssignedSeq + 1}</strong>
-                      <small className="db-admin-stat-sub">Auto-assigned on next payment</small>
-                    </div>
-                    <div className="db-admin-stat-box">
-                      <span className="db-admin-stat-label">Configured Duration</span>
-                      <strong className="db-admin-stat-val">{durationMonths} Months</strong>
-                      <small className="db-admin-stat-sub">Auto-calculated Valid Till</small>
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid var(--border)" }}>
-                    <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: "1rem" }}>Member Directory (Live DB Sync)</h4>
-                    <div style={{ overflowX: "auto" }}>
-                      <table className="db-table">
-                        <thead>
-                          <tr>
-                            <th>Customer Name</th>
-                            <th>Email</th>
-                            <th>Mobile</th>
-                            <th>Membership No.</th>
-                            <th>Payment Status</th>
-                            <th>Start Date</th>
-                            <th>Valid Till</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td style={{ fontWeight: 700 }}>{customerFullName}</td>
-                            <td className="db-table-muted">{effectiveUser.email}</td>
-                            <td className="db-table-muted">{effectiveUser.phone || "+91 98765 43210"}</td>
-                            <td><strong style={{ color: "var(--gold-dark)" }}>{dynamicMembershipNo}</strong></td>
-                            <td><span className="db-badge db-badge-green">Confirmed</span></td>
-                            <td className="db-table-muted">{getTodayDateFormatted()}</td>
-                            <td style={{ fontWeight: 700 }}>{dynamicValidTill}</td>
-                          </tr>
-                          <tr>
-                            <td style={{ fontWeight: 700 }}>Sophia Chen</td>
-                            <td className="db-table-muted">sophia.chen@example.com</td>
-                            <td className="db-table-muted">+91 98111 22334</td>
-                            <td><strong style={{ color: "var(--gold-dark)" }}>WLC-4105</strong></td>
-                            <td><span className="db-badge db-badge-green">Confirmed</span></td>
-                            <td className="db-table-muted">{getTodayDateFormatted()}</td>
-                            <td style={{ fontWeight: 700 }}>{getOneYearValidTillFormatted()}</td>
-                          </tr>
-                          <tr>
-                            <td style={{ fontWeight: 700 }}>Marcus Aurelius</td>
-                            <td className="db-table-muted">marcus.a@example.com</td>
-                            <td className="db-table-muted">+91 98222 33445</td>
-                            <td><strong style={{ color: "var(--gold-dark)" }}>WLC-4106</strong></td>
-                            <td><span className="db-badge db-badge-green">Confirmed</span></td>
-                            <td className="db-table-muted">{getTodayDateFormatted()}</td>
-                            <td style={{ fontWeight: 700 }}>{getOneYearValidTillFormatted()}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                  {/* ── Partner Sanctuaries & Privileges Quick Access Banner ── */}
+                  <div className="db-card db-card-pad" style={{ marginTop: "1rem", background: "linear-gradient(135deg, rgba(13,86,63,0.05) 0%, rgba(188,163,116,0.12) 100%)", border: "1px solid #bca374", borderRadius: "14px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+                      <div>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#9c8458", textTransform: "uppercase", letterSpacing: "1px" }}>
+                          Member Privileges Directory
+                        </span>
+                        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0d563f", margin: "4px 0" }}>
+                          Explore 21 Partner Sanctuaries & All-Inclusive Privileges
+                        </h3>
+                        <p style={{ fontSize: 13, color: "#555", margin: 0 }}>
+                          Your active pass unlocks 20%–58% savings, complimentary treatments, room upgrades, and VIP concierge assistance across all partner resorts and longevity clinics.
+                        </p>
+                      </div>
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        <Link href="/destinations" className="btn btn-green" style={{ padding: "10px 18px", fontSize: "12px", textDecoration: "none" }}>
+                          View All Sanctuaries →
+                        </Link>
+                        <Link href="/offerings" className="btn btn-gold" style={{ padding: "10px 18px", fontSize: "12px", textDecoration: "none" }}>
+                          Browse Offerings
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -777,31 +801,6 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {/* ═══ DOWNLOADS TAB ══════════════════════════ */}
-            {activeTab === "downloads" && (
-              <motion.div key="downloads" className="db-fadein">
-                <div className="db-grid-2">
-                  {[
-                    { icon: "amber", name: "WLC Mindfulness & Breathwork Guide", meta: "Version 2.4 · PDF (12.4 MB)", label: "Download Manual" },
-                    { icon: "green", name: "Himalayan Healing Herbal Journal", meta: "Digital Book · EPUB (6.8 MB)", label: "Download Journal" },
-                  ].map(d => (
-                    <div className="db-card" key={d.name}>
-                      <div className="db-download-item">
-                        <div className={`db-download-icon ${d.icon}`}><FileText size={22} /></div>
-                        <div>
-                          <div className="db-download-title">{d.name}</div>
-                          <div className="db-download-meta">{d.meta}</div>
-                          <button className="db-download-link" onClick={() => alert("Downloading…")}>
-                            <Download size={13} /> {d.label}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
             {/* ═══ WISHLIST TAB ═══════════════════════════ */}
             {activeTab === "wishlist" && (
               <motion.div key="wishlist" className="db-fadein">
@@ -898,5 +897,14 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+/* ─── Export wrapped in Suspense for Next.js ─────────────────────── */
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

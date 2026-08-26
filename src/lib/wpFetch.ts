@@ -79,10 +79,29 @@ export async function wpFetch<T = unknown>(
 
   const url = `${BASE_URL}${endpoint}`;
 
-  const response = await fetch(url, {
-    ...fetchOptions,
-    headers,
-  });
+  // 10-second timeout guard to ensure fetch never hangs React loading states
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    try {
+      controller.abort();
+    } catch {}
+  }, 10000);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...fetchOptions,
+      headers,
+      signal: fetchOptions.signal || controller.signal,
+    });
+  } catch (fetchErr: any) {
+    if (fetchErr?.name === "AbortError") {
+      throw new WPApiError("timeout", "WordPress API request timed out", 408);
+    }
+    throw fetchErr;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   let body: any;
 
@@ -114,12 +133,15 @@ export async function wpFetch<T = unknown>(
   return body as T;
 }
 
-export const wpGet = <T>(
-  endpoint: string,
-  opts?: WPFetchOptions
-) =>
+export const wpGet = <T>(endpoint: string, opts?: WPFetchOptions) =>
   wpFetch<T>(endpoint, {
     method: "GET",
+    cache: "no-store",
+    headers: {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
     ...opts,
   });
 

@@ -68,9 +68,26 @@ export function getStoredUser<T = unknown>(): T | null {
 // ─── Clear ────────────────────────────────────────────────────────────────────
 
 export function clearSession(): void {
+  const allKeys = [
+    KEYS.TOKEN,
+    KEYS.REFRESH,
+    KEYS.USER,
+    "wlc_token",
+    "wlc_auth_token",
+    "wlc_auth_user",
+    "wlc_auth_refresh",
+    "wlc_payment_session",
+    "wlc_reg_session",
+    "wlc_otp_verified",
+    "wlc_reg_email",
+    "wlc_reg_name",
+    "wlc_reg_phone",
+  ];
   [localStorage, sessionStorage].forEach((s) => {
-    s.removeItem(KEYS.TOKEN);
-    s.removeItem(KEYS.REFRESH);
-    s.removeItem(KEYS.USER);
+    allKeys.forEach((k) => {
+      try {
+        s.removeItem(k);
+      } catch {}
+    });
   });
 }

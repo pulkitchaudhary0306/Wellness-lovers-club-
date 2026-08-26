@@ -53,19 +53,22 @@ class WLC_Zero_Failure_Pipeline {
     }
 
     // =========================================================================
-    // 3. ZERO-FAILURE JWT SESSION TOKENS (Self-Contained HMAC-SHA256)
+    // 3. ZERO-FAILURE JWT SESSION TOKENS (Unified WLC_Core_JWT Delegation)
     // =========================================================================
     public static function generate_jwt_token( $user_id ) {
+        if ( class_exists( 'WLC_Core_JWT' ) ) {
+            return WLC_Core_JWT::generate_token( $user_id );
+        }
         $secret = defined( 'JWT_AUTH_SECRET_KEY' ) ? JWT_AUTH_SECRET_KEY : wp_salt( 'auth' );
-        $header = base64_encode( json_encode( array( 'typ' => 'JWT', 'alg' => 'HS256' ) ) );
-        $exp    = time() + ( DAY_IN_SECONDS * 7 ); // 7 days
+        $header = str_replace( array( '+', '/', '=' ), array( '-', '_', '' ), base64_encode( json_encode( array( 'typ' => 'JWT', 'alg' => 'HS256' ) ) ) );
+        $exp    = time() + ( DAY_IN_SECONDS * 7 );
 
-        $payload = base64_encode( json_encode( array(
+        $payload = str_replace( array( '+', '/', '=' ), array( '-', '_', '' ), base64_encode( json_encode( array(
             'iss'  => get_bloginfo( 'url' ),
             'iat'  => time(),
             'exp'  => $exp,
             'data' => array( 'user' => array( 'id' => (int) $user_id ) ),
-        ) ) );
+        ) ) ) );
 
         $raw_sign = hash_hmac( 'sha256', "{$header}.{$payload}", $secret, true );
         $sign     = str_replace( array( '+', '/', '=' ), array( '-', '_', '' ), base64_encode( $raw_sign ) );
@@ -74,6 +77,9 @@ class WLC_Zero_Failure_Pipeline {
     }
 
     public static function validate_jwt_token( $token ) {
+        if ( class_exists( 'WLC_Core_JWT' ) ) {
+            return WLC_Core_JWT::validate_token( $token );
+        }
         if ( empty( $token ) ) return false;
         if ( preg_match( '/Bearer\s+(.*)$/i', $token, $m ) ) $token = $m[1];
 
@@ -86,13 +92,16 @@ class WLC_Zero_Failure_Pipeline {
 
         if ( ! hash_equals( $expected, $sign ) ) return false;
 
-        $data = json_decode( base64_decode( $payload ), true );
+        $data = json_decode( base64_decode( strtr( $payload, '-_', '+/' ) ), true );
         if ( ! $data || empty( $data['exp'] ) || time() >= $data['exp'] ) return false;
 
         return isset( $data['data']['user']['id'] ) ? (int) $data['data']['user']['id'] : false;
     }
 
     public static function get_authenticated_user_id( $request = null ) {
+        if ( class_exists( 'WLC_Core_JWT' ) ) {
+            return WLC_Core_JWT::get_authenticated_user_id( $request );
+        }
         $auth = '';
         if ( $request && method_exists( $request, 'get_header' ) ) {
             $auth = $request->get_header( 'Authorization' );

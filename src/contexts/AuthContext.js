@@ -24,48 +24,69 @@ export function AuthProvider({ children }) {
     clearSession();
   }, []);
 
-  // ─── Restore session on mount ─────────────────────────────────────────────
+  // ─── Restore session on mount (Immediate unblock + Background Sync) ───
   useEffect(() => {
+    let isMounted = true;
+
     const restoreSession = async () => {
       try {
         const storedToken = getStoredToken();
         const storedUser = getStoredUser();
 
-        if (!storedToken || !storedUser) {
-          setLoading(false);
-          return;
+        if (storedToken) {
+          setToken(storedToken);
+          if (storedUser) {
+            setUser(storedUser);
+          }
         }
 
-        // Optimistically restore from storage so UI isn't blank
-        setToken(storedToken);
-        setUser(storedUser);
+        // Unblock UI immediately — never block rendering on background fetch
+        setLoading(false);
 
-        // Validate token with WordPress (catches expired JWTs)
-        const isValid = await authService.validateToken();
-        if (!isValid) {
-          _clearAuth();
-          return;
-        }
-
-        // Sync fresh profile data in background
-        try {
-          const freshUser = await authService.getProfile();
-          setUser(freshUser);
-          updateStoredUser(freshUser);
-        } catch (err) {
-          console.error("Failed to sync profile:", err);
-          // Non-fatal: keep the cached user data
+        // Fetch fresh authoritative profile once in background if token exists
+        if (storedToken) {
+          try {
+            const freshUser = await authService.getProfile();
+            if (isMounted && freshUser) {
+              setUser(freshUser);
+              updateStoredUser(freshUser);
+            }
+          } catch (err) {
+            // Only clear auth on explicit 401 Unauthorized (invalid/expired token)
+            if (err?.name === "WPApiError" && (err?.isUnauthorized || err?.status === 401)) {
+              _clearAuth();
+            } else {
+              console.warn("Background profile sync note:", err?.message || err);
+            }
+          }
         }
       } catch (err) {
         console.error("Session restoration error:", err);
-        _clearAuth();
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     restoreSession();
+    return () => {
+      isMounted = false;
+    };
   }, [_clearAuth]);
+
+  // ─── Explicit profile sync helper ─────────────────────────────────────────
+  const refreshProfile = useCallback(async () => {
+    try {
+      const freshUser = await authService.getProfile();
+      if (freshUser) {
+        setUser(freshUser);
+        updateStoredUser(freshUser);
+        return freshUser;
+      }
+    } catch (err) {
+      console.error("refreshProfile error:", err);
+    }
+    return null;
+  }, []);
 
   // ─── Login ─────────────────────────────────────────────────────────────────
   const login = async (username, password, rememberMe) => {
@@ -196,11 +217,15 @@ export function AuthProvider({ children }) {
 
   // ─── Password flows ────────────────────────────────────────────────────────
   const forgotPassword = async (email) => {
-    await authService.forgotPassword(email);
+    return await authService.forgotPassword(email);
   };
 
-  const resetPassword = async (password, resetKey, userLogin) => {
-    await authService.resetPassword(password, resetKey, userLogin);
+  const verifyResetOtp = async (email, otp) => {
+    return await authService.verifyResetOtp(email, otp);
+  };
+
+  const resetPassword = async (passwordOrParams, resetKey, userLogin) => {
+    return await authService.resetPassword(passwordOrParams, resetKey, userLogin);
   };
 
   // ─── Profile update ────────────────────────────────────────────────────────
@@ -256,8 +281,10 @@ export function AuthProvider({ children }) {
         resendOTP,
         resendEmailOTP,
         forgotPassword,
+        verifyResetOtp,
         resetPassword,
         updateProfile,
+        refreshProfile,
         handleApiCall,
       }}
     >

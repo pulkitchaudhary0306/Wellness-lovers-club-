@@ -13,19 +13,36 @@ export default function MovementMindfulnessPage() {
       name: "Niraamaya Retreats Backwaters & Beyond",
       flag: "🇮🇳",
       stats: "Kumarakom, Kerala",
-      img: "/images/niraamaya-backwaters-mindfulness.webp"
+      img: "/images/niraamaya-backwaters-mindfulness.webp",
+      website: "https://niraamaya.com/"
     },
     {
       name: "Niraamaya Retreats Surya Samudra",
       flag: "🇮🇳",
       stats: "Kovalam, Trivandrum, Kerala",
-      img: "/images/niraamaya-surya-mindfulness.webp"
+      img: "/images/niraamaya-surya-mindfulness.webp",
+      website: "https://niraamaya.com/"
     },
     {
-      name: "Andaaz - Hyatt Hotel",
+      name: "COMO Point Yamu",
+      flag: "🇹🇭",
+      stats: "Phuket, Thailand",
+      img: "/images/movement-mindfulness-yoga.webp",
+      website: "https://www.comohotels.com/thailand/como-point-yamu"
+    },
+    {
+      name: "Trē Wellness",
       flag: "🇮🇳",
-      stats: "Delhi, India",
-      img: "/images/andaz-mindfulness.webp"
+      stats: "Hyderabad, Telangana",
+      img: "/images/wellness-retreat-cabin.webp",
+      website: "https://trewellness.in/"
+    },
+    {
+      name: "Andaz Delhi — Hyatt Hotel",
+      flag: "🇮🇳",
+      stats: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+      img: "/images/andaz-mindfulness.webp",
+      website: "https://www.hyatt.com/andaz/en-US/delaz-andaz-delhi"
     }
   ];
 
@@ -71,9 +88,21 @@ export default function MovementMindfulnessPage() {
                   {dest.name}
                 </h3>
                 <p className="dest-stats">{dest.stats}</p>
-                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                  Explore Now <span>→</span>
-                </Link>
+                <div className="dest-actions-row">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                    Explore Privileges <span>→</span>
+                  </Link>
+                  {dest.website && (
+                    <a
+                      href={dest.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="dest-website-btn"
+                    >
+                      Website ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -83,8 +112,8 @@ export default function MovementMindfulnessPage() {
           <Link href="/offerings" className="btn btn-green">
             ← All Offerings
           </Link>
-          <Link href="/membership" className="btn btn-gold">
-            Become a Member
+          <Link href="/destinations" className="btn btn-gold">
+            All Destinations
           </Link>
         </div>
       </section>

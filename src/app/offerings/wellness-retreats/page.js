@@ -13,31 +13,71 @@ export default function WellnessRetreatsPage() {
       name: "Niraamaya Retreats Surya Samudra",
       flag: "🇮🇳",
       stats: "Kovalam, Trivandrum, Kerala",
-      img: "/images/niraamaya-retreat-real.webp"
+      img: "/images/niraamaya-retreat-real.webp",
+      website: "https://niraamaya.com/"
+    },
+    {
+      name: "Niraamaya Retreats Backwaters & Beyond",
+      flag: "🇮🇳",
+      stats: "Kumarakom, Kerala",
+      img: "/images/niraamaya-backwaters-spa.webp",
+      website: "https://niraamaya.com/"
     },
     {
       name: "Swastik Luxury Wellbeing Sanctuary",
       flag: "🇮🇳",
       stats: "Pune, Maharashtra",
-      img: "/images/swastik-sanctuary-real.webp"
+      img: "/images/swastik-sanctuary-real.webp",
+      website: "https://swastikwellbeing.com/"
     },
     {
-      name: "The Wellness Co",
+      name: "Trē Wellness",
       flag: "🇮🇳",
-      stats: "Karma Lakelands, Gurgaon",
-      img: "/images/wellness-co-real.webp"
+      stats: "Hyderabad, Telangana",
+      img: "/images/wellness-retreat-cabin.webp",
+      website: "https://trewellness.in/"
     },
     {
       name: "Viveda Wellness Resort",
       flag: "🇮🇳",
       stats: "Nashik, Maharashtra",
-      img: "/images/viveda-resort-real.webp"
+      img: "/images/viveda-resort-real.webp",
+      website: "https://vivedawellness.com/"
+    },
+    {
+      name: "The Wellness Co. — Karma Lakelands",
+      flag: "🇮🇳",
+      stats: "Karma Lakelands, Gurgaon",
+      img: "/images/wellness-co-real.webp",
+      website: "https://www.karmalakelands.com/"
+    },
+    {
+      name: "COMO Point Yamu",
+      flag: "🇹🇭",
+      stats: "Phuket, Thailand",
+      img: "/images/journey-wellness.webp",
+      website: "https://www.comohotels.com/thailand/como-point-yamu"
+    },
+    {
+      name: "COMO Uma Paro & Punakha",
+      flag: "🇧🇹",
+      stats: "Paro & Punakha, Bhutan",
+      img: "/images/buddha-bg.webp",
+      website: "https://www.comohotels.com/bhutan/como-uma-paro"
+    },
+    {
+      name: "Lošinj Hotels & Villas (Alhambra)",
+      flag: "🇭🇷",
+      stats: "Lošinj Island, Croatia",
+      img: "/images/luxury-stays-cabana.webp",
+      website: "https://www.losinj-hotels.com/"
     },
     {
       name: "Viva Mayr",
       flag: "🇦🇹",
-      stats: "Maria Wörth, Austria",
-      img: "/images/vivamayr-austria-real.webp"
+      stats: "Maria Wörth / Altaussee, Austria",
+      img: "/images/vivamayr-austria-real.webp",
+      website: "https://www.vivamayr.com/"
     }
   ];
 
@@ -83,9 +123,21 @@ export default function WellnessRetreatsPage() {
                   {dest.name}
                 </h3>
                 <p className="dest-stats">{dest.stats}</p>
-                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                  Explore Now <span>→</span>
-                </Link>
+                <div className="dest-actions-row">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                    Explore Privileges <span>→</span>
+                  </Link>
+                  {dest.website && (
+                    <a
+                      href={dest.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="dest-website-btn"
+                    >
+                      Website ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -95,8 +147,8 @@ export default function WellnessRetreatsPage() {
           <Link href="/offerings" className="btn btn-green">
             ← All Offerings
           </Link>
-          <Link href="/membership" className="btn btn-gold">
-            Become a Member
+          <Link href="/destinations" className="btn btn-gold">
+            All Destinations
           </Link>
         </div>
       </section>

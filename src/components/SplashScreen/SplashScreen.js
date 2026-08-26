@@ -7,7 +7,7 @@ export default function SplashScreen({ isFadingOut }) {
     <div className={`splash-screen ${isFadingOut ? "fade-out" : ""}`}>
       <div className="splash-logo-container">
         <div className="splash-logo-wrapper">
-          <img loading="lazy" src="/logo/logo.png"
+          <img loading="lazy" src="/logo/logo.webp"
             alt="Wellness Lovers Club Logo"
             className="splash-logo" />
           <div className="splash-shine"></div>

@@ -76,7 +76,7 @@ function Header() {
         <Link href="/" onClick={closeMenu}>
           <img
             loading="lazy"
-            src="/logo/logo.png"
+            src="/logo/logo.webp"
             alt="Wellness Lovers Club Logo"
             className="site-logo"
           />

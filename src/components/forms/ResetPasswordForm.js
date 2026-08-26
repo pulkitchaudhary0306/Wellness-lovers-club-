@@ -5,12 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { Lock, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Lock, CheckCircle2, ArrowLeft, KeyRound, Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import "./AuthForm.css";
 
 const resetPasswordSchema = z
   .object({
@@ -21,11 +21,11 @@ const resetPasswordSchema = z
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[0-9]/, "Password must contain at least one number")
       .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
-    confirmPassword: z.string().min(1, "Please confirm your password")
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"]
+    path: ["confirmPassword"],
   });
 
 export default function ResetPasswordForm({ isEmbed = false }) {
@@ -39,10 +39,10 @@ export default function ResetPasswordForm({ isEmbed = false }) {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { password: "", confirmPassword: "" }
+    defaultValues: { password: "", confirmPassword: "" },
   });
 
   const onSubmit = async (data) => {
@@ -50,21 +50,33 @@ export default function ResetPasswordForm({ isEmbed = false }) {
     setApiError("");
     setIsShaking(false);
 
-    let resetKey = "";
-    let userLogin = "";
+    let resetToken = "";
+    let userEmail = "";
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      resetKey = params.get("key") || "";
-      userLogin = params.get("login") || params.get("email") || "";
+      resetToken = params.get("token") || params.get("resetToken") || params.get("key") || "";
+      userEmail = params.get("email") || params.get("login") || "";
+    }
+
+    if (!resetToken) {
+      setApiError("Reset authorization token is missing or expired. Please request a new OTP code.");
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+      setIsLoading(false);
+      return;
     }
 
     try {
-      await resetPassword(data.password, resetKey, userLogin);
+      await resetPassword({
+        email: userEmail,
+        token: resetToken,
+        newPassword: data.password,
+      });
       setIsSuccess(true);
       setTimeout(() => {
-        router.push("/login");
-      }, 2500);
+        router.push("/login?message=reset_success");
+      }, 2000);
     } catch (err) {
       setApiError(err.message || "Failed to reset password. Please try again.");
       setIsShaking(true);
@@ -79,27 +91,21 @@ export default function ResetPasswordForm({ isEmbed = false }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={isEmbed
-          ? "w-full max-w-md bg-transparent border-0 p-0 shadow-none text-center"
-          : "w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-8 rounded-[24px] shadow-xl text-center"
-        }
+        className={`wlc-auth-card ${isEmbed ? "embed" : ""}`}
       >
-        <div className="flex flex-col items-center gap-4">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center"
-          >
-            <CheckCircle2 size={36} />
-          </motion.div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-            Password Reset Complete
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Your password has been successfully updated. Redirecting you to the sign-in page...
-          </p>
+        <div className="wlc-auth-icon-wrap" style={{ color: "#34d399", background: "rgba(16, 185, 129, 0.12)", borderColor: "rgba(16, 185, 129, 0.3)" }}>
+          <CheckCircle2 size={32} />
         </div>
+        <h2 className="wlc-auth-title">Password Reset Complete</h2>
+        <p className="wlc-auth-desc">
+          Your password has been successfully updated. Redirecting you to the sign-in page...
+        </p>
+        <Link href="/login" style={{ textDecoration: "none" }}>
+          <button type="button" className="wlc-auth-submit-btn">
+            <ArrowLeft size={16} />
+            Sign In Now
+          </button>
+        </Link>
       </motion.div>
     );
   }
@@ -109,28 +115,25 @@ export default function ResetPasswordForm({ isEmbed = false }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={isEmbed
-        ? "w-full max-w-md bg-transparent border-0 p-0 shadow-none"
-        : "w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-8 rounded-[24px] shadow-xl"
-      }
+      className={`wlc-auth-card ${isEmbed ? "embed" : ""}`}
     >
-      <div className="flex flex-col gap-2 text-center mb-8">
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-          Reset Password
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Create a new strong password for your Wellness Lovers Club account.
-        </p>
+      <div className="wlc-auth-icon-wrap">
+        <KeyRound size={28} />
       </div>
+
+      <h2 className="wlc-auth-title">Reset Password</h2>
+      <p className="wlc-auth-desc">
+        Create a new strong password for your Wellness Lovers Club account.
+      </p>
 
       <motion.form
         animate={isShaking ? { x: [-10, 10, -10, 10, 0] } : {}}
         transition={{ duration: 0.4 }}
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-5"
+        className="wlc-auth-form"
       >
         {apiError && (
-          <div className="p-3.5 bg-rose-50 border border-rose-200/80 text-rose-600 text-sm font-medium rounded-xl text-center">
+          <div className="wlc-auth-error">
             {apiError}
           </div>
         )}
@@ -146,23 +149,27 @@ export default function ResetPasswordForm({ isEmbed = false }) {
 
         <Input
           label="Confirm Password"
-          placeholder="Re-enter password"
+          placeholder="Re-enter new password"
           type="password"
           icon={Lock}
           error={errors.confirmPassword?.message}
           {...register("confirmPassword")}
         />
 
-        <Button type="submit" loading={isLoading}>
-          Reset Password
-        </Button>
+        <button type="submit" disabled={isLoading} className="wlc-auth-submit-btn">
+          {isLoading ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Updating Password...
+            </>
+          ) : (
+            "Set New Password"
+          )}
+        </button>
       </motion.form>
 
-      <div className="mt-8 text-center">
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors"
-        >
+      <div style={{ textAlign: "center" }}>
+        <Link href="/login" className="wlc-auth-back-link">
           <ArrowLeft size={14} />
           Back to Sign In
         </Link>

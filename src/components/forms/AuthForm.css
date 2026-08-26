@@ -1,0 +1,220 @@
+/* ============================================================
+   Wellness Lovers Club — Luxury Auth & Password Reset Styles
+   ============================================================ */
+
+.wlc-auth-page-root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(10, 15, 13, 0.82), rgba(10, 15, 13, 0.9)), url('/images/hero-wellness.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(1rem, 3vw, 1.5rem);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.wlc-auth-glow-1 {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: min(50vw, 420px);
+  height: min(50vw, 420px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 133, 84, 0.18) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wlc-auth-glow-2 {
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: min(50vw, 420px);
+  height: min(50vw, 420px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(188, 163, 116, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wlc-auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(20, 26, 23, 0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(188, 163, 116, 0.25);
+  border-radius: clamp(18px, 4vw, 26px);
+  padding: clamp(2rem, 5vw, 2.75rem) clamp(1.25rem, 4vw, 2.25rem);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 30px rgba(15, 133, 84, 0.08);
+  z-index: 10;
+  position: relative;
+  text-align: center;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.wlc-auth-card.embed {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.wlc-auth-icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(188, 163, 116, 0.12);
+  border: 1px solid rgba(188, 163, 116, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: var(--gold, #bca374);
+  box-shadow: 0 0 20px rgba(188, 163, 116, 0.15);
+}
+
+.wlc-auth-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  line-height: 1.2;
+}
+
+.wlc-auth-desc {
+  font-size: 13.5px;
+  color: #8fa89b;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.wlc-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.wlc-auth-form label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #8fa89b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  display: block !important;
+  margin-bottom: 2px !important;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.wlc-auth-form input {
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(188, 163, 116, 0.3) !important;
+  border-radius: 14px !important;
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 14px !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+.wlc-auth-form input::placeholder {
+  color: rgba(143, 168, 155, 0.5) !important;
+}
+
+.wlc-auth-form input:focus {
+  background: rgba(255, 255, 255, 0.11) !important;
+  border-color: var(--gold, #bca374) !important;
+  box-shadow: 0 0 16px rgba(188, 163, 116, 0.22) !important;
+}
+
+.wlc-auth-form .relative span {
+  color: #8fa89b !important;
+}
+
+.wlc-auth-error {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.wlc-auth-success {
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.wlc-auth-submit-btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #bca374 0%, #9c8458 100%);
+  color: #071711;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 24px rgba(188, 163, 116, 0.25);
+  margin-top: 0.5rem;
+}
+
+.wlc-auth-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(188, 163, 116, 0.35);
+  filter: brightness(1.06);
+}
+
+.wlc-auth-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.wlc-auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #8fa89b;
+  text-decoration: none;
+  margin-top: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.wlc-auth-back-link:hover {
+  color: var(--gold, #bca374);
+}

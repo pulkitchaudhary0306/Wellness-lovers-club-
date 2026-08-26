@@ -1,17 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20 dark:opacity-5">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] aspect-square rounded-full bg-emerald-300 filter blur-[120px]"></div>
-        <div className="absolute -bottom-[20%] -right-[10%] w-[50%] aspect-square rounded-full bg-blue-300 filter blur-[120px]"></div>
-      </div>
-      <ResetPasswordForm />
+    <div className="wlc-auth-page-root">
+      <div className="wlc-auth-glow-1" />
+      <div className="wlc-auth-glow-2" />
+      <Suspense fallback={<div className="text-white text-center p-8">Loading…</div>}>
+        <ResetPasswordForm />
+      </Suspense>
     </div>
   );
 }

@@ -11,7 +11,7 @@ function Footer() {
           {/* Brand/Logo Column */}
           <div className="footer-brand-col">
             <Link href="/" className="footer-logo-link">
-              <img loading="lazy" src="/logo/logo.png"
+              <img loading="lazy" src="/logo/logo.webp"
                 alt="Wellness Lovers Club Logo"
                 className="footer-logo-img" />
             </Link>

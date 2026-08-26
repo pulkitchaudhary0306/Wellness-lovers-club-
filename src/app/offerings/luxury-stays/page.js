@@ -10,16 +10,46 @@ export const metadata = {
 export default function LuxuryStaysPage() {
   const destinations = [
     {
+      name: "Lošinj Hotels & Villas, Croatia",
+      flag: "🇭🇷",
+      stats: "Alhambra, Lošinj, Croatia",
+      img: "/images/luxury-stays-cabana.webp",
+      website: "https://www.losinj-hotels.com/"
+    },
+    {
+      name: "COMO Point Yamu",
+      flag: "🇹🇭",
+      stats: "Phuket, Thailand",
+      img: "/images/journey-wellness.webp",
+      website: "https://www.comohotels.com/thailand/como-point-yamu"
+    },
+    {
+      name: "JA Palm Tree Court",
+      flag: "🇦🇪",
+      stats: "Dubai, UAE",
+      img: "/images/philosophy-pool.webp",
+      website: "https://www.jaresortshotels.com/dubai/ja-palm-tree-court"
+    },
+    {
       name: "Shangri-La Eros",
       flag: "🇮🇳",
       stats: "Connaught Place, New Delhi",
-      img: "/images/shangri-la-stay.webp"
+      img: "/images/shangri-la-stay.webp",
+      website: "https://www.shangri-la.com/newdelhi/erosshangrila/"
     },
     {
-      name: "Andaaz - Hyatt Hotel",
+      name: "Andaz Delhi — Hyatt Hotel",
       flag: "🇮🇳",
-      stats: "Aerocity, New Delhi",
-      img: "/images/andaz-stay.webp"
+      stats: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+      img: "/images/andaz-stay.webp",
+      website: "https://www.hyatt.com/andaz/en-US/delaz-andaz-delhi"
+    },
+    {
+      name: "Hyatt Regency Hua Hin",
+      flag: "🇹🇭",
+      stats: "Prachuap Khiri Khan, Thailand",
+      img: "/images/philosophy-resort.webp",
+      website: "https://www.hyatt.com/hyatt-regency/en-US/huahi-hyatt-regency-hua-hin"
     }
   ];
 
@@ -40,9 +70,9 @@ export default function LuxuryStaysPage() {
       <section className="offerings-main-section" aria-label="Stays Destinations">
         <div className="offerings-section-header">
           <span className="eyebrow">EXQUISITE RETREATS</span>
-          <h2 className="offerings-section-title">Premier Stays</h2>
+          <h2 className="offerings-section-title">Premier Stays & Sanctuaries</h2>
           <p>
-            Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with exclusive member privileges and preferred pricing.
+            Discover exceptional hotels, boutique stays, and wellness resorts through our trusted network of hospitality partners, with all member privileges and preferred pricing.
           </p>
         </div>
 
@@ -65,9 +95,21 @@ export default function LuxuryStaysPage() {
                   {dest.name}
                 </h3>
                 <p className="dest-stats">{dest.stats}</p>
-                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                  Explore Now <span>→</span>
-                </Link>
+                <div className="dest-actions-row">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                    Explore Privileges <span>→</span>
+                  </Link>
+                  {dest.website && (
+                    <a
+                      href={dest.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="dest-website-btn"
+                    >
+                      Website ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -77,8 +119,8 @@ export default function LuxuryStaysPage() {
           <Link href="/offerings" className="btn btn-green">
             ← All Offerings
           </Link>
-          <Link href="/membership" className="btn btn-gold">
-            Become a Member
+          <Link href="/destinations" className="btn btn-gold">
+            All Destinations
           </Link>
         </div>
       </section>

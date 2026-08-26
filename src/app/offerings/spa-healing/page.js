@@ -10,46 +10,74 @@ export const metadata = {
 export default function SpaHealingPage() {
   const destinations = [
     {
-      name: "Niraamaya Retreats Backwaters & Beyond",
-      flag: "🇮🇳",
-      stats: "Kumarakom, Kerala",
-      img: "/images/niraamaya-backwaters-spa.webp"
+      name: "JA Palm Tree Court",
+      flag: "🇦🇪",
+      stats: "Dubai, UAE",
+      img: "/images/philosophy-pool.webp",
+      website: "https://www.jaresortshotels.com/dubai/ja-palm-tree-court"
     },
     {
-      name: "Dhun Wellness",
+      name: "Sawadhee Spa",
+      flag: "🇮🇳",
+      stats: "Vasant Kunj, New Delhi",
+      img: "/images/spa-healing-room.webp",
+      website: "https://sawadhee.com/"
+    },
+    {
+      name: "IOSIS Spa & Sorin",
+      flag: "🇮🇳",
+      stats: "Mumbai · Guwahati · Raipur (PAN India)",
+      img: "/images/conscious-living.webp",
+      website: "https://www.iosiswellness.com/"
+    },
+    {
+      name: "Dhun Wellness Spa",
       flag: "🇮🇳",
       stats: "Mumbai, India",
-      img: "/images/dhun-wellness-spa.webp"
+      img: "/images/dhun-wellness-spa.webp",
+      website: "https://dhunwellness.com/"
+    },
+    {
+      name: "Andaz Delhi — Hyatt Hotel",
+      flag: "🇮🇳",
+      stats: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+      img: "/images/andaz-hyatt-spa.webp",
+      website: "https://www.hyatt.com/andaz/en-US/delaz-andaz-delhi"
+    },
+    {
+      name: "Shangri-La Eros",
+      flag: "🇮🇳",
+      stats: "Connaught Place, New Delhi",
+      img: "/images/shangri-la-stay.webp",
+      website: "https://www.shangri-la.com/newdelhi/erosshangrila/"
     },
     {
       name: "Pema Wellness",
       flag: "🇮🇳",
       stats: "Visakhapatnam, India",
-      img: "/images/pema-wellness-spa.webp"
+      img: "/images/pema-wellness-spa.webp",
+      website: "https://www.pemawellness.com/"
     },
     {
-      name: "The Wellness Co",
+      name: "The Wellness Co. — PAN India",
       flag: "🇮🇳",
-      stats: "Karma Lakelands, Gurgaon",
-      img: "/images/wellness-co-spa.webp"
+      stats: "PAN India Clinics Nationwide",
+      img: "/images/wellness-co-spa.webp",
+      website: "https://www.karmalakelands.com/"
     },
     {
       name: "Silhouette Salon",
       flag: "🇮🇳",
-      stats: "Gurgaon, India",
-      img: "/images/silhouette-salon-spa.webp"
+      stats: "Gurgaon & Parfaire Tivoli, Delhi NCR",
+      img: "/images/silhouette-salon-spa.webp",
+      website: "https://silhouettesalon.co.in/"
     },
     {
-      name: "Viveda Wellness Resort",
+      name: "Florian Hurel Hair Couture & Spa",
       flag: "🇮🇳",
-      stats: "Nashik, Maharashtra",
-      img: "/images/viveda-spa.webp"
-    },
-    {
-      name: "Andaaz - Hyatt Hotel",
-      flag: "🇮🇳",
-      stats: "Delhi, India",
-      img: "/images/andaz-hyatt-spa.webp"
+      stats: "Mumbai · Ahmedabad · Hyderabad · Pune",
+      img: "/images/community-experiences-lounge.webp",
+      website: "https://florianhurelhaircouture.com/"
     }
   ];
 
@@ -70,7 +98,7 @@ export default function SpaHealingPage() {
       <section className="offerings-main-section" aria-label="Spa Destinations">
         <div className="offerings-section-header">
           <span className="eyebrow">SPA & HOLISTIC LIVING</span>
-          <h2 className="offerings-section-title">Restorative Haven</h2>
+          <h2 className="offerings-section-title">Restorative Havens</h2>
           <p>
             Explore our handpicked selection of premium spa sanctuaries, salon rituals, and holistic healing clinics, offering bespoke therapies tailored to your rejuvenation.
           </p>
@@ -95,9 +123,21 @@ export default function SpaHealingPage() {
                   {dest.name}
                 </h3>
                 <p className="dest-stats">{dest.stats}</p>
-                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                  Explore Now <span>→</span>
-                </Link>
+                <div className="dest-actions-row">
+                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                    Explore Privileges <span>→</span>
+                  </Link>
+                  {dest.website && (
+                    <a
+                      href={dest.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="dest-website-btn"
+                    >
+                      Website ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -107,8 +147,8 @@ export default function SpaHealingPage() {
           <Link href="/offerings" className="btn btn-green">
             ← All Offerings
           </Link>
-          <Link href="/membership" className="btn btn-gold">
-            Become a Member
+          <Link href="/destinations" className="btn btn-gold">
+            All Destinations
           </Link>
         </div>
       </section>

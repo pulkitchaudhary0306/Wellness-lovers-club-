@@ -121,7 +121,7 @@ function MembershipEnrollmentContent() {
         currency: orderData.currency || "INR",
         name: "Wellness Lovers Club",
         description: "VIP Annual Membership Pass",
-        image: "/logo/logo.png",
+        image: "/logo/logo.webp",
         order_id: razorpayOrderId && razorpayOrderId.startsWith("order_") && razorpayOrderId.length > 15
           ? razorpayOrderId
           : undefined,
@@ -256,13 +256,13 @@ function MembershipEnrollmentContent() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Membership ID</span>
               <strong style={{ color: "#4ade80", letterSpacing: "0.06em", fontFamily: "monospace", fontSize: "14px" }}>
-                {successDetails.membership_id || "WLC-2026-VIP"}
+                {successDetails.membership_id || "Pending Allocation"}
               </strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Invoice Reference</span>
               <span style={{ color: "rgba(255, 255, 255, 0.9)", fontFamily: "monospace" }}>
-                {successDetails.invoice_number || "INV-2026-ANNUAL"}
+                {successDetails.invoice_number || "Processing..."}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

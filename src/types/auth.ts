@@ -2,15 +2,39 @@ export interface User {
   id: string;
   firstName: string;
   lastName: string;
+  name?: string;
   email: string;
   phone: string;
+  address?: string;
   profession?: string;
+  designation?: string;
   companyName?: string;
+  company?: string;
   country: string;
   city?: string;
-  address?: string;
-  membershipStatus: "Inactive" | "Active" | "Lifetime" | "Pending";
+  membershipStatus: "Inactive" | "Active" | "Lifetime" | "Pending" | "Expired" | "Cancelled";
   membershipTier?: string;
+  membershipPlan?: string;
+
+  // Digital Membership Number — authoritative value from WordPress backend
+  membershipNumber?: string;
+  membershipId?: string;
+  wlc_membership_id?: string;
+  wlc_membership_number?: string;
+
+  // Membership Dates — from WordPress backend
+  validTill?: string;
+  validUntil?: string;
+  membershipStartDate?: string;
+
+  // Payment Info — from WordPress payment ledger
+  paymentStatus?: string;
+  paidAt?: string;
+  invoiceNumber?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  amountPaid?: number;
+
   preferences?: any;
 }
 

@@ -27,8 +27,8 @@ function getStoredClientEmail() {
  * Production Email OTP verification form with fully responsive layout,
  * mobile autofill support, and smooth keyboard navigation.
  */
-export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = "", prefilledIdentifier = "" }) {
-  const { verifyOTP, resendOTP, user } = useAuth();
+export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = "", prefilledIdentifier = "", mode = "" }) {
+  const { verifyOTP, resendOTP, verifyResetOtp, forgotPassword, user } = useAuth();
   const router = useRouter();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -42,6 +42,11 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
   const clientEmail = useSyncExternalStore(emptySubscribe, getStoredClientEmail, () => "");
   const canResend = countdown <= 0;
   const activeEmail = prefilledEmail || prefilledIdentifier || user?.email || clientEmail || "";
+
+  // Detect reset mode from prop or URL
+  const isResetFlow =
+    mode === "reset" ||
+    (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("type") === "reset");
 
   // References to the 6 OTP input boxes
   const inputRefs = [
@@ -104,17 +109,17 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").trim().replace(/\D/g, "");
-    if (pastedData.length > 0) {
-      const digits = pastedData.slice(0, 6).split("");
-      const newOtp = [...otp];
-      digits.forEach((d, i) => {
-        if (i < 6) newOtp[i] = d;
-      });
-      setOtp(newOtp);
-      const targetIdx = Math.min(digits.length, 5);
-      inputRefs[targetIdx]?.current?.focus();
-    }
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!pastedData) return;
+
+    const newOtp = [...otp];
+    pastedData.split("").forEach((char, i) => {
+      newOtp[i] = char;
+    });
+    setOtp(newOtp);
+
+    const nextIndex = Math.min(pastedData.length, 5);
+    inputRefs[nextIndex]?.current?.focus();
   };
 
   const shake = () => {
@@ -129,7 +134,11 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
 
     try {
       const targetEmail = activeEmail || (typeof window !== "undefined" ? sessionStorage.getItem("wlc_reg_email") : "") || "";
-      await resendOTP(targetEmail);
+      if (isResetFlow) {
+        await forgotPassword(targetEmail);
+      } else {
+        await resendOTP(targetEmail);
+      }
       setOtp(["", "", "", "", "", ""]);
       setCountdown(60);
       setResendStatus("A new 6-digit verification code has been sent to your email.");
@@ -156,20 +165,29 @@ export default function OTPVerificationForm({ isEmbed = false, prefilledEmail = 
 
     try {
       const targetEmail = activeEmail || (typeof window !== "undefined" ? sessionStorage.getItem("wlc_reg_email") : "") || "";
-      await verifyOTP(otpCode, targetEmail);
 
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("wlc_otp_verified", "true");
-        localStorage.setItem("wlc_otp_verified", "true");
-        if (targetEmail) {
-          sessionStorage.setItem("wlc_reg_email", targetEmail);
+      if (isResetFlow) {
+        const res = await verifyResetOtp(targetEmail, otpCode);
+        setIsSuccess(true);
+        setTimeout(() => {
+          router.push(`/reset-password?email=${encodeURIComponent(targetEmail)}&token=${encodeURIComponent(res?.resetToken || "")}`);
+        }, 1000);
+      } else {
+        await verifyOTP(otpCode, targetEmail);
+
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("wlc_otp_verified", "true");
+          localStorage.setItem("wlc_otp_verified", "true");
+          if (targetEmail) {
+            sessionStorage.setItem("wlc_reg_email", targetEmail);
+          }
         }
-      }
 
-      setIsSuccess(true);
-      setTimeout(() => {
-        router.push("/membership/enroll");
-      }, 1200);
+        setIsSuccess(true);
+        setTimeout(() => {
+          router.push("/membership/enroll");
+        }, 1200);
+      }
     } catch (err) {
       setApiError(err?.message || "Invalid or expired verification code. Please try again.");
       shake();

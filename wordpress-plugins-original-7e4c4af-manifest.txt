@@ -1,0 +1,66 @@
+=======================================================
+WORDPRESS PLUGINS RESTORATION MANIFEST (GIT SNAPSHOT 7e4c4af)
+=======================================================
+Source Git Commit: 7e4c4af2b809bf57754b97318c85f7813c6be52c
+Created At: 2026-08-24T06:21:43.657Z
+Archive Structure: wp-content/plugins/<plugin-folders>
+=======================================================
+
+Plugin: wellness-api
+Directory: wp-content/plugins/wellness-api/
+Total Files: 1
+File List:
+  - includes/class-loader.php
+Git 7e4c4af Verification: PASS (0 differences)
+
+Plugin: wellness-lovers-club-core
+Directory: wp-content/plugins/wellness-lovers-club-core/
+Total Files: 28
+File List:
+  - includes/class-admin.php
+  - includes/class-auth-controller.php
+  - includes/class-brevo-email.php
+  - includes/class-contact-controller.php
+  - includes/class-db.php
+  - includes/class-email-logs.php
+  - includes/class-email-queue.php
+  - includes/class-email-security.php
+  - includes/class-email-service.php
+  - includes/class-email-settings.php
+  - includes/class-email-test.php
+  - includes/class-emails.php
+  - includes/class-jwt.php
+  - includes/class-logger.php
+  - includes/class-newsletter-controller.php
+  - includes/class-otp-controller.php
+  - includes/class-otp-database.php
+  - includes/class-payment-controller.php
+  - includes/class-privileges-controller.php
+  - includes/class-profile-controller.php
+  - includes/class-rate-limiter.php
+  - includes/class-router.php
+  - includes/class-sms.php
+  - includes/class-smtp.php
+  - templates/smtp-logs.php
+  - templates/smtp-settings.php
+  - wellness-lovers-club-core.php
+  - wlc-backend-fix.php
+Git 7e4c4af Verification: PASS (0 differences)
+
+Plugin: wellness-lovers-club-email-otp
+Directory: wp-content/plugins/wellness-lovers-club-email-otp/
+Total Files: 6
+File List:
+  - includes/class-database.php
+  - includes/class-email.php
+  - includes/class-otp.php
+  - includes/class-rest-api.php
+  - uninstall.php
+  - wellness-lovers-club-email-otp.php
+Git 7e4c4af Verification: PASS (0 differences)
+
+=======================================================
+TOTAL PLUGINS RESTORED: 3
+TOTAL FILES RESTORED: 35
+STATUS: VERIFIED 100% IDENTICAL TO GIT SNAPSHOT 7e4c4af
+=======================================================

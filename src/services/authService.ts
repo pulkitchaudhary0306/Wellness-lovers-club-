@@ -26,7 +26,7 @@ export const WP_API_CONFIG = {
   ENDPOINTS: {
     // Auth — all via custom plugin (never jwt-auth/v1/token)
     LOGIN: "/wp-json/custom/v1/login",
-    TOKEN_VALIDATE: "/wp-json/jwt-auth/v1/token/validate",
+    TOKEN_VALIDATE: "/wp-json/custom/v1/profile",
     REGISTER: "/wp-json/custom/v1/register",
     LOGOUT: "/wp-json/custom/v1/logout",
     FORGOT_PASSWORD: "/wp-json/custom/v1/forgot-password",
@@ -43,6 +43,7 @@ export const WP_API_CONFIG = {
     ORDERS: "/wp-json/custom/v1/orders",
     PAYMENTS: "/wp-json/custom/v1/payments",
     MEMBERSHIP: "/wp-json/custom/v1/membership",
+    MEMBERSHIP_CARD: "/wp-json/custom/v1/membership-card",
   },
 };
 
@@ -77,9 +78,9 @@ interface VerifyOTPResponse {
   user?: Partial<User>;
 }
 
-/** Profile response shape */
+/** Profile response shape — flat object returned by WP_REST_Response($data) */
 interface ProfileResponse extends Omit<Partial<User>, "id"> {
-  id: string | number;
+  id?: string | number;
   name?: string;
   first_name?: string;
   last_name?: string;
@@ -88,39 +89,144 @@ interface ProfileResponse extends Omit<Partial<User>, "id"> {
   roles?: string[];
   membership_status?: string;
   membership_tier?: string;
+  // Membership number keys — all returned by class-profile-controller.php
+  membershipId?: string;
+  membershipNumber?: string;
+  wlc_membership_id?: string;
+  wlc_membership_number?: string;
+  membership_id?: string;
+  // Date fields
+  validTill?: string;
+  validUntil?: string;
+  membershipValidUntil?: string;
+  wlc_membership_valid_until?: string;
+  membershipStartDate?: string;
+  // Payment fields
+  paymentStatus?: string;
+  paidAt?: string;
+  invoiceNumber?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  amountPaid?: number;
+  // Extra profile fields
+  designation?: string;
+  company?: string;
+  membershipPlan?: string;
+  data?: any;
+  user?: any;
 }
 
 // ─── Mapping helpers ──────────────────────────────────────────────────────────
 
-function mapProfile(raw: ProfileResponse): User {
-  let firstName = raw.firstName ?? raw.first_name ?? "";
-  let lastName = raw.lastName ?? raw.last_name ?? "";
-  if (!firstName && raw.name) {
-    const parts = raw.name.trim().split(/\s+/);
+function mapProfile(raw: ProfileResponse | Record<string, any>): User {
+  if (!raw) {
+    return {
+      id: "",
+      firstName: "",
+      lastName: "",
+      name: "",
+      email: "",
+      phone: "",
+      country: "",
+      membershipStatus: "Inactive",
+      membershipNumber: "",
+      membershipId: "",
+      wlc_membership_number: "",
+      wlc_membership_id: "",
+      validTill: "",
+      validUntil: "",
+    };
+  }
+
+  // Handle both flat and nested payloads (e.g. { data: { ... } } or { user: { ... } } or flat object)
+  const source: Record<string, any> =
+    (raw?.data && typeof raw.data === "object" && !Array.isArray(raw.data)
+      ? raw.data
+      : raw?.user && typeof raw.user === "object" && !Array.isArray(raw.user)
+      ? raw.user
+      : raw) || {};
+
+  let firstName = source.firstName ?? source.first_name ?? raw.firstName ?? raw.first_name ?? "";
+  let lastName = source.lastName ?? source.last_name ?? raw.lastName ?? raw.last_name ?? "";
+  const rawName = source.name ?? raw.name ?? "";
+  if (!firstName && rawName) {
+    const parts = String(rawName).trim().split(/\s+/);
     firstName = parts[0] || "";
     lastName = parts.slice(1).join(" ") || "";
   }
 
-  const hasRole = raw.roles && raw.roles.length > 0;
-  const membershipStatus = (raw.membershipStatus ??
+  const hasRole = (source.roles && source.roles.length > 0) || (raw.roles && raw.roles.length > 0);
+  const membershipStatus = (source.membershipStatus ??
+    source.membership_status ??
+    raw.membershipStatus ??
     raw.membership_status ??
     (hasRole ? "Active" : "Inactive")) as User["membershipStatus"];
 
+  // Resolve membership number from WordPress API payload:
+  // priority: membershipNumber -> membershipId -> wlc_membership_number -> wlc_membership_id -> membership_id
+  const membershipNumber: string = String(
+    source.membershipNumber ||
+    source.membershipId ||
+    source.wlc_membership_number ||
+    source.wlc_membership_id ||
+    source.membership_id ||
+    raw.membershipNumber ||
+    raw.membershipId ||
+    raw.wlc_membership_number ||
+    raw.wlc_membership_id ||
+    raw.membership_id ||
+    ""
+  ).trim();
+
+  // Resolve valid-till — backend returns validTill, validUntil, wlc_membership_valid_until, or membershipValidUntil
+  const validTill: string = String(
+    source.validTill ||
+    source.validUntil ||
+    source.wlc_membership_valid_until ||
+    source.membershipValidUntil ||
+    raw.validTill ||
+    raw.validUntil ||
+    raw.wlc_membership_valid_until ||
+    raw.membershipValidUntil ||
+    ""
+  ).trim();
+
   return {
-    id: String(raw.id ?? ""),
+    id: String(source.id ?? raw.id ?? ""),
     firstName,
     lastName,
-    email: raw.email ?? raw.user_email ?? "",
-    phone: raw.phone ?? "",
-    profession: raw.profession,
-    companyName: raw.companyName,
-    country: raw.country ?? "",
-    city: raw.city,
-    address: raw.address,
+    name: rawName || `${firstName} ${lastName}`.trim(),
+    email: source.email ?? source.user_email ?? raw.email ?? raw.user_email ?? "",
+    phone: source.phone ?? raw.phone ?? "",
+    address: source.address ?? raw.address,
+    profession: source.profession ?? raw.profession,
+    designation: source.designation ?? source.profession ?? raw.designation ?? raw.profession,
+    companyName: source.companyName ?? raw.companyName,
+    company: source.company ?? source.companyName ?? raw.company ?? raw.companyName,
+    country: source.country ?? raw.country ?? "",
+    city: source.city ?? raw.city,
     membershipStatus,
-    membershipTier: raw.membershipTier ?? raw.membership_tier ?? "Lotus Club",
+    membershipTier: source.membershipTier ?? source.membership_tier ?? raw.membershipTier ?? raw.membership_tier ?? "",
+    membershipPlan: source.membershipPlan ?? source.membershipTier ?? source.membership_tier ?? raw.membershipPlan ?? "",
+    // Membership number — authoritative value from WordPress, never generated on frontend
+    membershipNumber,
+    membershipId: membershipNumber,
+    wlc_membership_number: membershipNumber,
+    wlc_membership_id: membershipNumber,
+    // Dates from WordPress
+    validTill,
+    validUntil: validTill,
+    membershipStartDate: source.membershipStartDate ?? source.validFrom ?? raw.membershipStartDate ?? "",
+    // Payment info from WordPress payment ledger
+    paymentStatus: source.paymentStatus ?? raw.paymentStatus ?? "",
+    paidAt: source.paidAt ?? raw.paidAt ?? "",
+    invoiceNumber: source.invoiceNumber ?? raw.invoiceNumber ?? "",
+    razorpayOrderId: source.razorpayOrderId ?? raw.razorpayOrderId ?? "",
+    razorpayPaymentId: source.razorpayPaymentId ?? raw.razorpayPaymentId ?? "",
+    amountPaid: source.amountPaid ?? raw.amountPaid ?? 0,
   };
 }
+
 
 // ─── Auth Service ─────────────────────────────────────────────────────────────
 
@@ -442,29 +548,61 @@ export const authService = {
   },
 
   /**
-   * Sends a password-reset email.
+   * Sends a password-reset OTP to the user's email.
    * POST /wp-json/custom/v1/forgot-password
    */
-  async forgotPassword(email: string): Promise<void> {
-    await wpPost(
-      WP_API_CONFIG.ENDPOINTS.FORGOT_PASSWORD,
+  async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+    return await wpPost(
+      "/wp-json/custom/v1/forgot-password",
       { email },
       { unauthenticated: true }
     );
   },
 
   /**
-   * Sets a new password using the reset token/OTP from the email link.
+   * Verifies the 6-digit password reset OTP and receives a single-use reset token.
+   * POST /wp-json/custom/v1/verify-reset-otp
+   */
+  async verifyResetOtp(email: string, otp: string): Promise<{ success: boolean; resetToken: string; message: string }> {
+    return await wpPost(
+      "/wp-json/custom/v1/verify-reset-otp",
+      { email, otp },
+      { unauthenticated: true }
+    );
+  },
+
+  /**
+   * Sets a new password using the validated reset token.
    * POST /wp-json/custom/v1/reset-password
    */
   async resetPassword(
-    password: string,
+    params: { email: string; token: string; newPassword: string } | string,
     resetKey?: string,
     userLogin?: string
-  ): Promise<void> {
-    await wpPost(
-      WP_API_CONFIG.ENDPOINTS.RESET_PASSWORD,
-      { password, key: resetKey, login: userLogin },
+  ): Promise<{ success: boolean; message: string }> {
+    if (typeof params === "object") {
+      return await wpPost(
+        "/wp-json/custom/v1/reset-password",
+        {
+          email: params.email,
+          token: params.token,
+          resetToken: params.token,
+          newPassword: params.newPassword,
+          password: params.newPassword,
+        },
+        { unauthenticated: true }
+      );
+    }
+    return await wpPost(
+      "/wp-json/custom/v1/reset-password",
+      {
+        password: params,
+        newPassword: params,
+        key: resetKey,
+        token: resetKey,
+        login: userLogin,
+        email: userLogin,
+      },
       { unauthenticated: true }
     );
   },
@@ -477,7 +615,7 @@ export const authService = {
     if (!getStoredToken()) return false;
 
     try {
-      await wpPost(WP_API_CONFIG.ENDPOINTS.TOKEN_VALIDATE, {});
+      await wpGet(WP_API_CONFIG.ENDPOINTS.PROFILE);
       return true;
     } catch (err) {
       if (
@@ -486,7 +624,7 @@ export const authService = {
       ) {
         return false;
       }
-      throw err;
+      return false;
     }
   },
 
@@ -495,8 +633,11 @@ export const authService = {
    * GET /wp-json/custom/v1/profile
    */
   async getProfile(): Promise<User> {
-    const data = await wpGet<ProfileResponse>(WP_API_CONFIG.ENDPOINTS.PROFILE);
-    return mapProfile(data);
+    const data = await wpGet<ProfileResponse>(WP_API_CONFIG.ENDPOINTS.PROFILE, {
+      cache: "no-store",
+    });
+    const mapped = mapProfile(data);
+    return mapped;
   },
 
   async updateProfile(profileData: Partial<User>): Promise<User> {
@@ -543,5 +684,17 @@ export const authService = {
    */
   async getMemberships(): Promise<Membership[]> {
     return wpGet<Membership[]>(WP_API_CONFIG.ENDPOINTS.MEMBERSHIP);
+  },
+
+  /**
+   * Fetches authoritative live membership card data directly from WordPress backend.
+   * GET /wp-json/custom/v1/membership-card
+   */
+  async getMembershipCard(): Promise<any> {
+    const raw = await wpGet<any>(WP_API_CONFIG.ENDPOINTS.MEMBERSHIP_CARD);
+    if (raw && raw.membershipCard) {
+      return raw.membershipCard;
+    }
+    return raw;
   },
 };

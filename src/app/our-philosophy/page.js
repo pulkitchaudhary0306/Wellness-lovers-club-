@@ -16,7 +16,7 @@ export default function OurPhilosophyPage() {
       bio1: "Parineeta's journey into wellness began long before WLC - rooted in a personal quest for balance, meaning, and beauty in everyday living. She envisioned a space where like-minded individuals could come together not just to escape, but to truly transform.",
       bio2: "Her philosophy is simple: wellness is not a luxury reserved for a few - it is a right that every conscious individual deserves access to. Through WLC, she has brought that vision to life, curating experiences that are as soulful as they are exquisite.",
       quote: "Wellness Lovers Club was born from a deep desire to create a sanctuary - not just a membership. A place where you come not to escape your life, but to fall in love with it.",
-      img: "/founders/Parineeta Sethi.png",
+      img: "/founders/Parineeta Sethi.webp",
       imgPosition: "top center"
     },
     {
@@ -26,7 +26,7 @@ export default function OurPhilosophyPage() {
       bio1: "Abhinav brings a rare combination of entrepreneurial vision and a genuine passion for holistic living. With a background in building luxury lifestyle communities, he understood early that the modern individual was seeking more than products - they were seeking purpose.",
       bio2: "His belief that luxury and wellness are not opposing forces, but natural companions, is the very foundation on which WLC is built. He continues to shape the club's direction - ensuring every experience carries both elegance and intention.",
       quote: "True wellness is not about retreating from the world - it is about returning to yourself. WLC exists to make that journey effortless, beautiful, and deeply personal.",
-      img: "/founders/Abhinav Kaushal.png",
+      img: "/founders/Abhinav Kaushal.webp",
       imgPosition: "center center"
     },
     {
@@ -36,7 +36,7 @@ export default function OurPhilosophyPage() {
       bio1: "Vinit is the force behind WLC's world-class partnerships and brand ecosystem. With deep roots in the luxury and hospitality industry, he has spent years forging relationships with the finest wellness brands, spas, and retreat destinations across the globe.",
       bio2: "He believes that a community is only as strong as the experiences it offers, and his relentless pursuit of excellence ensures that every WLC partnership reflects the highest standards of quality, trust, and care.",
       quote: "We don't just partner with brands - we choose allies who share our commitment to conscious luxury. Every experience we offer is one we would choose for ourselves.",
-      img: "/founders/Vinit Pandhi.jpeg",
+      img: "/founders/Vinit Pandhi.webp",
       imgPosition: "center center"
     },
     {
@@ -46,7 +46,7 @@ export default function OurPhilosophyPage() {
       bio1: "Soumya has been part of India's wellness and luxury lifestyle media space for several years, working closely with brands, experts, destinations, and thought leaders who are shaping the future of wellbeing. Through these experiences, he has developed a deep understanding of the many ways wellness influences how we live, work, and connect.",
       bio2: "Soumya believes wellness is not defined by trends but by the choices we make every day. His approach is centred on creating genuine connections, encouraging thoughtful conversations, and making every member feel seen, supported, and inspired. Under his guidance, WLC continues to evolve as more than a community—it's a space where people come together to learn, grow, and embrace wellbeing in all its forms.",
       quote: "The conversations we have, the places we discover, and the people we meet often shape our wellbeing more than we realise.",
-      img: "/founders/Soumya Maheshwari.jpeg",
+      img: "/founders/Soumya Maheshwari.webp",
       imgPosition: "center top"
     }
   ];

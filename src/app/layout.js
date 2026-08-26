@@ -14,7 +14,7 @@ export const metadata = {
   title: "Wellness Lovers Club",
   description: "Premium wellness services and membership experiences.",
   icons: {
-    icon: "/logo/logo.png",
+    icon: "/logo/logo.webp",
   },
 };
 

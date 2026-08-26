@@ -6,6 +6,8 @@
  * - Razorpay Order Amount: 2,900,000 paise
  */
 
+import { getStoredToken } from "@/lib/tokenStorage";
+
 export interface PaymentConfig {
   key_id: string;
   currency: string;
@@ -142,7 +144,7 @@ export const paymentService = {
     let phone = typeof params === "object" ? params?.phone || "" : "";
 
     if (typeof window !== "undefined") {
-      token = sessionStorage.getItem("wlc_token") || localStorage.getItem("wlc_token") || "";
+      token = getStoredToken() || "";
       sessionToken = sessionStorage.getItem("wlc_payment_session") || localStorage.getItem("wlc_payment_session") || "";
       if (!email) {
         email = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email") || "";
@@ -198,7 +200,7 @@ export const paymentService = {
     let sessionToken = "";
 
     if (typeof window !== "undefined") {
-      token = sessionStorage.getItem("wlc_token") || localStorage.getItem("wlc_token") || "";
+      token = getStoredToken() || "";
       sessionToken = sessionStorage.getItem("wlc_payment_session") || localStorage.getItem("wlc_payment_session") || "";
     }
 
