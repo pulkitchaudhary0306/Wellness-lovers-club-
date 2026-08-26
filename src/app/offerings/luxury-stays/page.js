@@ -7,6 +7,8 @@ export const metadata = {
   description: "Enjoy preferred access to exceptional wellness resorts, hotels and luxury accommodations, where refined hospitality, tranquil surroundings, and elevated amenities create an unforgettable restorative stay.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function LuxuryStaysPage() {
   const destinations = [
     {

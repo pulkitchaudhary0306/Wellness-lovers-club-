@@ -7,6 +7,8 @@ export const metadata = {
   description: "Discover our handpicked collection of the world's most exclusive wellness retreats, spa sanctuaries, and mindful escapes.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function WellnessRetreatsPage() {
   const destinations = [
     {

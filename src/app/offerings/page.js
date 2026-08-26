@@ -7,6 +7,8 @@ export const metadata = {
   description: "Explore our exclusive wellness offerings, from private retreats and spa rituals to exclusive member events and luxury wellness stays.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function OfferingsPage() {
   const offerings = [
     {

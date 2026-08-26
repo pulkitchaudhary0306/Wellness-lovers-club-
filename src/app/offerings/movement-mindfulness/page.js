@@ -7,6 +7,8 @@ export const metadata = {
   description: "Engage in thoughtfully curated practices including yoga, pilates, meditation, breathwork, and mindful movement, designed to cultivate strength, clarity, balance, and inner calm.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function MovementMindfulnessPage() {
   const destinations = [
     {

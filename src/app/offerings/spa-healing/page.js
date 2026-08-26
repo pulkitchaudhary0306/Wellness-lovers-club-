@@ -7,6 +7,8 @@ export const metadata = {
   description: "Experience a curated blend of ancient healing traditions and modern therapeutic treatments designed to restore vitality, release tension, and nurture complete mind-body wellbeing.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function SpaHealingPage() {
   const destinations = [
     {
