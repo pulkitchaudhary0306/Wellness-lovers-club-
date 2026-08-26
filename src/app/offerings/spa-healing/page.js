@@ -123,21 +123,9 @@ export default function SpaHealingPage() {
                   {dest.name}
                 </h3>
                 <p className="dest-stats">{dest.stats}</p>
-                <div className="dest-actions-row">
-                  <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
-                    Explore Privileges <span>→</span>
-                  </Link>
-                  {dest.website && (
-                    <a
-                      href={dest.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="dest-website-btn"
-                    >
-                      Website ↗
-                    </a>
-                  )}
-                </div>
+                <Link href={`/explore-offer?destination=${encodeURIComponent(dest.name)}`} className="dest-btn">
+                  Explore Now <span>→</span>
+                </Link>
               </div>
             </div>
           ))}
