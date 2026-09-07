@@ -720,7 +720,7 @@ export const PARTNERS_DATA = [
     ]
   },
   {
-    id: 17,
+    id: 22,
     slug: "energetika369",
     name: "Energetika369",
     location: "Global & PAN India Direct Consultation",
@@ -749,7 +749,7 @@ export const PARTNERS_DATA = [
     ]
   },
   {
-    id: 18,
+    id: 23,
     slug: "environics",
     name: "Environics",
     location: "Global & PAN India Environmental Wellness",

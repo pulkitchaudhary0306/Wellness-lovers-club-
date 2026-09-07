@@ -289,7 +289,7 @@ export default function DestinationsPage() {
         <div className="properties-grid">
           {filteredProperties.length > 0 ? (
             filteredProperties.map((prop) => (
-              <div className="property-card" key={prop.id}>
+              <div className="property-card" key={prop.slug || prop.id}>
                 <div className="property-img-container">
                   <span className="property-category-badge">
                     {prop.flag} {prop.category}
