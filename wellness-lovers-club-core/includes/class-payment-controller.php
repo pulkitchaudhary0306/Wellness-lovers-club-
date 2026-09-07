@@ -261,10 +261,10 @@ class WLC_Core_Payment_Controller {
             }
         }
 
-        // 2. Sequential unique number search starting from WLC-4100
-        $last_opt = (int) get_option( 'wlc_last_membership_number', 4099 );
-        if ( $last_opt < 4099 ) {
-            $last_opt = 4099;
+        // 2. Sequential unique number search starting from WLC-4106 (Last used: 4105)
+        $last_opt = (int) get_option( 'wlc_last_membership_number', 4105 );
+        if ( $last_opt < 4105 ) {
+            $last_opt = 4105;
         }
 
         $next_num = $last_opt + 1;
