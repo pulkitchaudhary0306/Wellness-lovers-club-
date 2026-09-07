@@ -11,6 +11,7 @@ export default function LogoutPage() {
   const [status, setStatus] = useState("signing-out"); // "signing-out" | "done"
 
   useEffect(() => {
+    let timer;
     const doLogout = async () => {
       try {
         if (isAuthenticated) {
@@ -20,14 +21,17 @@ export default function LogoutPage() {
         console.error("Logout error:", err);
       } finally {
         setStatus("done");
-        setTimeout(() => {
+        timer = setTimeout(() => {
           router.push("/membership");
         }, 2000);
       }
     };
 
     doLogout();
-  }, []);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isAuthenticated, logout, router]);
 
   return (
     <div style={{

@@ -267,7 +267,7 @@ export default function DestinationsPage() {
 
       {/* ─── GlobalSpa Brand Sponsor Banner ──────────────────────────────── */}
       <div className="globalspa-banner">
-        GlobalSpa | INDIA'S #1 WELLNESS & LUXURY LIFESTYLE MEDIA BRAND
+        GlobalSpa | INDIA&apos;S #1 WELLNESS &amp; LUXURY LIFESTYLE MEDIA BRAND
         <a href="https://globalspaonline.com/" target="_blank" rel="noopener noreferrer">
           VISIT GLOBALSPAONLINE.COM ↗
         </a>

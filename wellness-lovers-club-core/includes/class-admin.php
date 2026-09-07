@@ -27,6 +27,7 @@ class WLC_Core_Admin {
         // Admin POST Action Hooks for Profile & Membership Card Editors
         add_action( 'admin_post_wlc_save_member_profile', array( $this, 'save_member_profile' ) );
         add_action( 'admin_post_wlc_save_member_card', array( $this, 'save_member_card' ) );
+        add_action( 'admin_post_wlc_save_card_settings', array( $this, 'save_card_settings' ) );
 
         // Existing SMTP & Log post action hooks
         add_action( 'admin_post_wlc_save_smtp_settings', array( $this, 'save_smtp_settings' ) );
@@ -77,6 +78,15 @@ class WLC_Core_Admin {
             'manage_options',
             'wlc-memberships',
             array( $this, 'render_memberships_page' )
+        );
+
+        add_submenu_page(
+            'wlc-core-dashboard',
+            'Membership Card Settings',
+            'Card Settings',
+            'manage_options',
+            'wlc-card-settings',
+            array( $this, 'render_card_settings_page' )
         );
 
         add_submenu_page(
@@ -1127,6 +1137,318 @@ class WLC_Core_Admin {
         check_admin_referer( 'wlc_clear_audit_nonce', 'wlc_audit_nonce' );
         update_option( 'wlc_admin_card_audit_logs', array(), false );
         wp_redirect( admin_url( 'admin.php?page=wlc-memberships' ) );
+        exit;
+    }
+
+    /**
+     * ─── Membership Card Global Settings Page ──────────────────────────────
+     */
+    public function render_card_settings_page() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Access denied.' );
+        }
+
+        $config = class_exists( 'WLC_Core_Profile_Controller' )
+            ? WLC_Core_Profile_Controller::get_global_card_config()
+            : get_option( 'wlc_membership_card_config', array() );
+
+        $motto_lines = isset( $config['mottoLines'] ) && is_array( $config['mottoLines'] ) ? $config['mottoLines'] : array( 'NOURISH', 'RELAX', 'THRIVE' );
+        $motto_1 = $motto_lines[0] ?? 'NOURISH';
+        $motto_2 = $motto_lines[1] ?? 'RELAX';
+        $motto_3 = $motto_lines[2] ?? 'THRIVE';
+
+        $benefits_text = isset( $config['benefits'] ) && is_array( $config['benefits'] )
+            ? implode( "\n", $config['benefits'] )
+            : "Exclusive Curated Experiences\nPriority Spa & Sanctuary Bookings\nHandpicked Luxury Stays\nGlobal Wellness Community Access";
+        ?>
+        <div class="wrap">
+            <h1 class="wp-heading-inline">Membership Card Global Configuration</h1>
+            <p class="description">Control dynamic parameters, typography, labels, background styling, and tier info displayed across live frontend Membership Cards and high-resolution PNG exports.</p>
+            <hr class="wp-header-end">
+
+            <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'settings_saved' ) : ?>
+                <div class="updated notice is-dismissible" style="margin-top: 15px;">
+                    <p><strong>Membership Card parameters updated successfully.</strong> Changes are immediately live on frontend membership card views and downloads.</p>
+                </div>
+            <?php endif; ?>
+
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 24px; margin-top: 20px; align-items: start;">
+                <!-- Left: Form Controls -->
+                <div style="background: #ffffff; padding: 24px 28px; border: 1px solid #ccd0d4; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                        <input type="hidden" name="action" value="wlc_save_card_settings" />
+                        <?php wp_nonce_field( 'wlc_card_settings_nonce', 'wlc_card_settings_nonce_field' ); ?>
+
+                        <h2 style="font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 16px; color: #0d563f;">1. Card Identity &amp; Pricing</h2>
+                        
+                        <table class="form-table" style="margin-top: 0;">
+                            <tr>
+                                <th scope="row"><label for="wlc_tier_name">Card / Tier Name</label></th>
+                                <td>
+                                    <input type="text" id="wlc_tier_name" name="tierName" value="<?php echo esc_attr( $config['tierName'] ?? 'VIP Annual Membership' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" required />
+                                    <p class="description">Displayed as the primary membership tier title.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_price">Membership Price</label></th>
+                                <td>
+                                    <input type="text" id="wlc_price" name="price" value="<?php echo esc_attr( $config['price'] ?? '₹29,000' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                    <p class="description">Standard price text (e.g. ₹29,000).</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_validity_text">Validity Description</label></th>
+                                <td>
+                                    <input type="text" id="wlc_validity_text" name="validityText" value="<?php echo esc_attr( $config['validityText'] ?? '365 Days Access' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                    <p class="description">Card validity tenure (e.g. 365 Days Access).</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h2 style="font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 28px; margin-bottom: 16px; color: #0d563f;">2. Card Motto &amp; Tagline</h2>
+
+                        <table class="form-table" style="margin-top: 0;">
+                            <tr>
+                                <th scope="row"><label for="wlc_motto_1">Top-Right Motto Words</label></th>
+                                <td>
+                                    <div style="display: flex; gap: 8px; max-width: 400px;">
+                                        <input type="text" id="wlc_motto_1" name="motto_1" value="<?php echo esc_attr( $motto_1 ); ?>" placeholder="Line 1" style="flex: 1;" required />
+                                        <input type="text" id="wlc_motto_2" name="motto_2" value="<?php echo esc_attr( $motto_2 ); ?>" placeholder="Line 2" style="flex: 1;" required />
+                                        <input type="text" id="wlc_motto_3" name="motto_3" value="<?php echo esc_attr( $motto_3 ); ?>" placeholder="Line 3" style="flex: 1;" required />
+                                    </div>
+                                    <p class="description">The 3 stacked uppercase words in top-right corner of card (default: NOURISH / RELAX / THRIVE).</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_lifestyle_text">Bottom Lifestyle Tagline</label></th>
+                                <td>
+                                    <input type="text" id="wlc_lifestyle_text" name="lifestyleText" value="<?php echo esc_attr( $config['lifestyleText'] ?? 'WELLNESS IS A LIFESTYLE.' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" required />
+                                    <p class="description">The brand statement displayed on bottom-left of card.</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h2 style="font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 28px; margin-bottom: 16px; color: #0d563f;">3. Field Labels</h2>
+
+                        <table class="form-table" style="margin-top: 0;">
+                            <tr>
+                                <th scope="row"><label for="wlc_member_name_label">Member Name Label</label></th>
+                                <td>
+                                    <input type="text" id="wlc_member_name_label" name="memberNameLabel" value="<?php echo esc_attr( $config['memberNameLabel'] ?? 'MEMBER NAME' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_membership_no_label">Membership Number Label</label></th>
+                                <td>
+                                    <input type="text" id="wlc_membership_no_label" name="membershipNoLabel" value="<?php echo esc_attr( $config['membershipNoLabel'] ?? 'MEMBERSHIP NO.' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_valid_to_label">Valid To Date Label</label></th>
+                                <td>
+                                    <input type="text" id="wlc_valid_to_label" name="validToLabel" value="<?php echo esc_attr( $config['validToLabel'] ?? 'VALID TO' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h2 style="font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 28px; margin-bottom: 16px; color: #0d563f;">4. Card Background &amp; Assets</h2>
+
+                        <table class="form-table" style="margin-top: 0;">
+                            <tr>
+                                <th scope="row"><label for="wlc_card_bg">Background Image URL</label></th>
+                                <td>
+                                    <div style="display: flex; gap: 8px; max-width: 500px;">
+                                        <input type="text" id="wlc_card_bg" name="backgroundImage" value="<?php echo esc_attr( $config['backgroundImage'] ?? '/images/wlc-membership-card-bg.webp' ); ?>" class="regular-text" style="flex: 1;" />
+                                        <button type="button" class="button" id="wlc_upload_bg_btn">Choose Image</button>
+                                    </div>
+                                    <p class="description">Relative path or full URL to card background image (recommended aspect ratio 1.6:1, e.g. 2400x1500).</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_download_btn_text">Download Button Text</label></th>
+                                <td>
+                                    <input type="text" id="wlc_download_btn_text" name="downloadButtonText" value="<?php echo esc_attr( $config['downloadButtonText'] ?? 'DOWNLOAD MEMBERSHIP CARD' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_download_caption">Download Caption</label></th>
+                                <td>
+                                    <input type="text" id="wlc_download_caption" name="downloadCaption" value="<?php echo esc_attr( $config['downloadCaption'] ?? 'High-resolution printable digital membership card format (PNG).' ); ?>" class="regular-text" style="width: 100%; max-width: 400px;" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_card_benefits">Membership Benefits</label></th>
+                                <td>
+                                    <textarea id="wlc_card_benefits" name="benefits" rows="4" style="width: 100%; max-width: 500px;"><?php echo esc_textarea( $benefits_text ); ?></textarea>
+                                    <p class="description">One privilege/benefit per line.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="wlc_card_terms">Terms &amp; Conditions</label></th>
+                                <td>
+                                    <textarea id="wlc_card_terms" name="terms" rows="2" style="width: 100%; max-width: 500px;"><?php echo esc_textarea( $config['terms'] ?? 'Valid for 1 year from activation. Non-transferable.' ); ?></textarea>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p class="submit" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee;">
+                            <button type="submit" class="button button-primary button-large" style="background: #0d563f; border-color: #0d563f; font-weight: 600; padding: 4px 24px; height: auto; font-size: 14px;">Save Card Configuration</button>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Right: Live Card Visual Preview -->
+                <div style="background: #111a14; padding: 24px; border-radius: 12px; border: 1px solid rgba(188,163,116,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: #fff; position: sticky; top: 40px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #bca374; font-weight: 700;">Live Card Preview</span>
+                        <span style="font-size: 11px; background: rgba(15,133,84,0.3); color: #4ade80; padding: 2px 8px; border-radius: 10px; border: 1px solid #0f8554;">Synchronized</span>
+                    </div>
+
+                    <!-- Mini Card Renderer -->
+                    <div style="aspect-ratio: 1.6/1; background: #061811; border-radius: 12px; padding: 18px; position: relative; border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; box-shadow: inset 0 0 30px rgba(13,86,63,0.3);">
+                        
+                        <!-- Top Right Motto -->
+                        <div style="position: absolute; top: 14px; right: 16px; text-align: right; display: flex; align-items: center; gap: 8px;">
+                            <div style="font-size: 8px; font-weight: 700; color: #8fa89b; line-height: 1.3; letter-spacing: 1px; text-transform: uppercase;">
+                                <div id="preview_motto_1"><?php echo esc_html( $motto_1 ); ?></div>
+                                <div id="preview_motto_2"><?php echo esc_html( $motto_2 ); ?></div>
+                                <div id="preview_motto_3"><?php echo esc_html( $motto_3 ); ?></div>
+                            </div>
+                            <svg width="18" height="14" viewBox="0 0 36 24" fill="none" stroke="#8fa89b" stroke-width="2">
+                                <ellipse cx="13" cy="12" rx="11" ry="8" transform="rotate(-15 13 12)" />
+                                <ellipse cx="23" cy="12" rx="11" ry="8" transform="rotate(15 23 12)" />
+                            </svg>
+                        </div>
+
+                        <!-- Member Name -->
+                        <div style="margin-top: 24px;">
+                            <div id="preview_name_label" style="font-size: 8px; color: #8fa89b; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">
+                                <?php echo esc_html( $config['memberNameLabel'] ?? 'MEMBER NAME' ); ?>
+                            </div>
+                            <div style="font-size: 16px; font-weight: 800; color: #ffffff; letter-spacing: 1px; margin-top: 2px;">
+                                ALEXANDER WRIGHT
+                            </div>
+                        </div>
+
+                        <!-- Details Row -->
+                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                            <div>
+                                <div id="preview_no_label" style="font-size: 7px; color: #8fa89b; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                                    <?php echo esc_html( $config['membershipNoLabel'] ?? 'MEMBERSHIP NO.' ); ?>
+                                </div>
+                                <div style="font-size: 13px; font-weight: 800; color: #fff; letter-spacing: 1px; font-family: monospace;">
+                                    WLC-2026-8899
+                                </div>
+                            </div>
+                            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2);"></div>
+                            <div>
+                                <div id="preview_valid_label" style="font-size: 7px; color: #8fa89b; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                                    <?php echo esc_html( $config['validToLabel'] ?? 'VALID TO' ); ?>
+                                </div>
+                                <div style="font-size: 13px; font-weight: 800; color: #fff; letter-spacing: 1px;">
+                                    03/27
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Tagline -->
+                        <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid #8fa89b;"></div>
+                                <span id="preview_lifestyle" style="font-size: 7.5px; color: #8fa89b; font-weight: 600; letter-spacing: 1.5px;">
+                                    <?php echo esc_html( $config['lifestyleText'] ?? 'WELLNESS IS A LIFESTYLE.' ); ?>
+                                </span>
+                            </div>
+                            <span style="font-size: 9px; opacity: 0.8;">📶</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.5;">
+                        <strong style="color: #4ade80;">💡 Single Source of Truth:</strong> Any parameter saved here is fetched by Next.js and reflected in real-time across member dashboards and the generated 2400×1500 printable PNG.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            // Live Preview Bindings
+            $('#wlc_motto_1').on('input', function() { $('#preview_motto_1').text($(this).val().toUpperCase()); });
+            $('#wlc_motto_2').on('input', function() { $('#preview_motto_2').text($(this).val().toUpperCase()); });
+            $('#wlc_motto_3').on('input', function() { $('#preview_motto_3').text($(this).val().toUpperCase()); });
+            $('#wlc_lifestyle_text').on('input', function() { $('#preview_lifestyle').text($(this).val().toUpperCase()); });
+            $('#wlc_member_name_label').on('input', function() { $('#preview_name_label').text($(this).val().toUpperCase()); });
+            $('#wlc_membership_no_label').on('input', function() { $('#preview_no_label').text($(this).val().toUpperCase()); });
+            $('#wlc_valid_to_label').on('input', function() { $('#preview_valid_label').text($(this).val().toUpperCase()); });
+
+            // Media Uploader for Card Background
+            $('#wlc_upload_bg_btn').on('click', function(e) {
+                e.preventDefault();
+                var custom_uploader = wp.media({
+                    title: 'Select Membership Card Background',
+                    button: { text: 'Use This Image' },
+                    multiple: false
+                }).on('select', function() {
+                    var attachment = custom_uploader.state().get('selection').first().toJSON();
+                    $('#wlc_card_bg').val(attachment.url);
+                }).open();
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Handle saving of global Membership Card settings
+     */
+    public function save_card_settings() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Unauthorized action.' );
+        }
+        check_admin_referer( 'wlc_card_settings_nonce', 'wlc_card_settings_nonce_field' );
+
+        $tier_name           = sanitize_text_field( $_POST['tierName'] ?? 'VIP Annual Membership' );
+        $price               = sanitize_text_field( $_POST['price'] ?? '₹29,000' );
+        $validity_text       = sanitize_text_field( $_POST['validityText'] ?? '365 Days Access' );
+        $motto_1             = sanitize_text_field( $_POST['motto_1'] ?? 'NOURISH' );
+        $motto_2             = sanitize_text_field( $_POST['motto_2'] ?? 'RELAX' );
+        $motto_3             = sanitize_text_field( $_POST['motto_3'] ?? 'THRIVE' );
+        $lifestyle_text      = sanitize_text_field( $_POST['lifestyleText'] ?? 'WELLNESS IS A LIFESTYLE.' );
+        $member_name_label   = sanitize_text_field( $_POST['memberNameLabel'] ?? 'MEMBER NAME' );
+        $membership_no_label = sanitize_text_field( $_POST['membershipNoLabel'] ?? 'MEMBERSHIP NO.' );
+        $valid_to_label      = sanitize_text_field( $_POST['validToLabel'] ?? 'VALID TO' );
+        $background_image    = sanitize_text_field( $_POST['backgroundImage'] ?? '/images/wlc-membership-card-bg.webp' );
+        $download_btn_text   = sanitize_text_field( $_POST['downloadButtonText'] ?? 'DOWNLOAD MEMBERSHIP CARD' );
+        $download_caption    = sanitize_text_field( $_POST['downloadCaption'] ?? 'High-resolution printable digital membership card format (PNG).' );
+        $terms               = sanitize_textarea_field( $_POST['terms'] ?? '' );
+
+        $benefits_raw = sanitize_textarea_field( $_POST['benefits'] ?? '' );
+        $benefits = array_values( array_filter( array_map( 'trim', explode( "\n", str_replace( "\r", "", $benefits_raw ) ) ) ) );
+
+        $config = array(
+            'cardTitle'          => $tier_name,
+            'tierName'           => $tier_name,
+            'price'              => $price,
+            'validityText'       => $validity_text,
+            'mottoLines'         => array( $motto_1, $motto_2, $motto_3 ),
+            'lifestyleText'      => $lifestyle_text,
+            'memberNameLabel'    => $member_name_label,
+            'membershipNoLabel'  => $membership_no_label,
+            'validToLabel'       => $valid_to_label,
+            'backgroundImage'    => $background_image,
+            'downloadButtonText' => $download_btn_text,
+            'downloadCaption'    => $download_caption,
+            'benefits'           => $benefits,
+            'terms'              => $terms,
+        );
+
+        update_option( 'wlc_membership_card_config', $config );
+
+        if ( class_exists( 'WLC_Core_Logger' ) ) {
+            WLC_Core_Logger::log( 'Admin updated Membership Card Global Configuration.', 'INFO' );
+        }
+
+        wp_redirect( admin_url( 'admin.php?page=wlc-card-settings&message=settings_saved' ) );
         exit;
     }
 }

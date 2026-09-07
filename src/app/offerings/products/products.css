@@ -1,0 +1,506 @@
+/* =========================================================================
+   Wellness Lovers Club — Products Offerings Stylesheet
+   ========================================================================= */
+
+.products-brand-section {
+  width: min(100% - 32px, 1280px);
+  margin: 0 auto 75px auto;
+}
+
+.brand-header-card {
+  background: linear-gradient(135deg, rgba(13, 86, 63, 0.05) 0%, rgba(188, 163, 116, 0.12) 100%);
+  border: 1px solid rgba(188, 163, 116, 0.35);
+  border-radius: var(--wlc-radius);
+  padding: 32px 36px;
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.brand-header-info {
+  max-width: 800px;
+}
+
+.brand-tagline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--wlc-gold-light);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.brand-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(26px, 3.5vw, 36px);
+  font-weight: 600;
+  color: var(--wlc-green);
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.brand-desc {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14.5px;
+  color: var(--wlc-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.brand-badge-pill {
+  background: var(--wlc-green);
+  color: var(--wlc-white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 8px 18px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* ─── PDF Documentation Grid ────────────────────────────────────────────── */
+.catalogues-section {
+  margin-top: 48px;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #06281e 0%, #0d563f 100%);
+  border-radius: var(--wlc-radius);
+  padding: 36px 32px;
+  color: var(--wlc-white);
+  box-shadow: var(--wlc-shadow);
+}
+
+.catalogues-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+}
+
+.catalogues-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--wlc-gold-light);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.catalogues-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(24px, 3.2vw, 32px);
+  color: var(--wlc-white);
+  margin: 0 0 8px 0;
+}
+
+.catalogues-subtitle {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+}
+
+.catalogues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.catalogue-pdf-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.catalogue-pdf-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--wlc-gold-light);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pdf-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pdf-icon-wrap {
+  font-size: 24px;
+}
+
+.pdf-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.pdf-category {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--wlc-gold-light);
+}
+
+.pdf-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--wlc-white);
+  line-height: 1.25;
+  margin: 2px 0 0 0;
+}
+
+.pdf-desc {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+  flex-grow: 1;
+}
+
+.pdf-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.pdf-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  color: var(--wlc-white) !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.pdf-view-btn:hover {
+  background: var(--wlc-white);
+  color: var(--wlc-green) !important;
+  border-color: var(--wlc-white);
+}
+
+.pdf-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, var(--wlc-gold) 0%, var(--wlc-gold-accent) 100%);
+  border: 1px solid transparent;
+  border-radius: 20px;
+  color: #06281e !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.pdf-download-btn:hover {
+  background: #ffffff;
+  color: #06281e !important;
+  transform: translateY(-1px);
+}
+
+/* ─── Product Card Customizations ───────────────────────────────────────── */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--wlc-white);
+  border-radius: var(--wlc-radius);
+  overflow: hidden;
+  border: 1px solid var(--wlc-border);
+  box-shadow: var(--wlc-shadow);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--wlc-shadow-hover);
+  border-color: rgba(188, 163, 116, 0.45);
+}
+
+.product-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: linear-gradient(135deg, #06281e 0%, #0d563f 100%);
+}
+
+.product-card-img-wrap img {
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover .product-card-img-wrap img {
+  transform: scale(1.08);
+}
+
+.product-card-img-wrap::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--wlc-gold) 0%, var(--wlc-gold-accent) 100%);
+  z-index: 2;
+}
+
+.product-card-content {
+  padding: 26px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.product-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wlc-gold-light);
+}
+
+.product-brand-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--wlc-green);
+  background: rgba(13, 86, 63, 0.08);
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.05em;
+}
+
+.product-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--wlc-green);
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+}
+
+.product-desc {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--wlc-muted);
+  line-height: 1.65;
+  margin: 0 0 18px 0;
+  flex-grow: 1;
+}
+
+.product-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border-top: 1px solid rgba(13, 86, 63, 0.08);
+  padding-top: 14px;
+}
+
+.product-features-list li {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 12px;
+  color: #4a5550;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.product-features-list li::before {
+  content: "✦";
+  color: var(--wlc-gold-light);
+  font-size: 10px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.product-card-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(13, 86, 63, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-pdf-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--wlc-green);
+  text-decoration: none;
+  padding: 6px 12px;
+  background: rgba(13, 86, 63, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(13, 86, 63, 0.12);
+  transition: all 0.25s ease;
+}
+
+.product-pdf-link:hover {
+  background: rgba(13, 86, 63, 0.12);
+  color: #06281e;
+  border-color: var(--wlc-gold-light);
+}
+
+.product-enquiry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: var(--wlc-green);
+  color: var(--wlc-white) !important;
+  border: 1.5px solid var(--wlc-green);
+  border-radius: 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.product-enquiry-btn:hover {
+  background-color: var(--wlc-deep-green);
+  border-color: var(--wlc-gold-accent);
+  color: var(--wlc-gold-accent) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 86, 63, 0.25);
+}
+
+/* ─── Ready-to-Populate Brand Showcase Area ────────────────────────────── */
+.ready-brand-showcase {
+  background: var(--wlc-white);
+  border: 1.5px dashed rgba(188, 163, 116, 0.45);
+  border-radius: var(--wlc-radius);
+  padding: 45px 36px;
+  text-align: center;
+  box-shadow: var(--wlc-shadow);
+}
+
+.ready-brand-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(13, 86, 63, 0.08);
+  color: var(--wlc-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px auto;
+  font-size: 24px;
+}
+
+.ready-brand-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  color: var(--wlc-green);
+  margin-bottom: 10px;
+}
+
+.ready-brand-text {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 15px;
+  color: var(--wlc-muted);
+  max-width: 650px;
+  margin: 0 auto 26px auto;
+  line-height: 1.7;
+}
+
+.ready-brand-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ─── Responsive Breakpoints ────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .offerings-grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .brand-header-card {
+    padding: 24px 20px;
+  }
+  
+  .catalogues-section {
+    padding: 28px 18px;
+  }
+
+  .catalogues-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ready-brand-showcase {
+    padding: 32px 20px;
+  }
+
+  .offerings-grid-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    max-width: 480px;
+  }
+
+  .product-card-content {
+    padding: 22px 18px 20px 18px;
+  }
+}

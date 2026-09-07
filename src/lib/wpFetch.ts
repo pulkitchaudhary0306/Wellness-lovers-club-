@@ -77,7 +77,11 @@ export async function wpFetch<T = unknown>(
     }
   }
 
-  const url = `${BASE_URL}${endpoint}`;
+  const isLocalDev =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+  const url = isLocalDev ? endpoint : `${BASE_URL}${endpoint}`;
 
   // 10-second timeout guard to ensure fetch never hangs React loading states
   const controller = new AbortController();
@@ -95,10 +99,31 @@ export async function wpFetch<T = unknown>(
       signal: fetchOptions.signal || controller.signal,
     });
   } catch (fetchErr: any) {
-    if (fetchErr?.name === "AbortError") {
-      throw new WPApiError("timeout", "WordPress API request timed out", 408);
+    if (fetchErr instanceof WPApiError) {
+      throw fetchErr;
     }
-    throw fetchErr;
+    if (fetchErr?.name === "AbortError") {
+      throw new WPApiError("timeout", "Unable to connect to the server. Request timed out.", 408);
+    }
+    const msg = String(fetchErr?.message || "");
+    if (
+      fetchErr?.name === "TypeError" ||
+      msg.includes("Failed to fetch") ||
+      msg.includes("NetworkError") ||
+      msg.includes("Load failed") ||
+      msg.includes("fetch failed")
+    ) {
+      throw new WPApiError(
+        "network_error",
+        "Unable to connect to the server. Please check your connection and try again.",
+        0
+      );
+    }
+    throw new WPApiError(
+      "network_error",
+      msg || "Unable to connect to the server.",
+      0
+    );
   } finally {
     clearTimeout(timeoutId);
   }

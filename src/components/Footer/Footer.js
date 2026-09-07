@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import "./Footer.css";
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="site-footer">
       <div className="footer-container">
@@ -11,11 +14,14 @@ function Footer() {
           {/* Brand/Logo Column */}
           <div className="footer-brand-col">
             <Link href="/" className="footer-logo-link">
-              <img loading="lazy" src="/logo/logo.webp"
+              <Image
+                src="/logo/logo.webp"
                 alt="Wellness Lovers Club Logo"
-                className="footer-logo-img" />
+                width={160}
+                height={40}
+                className="footer-logo-img"
+              />
             </Link>
-
           </div>
 
           {/* Links Column Group */}
@@ -46,9 +52,6 @@ function Footer() {
               <a href="https://www.instagram.com/wellnessloversclub/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-              </a>
               <a href="https://www.linkedin.com/showcase/globalspa/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
@@ -65,7 +68,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p className="copyright-text">
-            &copy; 2025 Wellness Lovers Club by GlobalSpa &middot; All rights reserved &middot; wellnessloversclub.com
+            &copy; {currentYear} Wellness Lovers Club by GlobalSpa &middot; All rights reserved &middot; wellnessloversclub.com
           </p>
         </div>
       </div>

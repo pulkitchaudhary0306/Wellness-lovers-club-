@@ -49,27 +49,102 @@ class WLC_Core_Router {
     }
 
     public static function get_allowed_origins() {
-        return array(
+        // Production Approved Origins
+        $origins = array(
             'https://wellnessloversclub.com',
             'https://www.wellnessloversclub.com',
         );
+
+        // Development origins (localhost / 127.0.0.1) enabled in development / non-production environments
+        $is_production = ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() === 'production' )
+            || ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE === 'production' );
+
+        if ( ! $is_production || ( defined( 'WLC_ALLOW_LOCALHOST' ) && WLC_ALLOW_LOCALHOST ) ) {
+            $origins[] = 'http://localhost:3000';
+            $origins[] = 'http://localhost:3001';
+            $origins[] = 'http://127.0.0.1:3000';
+            $origins[] = 'http://127.0.0.1:3001';
+        }
+
+        // 1. Support constant WLC_FRONTEND_URL or WLC_ALLOWED_ORIGINS (e.g. defined in wp-config.php)
+        if ( defined( 'WLC_FRONTEND_URL' ) && ! empty( WLC_FRONTEND_URL ) ) {
+            $frontend_url = rtrim( trim( WLC_FRONTEND_URL ), '/' );
+            if ( ! in_array( $frontend_url, $origins, true ) ) {
+                $origins[] = $frontend_url;
+            }
+        }
+
+        if ( defined( 'WLC_ALLOWED_ORIGINS' ) && ! empty( WLC_ALLOWED_ORIGINS ) ) {
+            if ( is_array( WLC_ALLOWED_ORIGINS ) ) {
+                foreach ( WLC_ALLOWED_ORIGINS as $custom_origin ) {
+                    $clean = rtrim( trim( $custom_origin ), '/' );
+                    if ( ! empty( $clean ) && ! in_array( $clean, $origins, true ) ) {
+                        $origins[] = $clean;
+                    }
+                }
+            } elseif ( is_string( WLC_ALLOWED_ORIGINS ) ) {
+                $split = explode( ',', WLC_ALLOWED_ORIGINS );
+                foreach ( $split as $custom_origin ) {
+                    $clean = rtrim( trim( $custom_origin ), '/' );
+                    if ( ! empty( $clean ) && ! in_array( $clean, $origins, true ) ) {
+                        $origins[] = $clean;
+                    }
+                }
+            }
+        }
+
+        // 2. Support Environment Variables (getenv / $_ENV)
+        $env_frontend = getenv( 'FRONTEND_URL' ) ?: getenv( 'NEXT_PUBLIC_SITE_URL' );
+        if ( $env_frontend ) {
+            $clean = rtrim( trim( $env_frontend ), '/' );
+            if ( ! empty( $clean ) && ! in_array( $clean, $origins, true ) ) {
+                $origins[] = $clean;
+            }
+        }
+
+        // 3. Support WordPress database option
+        $option_origin = get_option( 'wlc_frontend_url' );
+        if ( ! empty( $option_origin ) ) {
+            $clean = rtrim( trim( $option_origin ), '/' );
+            if ( ! empty( $clean ) && ! in_array( $clean, $origins, true ) ) {
+                $origins[] = $clean;
+            }
+        }
+
+        // 4. WordPress filter hook for runtime extensibility
+        return apply_filters( 'wlc_allowed_origins', $origins );
     }
 
     public static function handle_cors( $value ) {
         $allowed_origins = self::get_allowed_origins();
         $origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? trim( $_SERVER['HTTP_ORIGIN'] ) : '';
 
-        if ( $origin !== '' && in_array( $origin, $allowed_origins, true ) ) {
-            header( 'Access-Control-Allow-Origin: ' . $origin );
-            header( 'Access-Control-Allow-Credentials: true' );
-            header( 'Vary: Origin' );
+        header( 'Vary: Origin' );
+
+        $is_allowed = false;
+        if ( $origin !== '' ) {
+            $normalized_origin = strtolower( rtrim( $origin, '/' ) );
+            foreach ( $allowed_origins as $allowed ) {
+                if ( strtolower( rtrim( $allowed, '/' ) ) === $normalized_origin ) {
+                    $is_allowed = true;
+                    break;
+                }
+            }
         }
 
-        header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
-        header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept, X-Razorpay-Signature, X-Webhook-Signature, X-Payment-Session' );
+        if ( $is_allowed ) {
+            header( 'Access-Control-Allow-Origin: ' . $origin );
+            header( 'Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS' );
+            header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With, Origin, Accept, X-Razorpay-Signature, X-Webhook-Signature, X-Payment-Session' );
+            header( 'Access-Control-Max-Age: 86400' );
+        }
 
         if ( isset( $_SERVER['REQUEST_METHOD'] ) && strtoupper( $_SERVER['REQUEST_METHOD'] ) === 'OPTIONS' ) {
-            status_header( 200 );
+            if ( $is_allowed ) {
+                status_header( 200 );
+            } else {
+                status_header( 403 );
+            }
             exit;
         }
 
@@ -86,25 +161,6 @@ class WLC_Core_Router {
         $profile = new WLC_Core_Profile_Controller();
         $contact = new WLC_Core_Contact_Controller();
         $news    = new WLC_Core_Newsletter_Controller();
-
-        // ─── JWT Authentication fallback endpoints ─────────────────────────
-        register_rest_route( 'jwt-auth/v1', '/token', array(
-            'methods'             => 'POST',
-            'callback'            => array( $auth, 'login' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( 'jwt-auth/v1', '/token/validate', array(
-            'methods'             => 'POST',
-            'callback'            => function() {
-                $auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
-                $valid = WLC_Core_JWT::validate_token( $auth_header );
-                if ( $valid ) {
-                    return Wellness_API_Response::success( array( 'code' => 'jwt_auth_valid_token', 'data' => array( 'status' => 200 ) ) );
-                }
-                return new WP_Error( 'jwt_auth_invalid_token', 'Invalid token.', array( 'status' => 403 ) );
-            },
-            'permission_callback' => '__return_true',
-        ) );
 
         // ─── Public Custom Endpoints ────────────────────────────────────────
         register_rest_route( $namespace, '/register', array(
@@ -125,23 +181,6 @@ class WLC_Core_Router {
         register_rest_route( $namespace, '/reset-password', array(
             'methods'             => 'POST',
             'callback'            => array( $auth, 'reset_password' ),
-            'permission_callback' => '__return_true',
-        ) );
-
-        // Dual OTP Registration & Verification Endpoints
-        register_rest_route( $namespace, '/dual-otp/register-initiate', array(
-            'methods'             => 'POST',
-            'callback'            => array( $auth, 'dual_otp_register_initiate' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $namespace, '/dual-otp/verify', array(
-            'methods'             => 'POST',
-            'callback'            => array( $auth, 'dual_otp_verify' ),
-            'permission_callback' => '__return_true',
-        ) );
-        register_rest_route( $namespace, '/dual-otp/resend', array(
-            'methods'             => 'POST',
-            'callback'            => array( $auth, 'dual_otp_resend' ),
             'permission_callback' => '__return_true',
         ) );
 
@@ -287,7 +326,7 @@ class WLC_Core_Router {
                     'provider' => 'native_wp_mail',
                 ), 200 );
             },
-            'permission_callback' => '__return_true',
+            'permission_callback' => array( $this, 'require_admin_auth' ),
         ) );
 
         // ─── WLC Member Privileges & Partner Offers ─────────────────────────

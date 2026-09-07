@@ -30,7 +30,8 @@ class WLC_Core_Payment_Controller {
         if ( defined( 'RAZORPAY_KEY_ID' ) && ! empty( RAZORPAY_KEY_ID ) ) {
             return RAZORPAY_KEY_ID;
         }
-        return 'rzp_live_TR9Dw0VTSvX6yH';
+        // No fallback secret — must be defined in wp-config.php via WLC_RAZORPAY_KEY_ID or RAZORPAY_KEY_ID
+        return '';
     }
 
     /**
@@ -43,7 +44,8 @@ class WLC_Core_Payment_Controller {
         if ( defined( 'RAZORPAY_KEY_SECRET' ) && ! empty( RAZORPAY_KEY_SECRET ) ) {
             return RAZORPAY_KEY_SECRET;
         }
-        return 'y9S31mgmGig99U9Y5vIKCuK1';
+        // No fallback secret — must be defined in wp-config.php via WLC_RAZORPAY_KEY_SECRET or RAZORPAY_KEY_SECRET
+        return '';
     }
 
     /**
@@ -56,7 +58,8 @@ class WLC_Core_Payment_Controller {
         if ( defined( 'RAZORPAY_WEBHOOK_SECRET' ) && ! empty( RAZORPAY_WEBHOOK_SECRET ) ) {
             return RAZORPAY_WEBHOOK_SECRET;
         }
-        return 'wlc_webhook_secret_2026_live';
+        // No fallback — must be defined in wp-config.php via WLC_RAZORPAY_WEBHOOK_SECRET or RAZORPAY_WEBHOOK_SECRET
+        return '';
     }
 
     /**

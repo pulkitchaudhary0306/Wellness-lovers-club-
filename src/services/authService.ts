@@ -76,6 +76,8 @@ interface VerifyOTPResponse {
   message: string;
   token?: string;
   user?: Partial<User>;
+  payment_session_token?: string;
+  verified?: boolean;
 }
 
 /** Profile response shape — flat object returned by WP_REST_Response($data) */
@@ -420,27 +422,14 @@ export const authService = {
 
   /**
    * Sends a fresh OTP to the given email address.
-   * POST /wp-json/wlc-otp/v1/send (fallback to /wp-json/custom/v1/send-otp)
+   * POST /wp-json/custom/v1/send-otp
    */
   async sendOTP(email: string, name?: string): Promise<void> {
-    try {
-      await wpPost(
-        WP_API_CONFIG.ENDPOINTS.SEND_OTP,
-        { email, name, identifier: email },
-        { unauthenticated: true }
-      );
-    } catch (err: any) {
-      if (err instanceof WPApiError && err.status === 404) {
-        // Fallback to custom/v1 endpoint
-        await wpPost(
-          "/wp-json/custom/v1/send-otp",
-          { email, identifier: email },
-          { unauthenticated: true }
-        );
-        return;
-      }
-      throw err;
-    }
+    await wpPost(
+      WP_API_CONFIG.ENDPOINTS.SEND_OTP,
+      { email, name, identifier: email },
+      { unauthenticated: true }
+    );
   },
 
   /**
@@ -452,31 +441,16 @@ export const authService = {
 
   /**
    * Verifies the 6-digit Email OTP entered by the user.
-   * POST /wp-json/wlc-otp/v1/verify (fallback to /wp-json/custom/v1/verify-email)
+   * POST /wp-json/custom/v1/verify-otp
    *
    * On success returns { token, user } or { verified: true }
    */
   async verifyOTP(otp: string, email?: string): Promise<AuthResponse | { verified: boolean; message: string }> {
-    let data: any;
-
-    try {
-      data = await wpPost<VerifyOTPResponse>(
-        WP_API_CONFIG.ENDPOINTS.VERIFY_OTP,
-        { otp, email, identifier: email },
-        { unauthenticated: true }
-      );
-    } catch (err: any) {
-      if (err instanceof WPApiError && err.status === 404) {
-        // Fallback to alternative route /custom/v1/verify-otp
-        data = await wpPost<VerifyOTPResponse>(
-          "/wp-json/custom/v1/verify-otp",
-          { otp, email, identifier: email },
-          { unauthenticated: true }
-        );
-      } else {
-        throw err;
-      }
-    }
+    const data = await wpPost<VerifyOTPResponse>(
+      WP_API_CONFIG.ENDPOINTS.VERIFY_OTP,
+      { otp, email, identifier: email },
+      { unauthenticated: true }
+    );
 
     if (data) {
       if (data.payment_session_token && typeof window !== "undefined") {
@@ -505,27 +479,15 @@ export const authService = {
 
   /**
    * Resends Email OTP.
-   * POST /wp-json/wlc-otp/v1/resend (fallback to /wp-json/custom/v1/resend-otp)
+   * POST /wp-json/custom/v1/resend-otp
    * Backend enforces 60-second throttle and max 5 requests per hour.
    */
   async resendOTP(email: string, name?: string): Promise<void> {
-    try {
-      await wpPost(
-        WP_API_CONFIG.ENDPOINTS.RESEND_OTP,
-        { email, name, identifier: email },
-        { unauthenticated: true }
-      );
-    } catch (err: any) {
-      if (err instanceof WPApiError && err.status === 404) {
-        await wpPost(
-          "/wp-json/custom/v1/resend-otp",
-          { email, identifier: email },
-          { unauthenticated: true }
-        );
-        return;
-      }
-      throw err;
-    }
+    await wpPost(
+      WP_API_CONFIG.ENDPOINTS.RESEND_OTP,
+      { email, name, identifier: email },
+      { unauthenticated: true }
+    );
   },
 
   /**
@@ -537,7 +499,7 @@ export const authService = {
 
   /**
    * Checks the status of OTP verification for an email address.
-   * POST /wp-json/wlc-otp/v1/status
+   * POST /wp-json/custom/v1/status
    */
   async getOTPStatus(email: string): Promise<{ success: boolean; verified: boolean; can_resend: boolean; seconds_remaining?: number }> {
     return await wpPost(
@@ -548,19 +510,19 @@ export const authService = {
   },
 
   /**
-   * Sends a password-reset OTP to the user's email.
+   * Sends a password-reset link to the user's registered email.
    * POST /wp-json/custom/v1/forgot-password
    */
   async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
     return await wpPost(
-      "/wp-json/custom/v1/forgot-password",
+      WP_API_CONFIG.ENDPOINTS.FORGOT_PASSWORD,
       { email },
       { unauthenticated: true }
     );
   },
 
   /**
-   * Verifies the 6-digit password reset OTP and receives a single-use reset token.
+   * Verifies a password reset OTP (if OTP reset mode is enabled on server).
    * POST /wp-json/custom/v1/verify-reset-otp
    */
   async verifyResetOtp(email: string, otp: string): Promise<{ success: boolean; resetToken: string; message: string }> {
@@ -572,36 +534,32 @@ export const authService = {
   },
 
   /**
-   * Sets a new password using the validated reset token.
+   * Sets a new password using the reset key and login from the email reset link.
    * POST /wp-json/custom/v1/reset-password
+   * Expects canonical payload: { key, login, password }
    */
   async resetPassword(
-    params: { email: string; token: string; newPassword: string } | string,
+    params: { key: string; login: string; password?: string; newPassword?: string } | string,
     resetKey?: string,
     userLogin?: string
   ): Promise<{ success: boolean; message: string }> {
     if (typeof params === "object") {
       return await wpPost(
-        "/wp-json/custom/v1/reset-password",
+        WP_API_CONFIG.ENDPOINTS.RESET_PASSWORD,
         {
-          email: params.email,
-          token: params.token,
-          resetToken: params.token,
-          newPassword: params.newPassword,
-          password: params.newPassword,
+          key: params.key,
+          login: params.login,
+          password: params.password || params.newPassword,
         },
         { unauthenticated: true }
       );
     }
     return await wpPost(
-      "/wp-json/custom/v1/reset-password",
+      WP_API_CONFIG.ENDPOINTS.RESET_PASSWORD,
       {
-        password: params,
-        newPassword: params,
         key: resetKey,
-        token: resetKey,
         login: userLogin,
-        email: userLogin,
+        password: params,
       },
       { unauthenticated: true }
     );

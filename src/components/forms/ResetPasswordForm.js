@@ -50,17 +50,17 @@ export default function ResetPasswordForm({ isEmbed = false }) {
     setApiError("");
     setIsShaking(false);
 
-    let resetToken = "";
-    let userEmail = "";
+    let key = "";
+    let login = "";
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      resetToken = params.get("token") || params.get("resetToken") || params.get("key") || "";
-      userEmail = params.get("email") || params.get("login") || "";
+      key = params.get("key") || "";
+      login = params.get("login") || "";
     }
 
-    if (!resetToken) {
-      setApiError("Reset authorization token is missing or expired. Please request a new OTP code.");
+    if (!key || !login) {
+      setApiError("The password reset link is invalid or incomplete. Please request a new reset link.");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
       setIsLoading(false);
@@ -69,9 +69,9 @@ export default function ResetPasswordForm({ isEmbed = false }) {
 
     try {
       await resetPassword({
-        email: userEmail,
-        token: resetToken,
-        newPassword: data.password,
+        key,
+        login,
+        password: data.password,
       });
       setIsSuccess(true);
       setTimeout(() => {

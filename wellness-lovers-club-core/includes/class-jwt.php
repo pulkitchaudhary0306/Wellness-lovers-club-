@@ -13,17 +13,27 @@ if ( ! class_exists( 'WLC_Core_JWT' ) ) {
     class WLC_Core_JWT {
 
         /**
-         * Resolves the authoritative JWT secret key
+         * Resolves the authoritative JWT secret key.
+         *
+         * Priority:
+         *   1. JWT_AUTH_SECRET_KEY (defined in wp-config.php)
+         *   2. WLC_JWT_SECRET     (defined in wp-config.php, alias)
+         *
+         * Returns null if neither constant is configured.
+         * Callers MUST check for a falsy return value and reject the operation.
          */
         public static function get_secret_key() {
-            if ( defined( 'JWT_AUTH_SECRET_KEY' ) && JWT_AUTH_SECRET_KEY ) {
+            if ( defined( 'JWT_AUTH_SECRET_KEY' ) && ! empty( JWT_AUTH_SECRET_KEY ) ) {
                 return JWT_AUTH_SECRET_KEY;
             }
-            if ( defined( 'WLC_JWT_SECRET' ) && WLC_JWT_SECRET ) {
+            if ( defined( 'WLC_JWT_SECRET' ) && ! empty( WLC_JWT_SECRET ) ) {
                 return WLC_JWT_SECRET;
             }
 
-            return wp_salt( 'auth' );
+            // SECURITY: Never fall back to wp_salt or any hardcoded value.
+            // If the production secret is missing, fail safely.
+            error_log( '[WLC JWT] CRITICAL: JWT_AUTH_SECRET_KEY is not defined in wp-config.php. All token operations will fail.' );
+            return null;
         }
 
         /**
@@ -54,6 +64,9 @@ if ( ! class_exists( 'WLC_Core_JWT' ) ) {
          */
         public static function generate_token( $user_id, $expiration_days = 7 ) {
             $secret_key = self::get_secret_key();
+            if ( empty( $secret_key ) ) {
+                return ''; // Fail safely — no secret configured
+            }
             $header     = json_encode( array( 'typ' => 'JWT', 'alg' => 'HS256' ) );
             $issued_at  = time();
             $expire     = $issued_at + ( DAY_IN_SECONDS * $expiration_days );
@@ -153,6 +166,9 @@ if ( ! class_exists( 'WLC_Core_JWT' ) ) {
 
             list( $base64_header, $base64_payload, $base64_signature ) = $parts;
             $secret_key = self::get_secret_key();
+            if ( empty( $secret_key ) ) {
+                return false; // Fail safely — no secret configured
+            }
 
             $raw_expected_sig = hash_hmac( 'sha256', "{$base64_header}.{$base64_payload}", $secret_key, true );
             $expected_sig     = self::base64url_encode( $raw_expected_sig );

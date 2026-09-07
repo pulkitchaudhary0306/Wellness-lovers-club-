@@ -18,7 +18,7 @@ export async function GET() {
 
   return NextResponse.json({
     success: true,
-    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
+    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
     currency: "INR",
     amount: 29000,
     amount_paise: 2900000,

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import "./SplashScreen.css";
 
 export default function SplashScreen({ isFadingOut }) {
@@ -7,9 +8,14 @@ export default function SplashScreen({ isFadingOut }) {
     <div className={`splash-screen ${isFadingOut ? "fade-out" : ""}`}>
       <div className="splash-logo-container">
         <div className="splash-logo-wrapper">
-          <img loading="lazy" src="/logo/logo.webp"
+          <Image
+            src="/logo/logo.webp"
             alt="Wellness Lovers Club Logo"
-            className="splash-logo" />
+            width={440}
+            height={125}
+            priority
+            className="splash-logo"
+          />
           <div className="splash-shine"></div>
           <div className="splash-shine-secondary"></div>
         </div>

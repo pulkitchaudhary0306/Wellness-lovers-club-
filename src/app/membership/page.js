@@ -269,7 +269,7 @@ function RegisterPanel({ onSwitchToLogin }) {
         <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
           <input type="checkbox" {...register("agreeTerms")} style={{ accentColor: "#0f8554", width: 14, height: 14, marginTop: 1, cursor: "pointer", flexShrink: 0 }} />
           <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
-            I agree to the{" "}<Link href="#" style={{ color: "#0f8554", fontWeight: 600, textDecoration: "none" }}>Terms &amp; Conditions</Link>
+            I agree to the{" "}<Link href="/privacy-policy" style={{ color: "#0f8554", fontWeight: 600, textDecoration: "none" }}>Terms &amp; Conditions</Link>
           </span>
         </label>
         {errors.agreeTerms && <span style={{ fontSize: 10, color: "#f87171", marginLeft: 24 }}>{errors.agreeTerms.message}</span>}
@@ -347,16 +347,10 @@ function LoginPanel({ onSwitchToRegister }) {
 function MembershipContent() {
   const { isAuthenticated, user, logout } = useAuth();
   const searchParams = useSearchParams();
-  const queryTab = searchParams.get("tab");
-  const [activeTab, setActiveTab] = useState(queryTab === "login" ? "login" : "register");
-
-  useEffect(() => {
-    if (queryTab === "login") {
-      setActiveTab("login");
-    } else if (queryTab === "register") {
-      setActiveTab("register");
-    }
-  }, [queryTab]);
+  const queryTab = searchParams ? (searchParams.get("tab") || searchParams.get("action")) : null;
+  const [selectedTab, setSelectedTab] = useState(null);
+  const activeTab = selectedTab ?? (queryTab === "login" ? "login" : "register");
+  const setActiveTab = setSelectedTab;
 
   if (isAuthenticated) {
     return (

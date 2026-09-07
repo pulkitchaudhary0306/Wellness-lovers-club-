@@ -30,6 +30,49 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
         }
 
         /**
+         * Global Membership Card Configuration from WordPress Admin Options
+         *
+         * @return array
+         */
+        public static function get_global_card_config() {
+            $saved = get_option( 'wlc_membership_card_config', array() );
+            if ( ! is_array( $saved ) ) {
+                $saved = array();
+            }
+
+            $defaults = array(
+                'cardTitle'          => 'VIP Annual Membership',
+                'tierName'           => 'VIP Annual Membership',
+                'price'              => '₹29,000',
+                'validityText'       => '365 Days Access',
+                'mottoLines'         => array( 'NOURISH', 'RELAX', 'THRIVE' ),
+                'lifestyleText'      => 'WELLNESS IS A LIFESTYLE.',
+                'memberNameLabel'    => 'MEMBER NAME',
+                'membershipNoLabel'  => 'MEMBERSHIP NO.',
+                'validToLabel'       => 'VALID TO',
+                'backgroundImage'    => '/images/wlc-membership-card-bg.webp',
+                'downloadButtonText' => 'DOWNLOAD MEMBERSHIP CARD',
+                'downloadCaption'    => 'High-resolution printable digital membership card format (PNG).',
+                'benefits'           => array(
+                    'Exclusive Curated Experiences',
+                    'Priority Spa & Sanctuary Bookings',
+                    'Handpicked Luxury Stays',
+                    'Global Wellness Community Access',
+                ),
+                'terms'              => 'Valid for 1 year from activation. Non-transferable.',
+            );
+
+            $config = wp_parse_args( $saved, $defaults );
+
+            // Ensure mottoLines is a clean non-empty array
+            if ( empty( $config['mottoLines'] ) || ! is_array( $config['mottoLines'] ) ) {
+                $config['mottoLines'] = $defaults['mottoLines'];
+            }
+
+            return $config;
+        }
+
+        /**
          * Builds a normalized canonical membership card array for a given user ID
          *
          * @param int $user_id
@@ -41,6 +84,8 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
 
             $user = get_userdata( $user_id );
             if ( ! $user ) return false;
+
+            $card_config = self::get_global_card_config();
 
             // Canonical Metadata Resolution
             $membership_number = get_user_meta( $user_id, 'wlc_membership_number', true );
@@ -67,7 +112,7 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
                 $membership_tier = get_user_meta( $user_id, 'membership_tier', true );
             }
             if ( empty( $membership_tier ) ) {
-                $membership_tier = get_user_meta( $user_id, 'membershipTier', true ) ?: 'Lotus Club';
+                $membership_tier = get_user_meta( $user_id, 'membershipTier', true ) ?: ( $card_config['tierName'] ?? 'VIP Annual Membership' );
             }
 
             $start_date = get_user_meta( $user_id, 'wlc_membership_start_date', true );
@@ -120,6 +165,7 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
                 'profilePhoto'          => $profile_photo,
                 'cardIssueDate'         => $card_issue_date,
                 'cardExpiryDate'        => $card_expiry_date,
+                'cardConfig'            => $card_config,
             );
         }
 
@@ -144,6 +190,7 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
                 'membership_status'    => $card_data['membershipStatus'],
                 'membership_tier'      => $card_data['membershipTier'],
                 'membershipValidUntil' => $card_data['validUntil'],
+                'cardConfig'           => $card_data['cardConfig'] ?? self::get_global_card_config(),
             ) );
 
             return Wellness_API_Response::success( $user_data );
@@ -168,6 +215,7 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
             return Wellness_API_Response::success( array(
                 'success'        => true,
                 'membershipCard' => $card_data,
+                'cardConfig'     => $card_data['cardConfig'] ?? self::get_global_card_config(),
             ) );
         }
 

@@ -237,7 +237,8 @@ class WLC_Core_Emails {
      */
     public static function send_password_reset_success_email( $to, $name = 'Member' ) {
         $subject = 'Password Changed Successfully | Wellness Lovers Club';
-        $login_url = home_url( '/login' );
+        $frontend_url = defined( 'WLC_FRONTEND_URL' ) ? WLC_FRONTEND_URL : ( get_option( 'wlc_frontend_url' ) ?: 'https://wellnessloversclub.com' );
+        $login_url = rtrim( $frontend_url, '/' ) . '/login';
         $body = '
         <h2>Password Changed Successfully</h2>
         <p>Hello ' . esc_html( $name ) . ',</p>

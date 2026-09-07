@@ -13,16 +13,11 @@ import {
   Sparkles,
   ArrowRight,
   ArrowLeft,
-  RefreshCw,
-  Award,
   Crown,
   ChevronRight,
-  Compass,
-  HeartHandshake,
-  Sparkle,
-  BedDouble,
-  Flower2,
-  Users,
+  User,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { paymentService, loadRazorpayScript } from "@/services/paymentService";
@@ -30,9 +25,6 @@ import Link from "next/link";
 
 const STEPS = [
   { id: "welcome", label: "Welcome" },
-  { id: "membership", label: "Membership" },
-  { id: "benefits", label: "Benefits" },
-  { id: "review", label: "Review" },
   { id: "payment", label: "Payment" },
 ];
 
@@ -41,52 +33,75 @@ function MembershipEnrollmentContent() {
   const searchParams = useSearchParams();
   const { user, isAuthenticated } = useAuth();
 
-  const [currentStepIndex, setCurrentStepIndex] = useState(0); // 0: welcome, 1: membership, 2: benefits, 3: review, 4: payment, 5: success
-  const [customerEmail, setCustomerEmail] = useState("");
+  const [currentStepIndex, setCurrentStepIndex] = useState(0); // 0: Welcome, 1: Payment, 2: Success
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-
-  // Payment states
+  
   const [paymentLoading, setPaymentLoading] = useState(false);
-  const [paymentStatusText, setPaymentStatusText] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [paymentCancelled, setPaymentCancelled] = useState(false);
   const [verificationPending, setVerificationPending] = useState(false);
+  const [paymentStatusText, setPaymentStatusText] = useState("");
   const [successDetails, setSuccessDetails] = useState(null);
 
-  // Initialize customer & pre-load Razorpay SDK
+  // Initialize & pre-load Razorpay SDK
   useEffect(() => {
     loadRazorpayScript().catch(() => {});
+  }, []);
 
-    let regEmail = "";
-    let regName = "";
-    let regPhone = "";
+  // Hydrate user and session details
+  useEffect(() => {
+    const paramEmail = searchParams?.get("email") || searchParams?.get("identifier") || "";
+    const paramName = searchParams?.get("name") || "";
+    const paramPhone = searchParams?.get("phone") || "";
+    const paramStep = searchParams?.get("step");
 
-    if (typeof window !== "undefined") {
-      regEmail = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email") || "";
-      regName = sessionStorage.getItem("wlc_reg_name") || localStorage.getItem("wlc_reg_name") || "";
-      regPhone = sessionStorage.getItem("wlc_reg_phone") || localStorage.getItem("wlc_reg_phone") || "";
+    if (paramStep) {
+      if (paramStep.toLowerCase() === "payment" || paramStep === "1") {
+        setCurrentStepIndex(1);
+      } else {
+        setCurrentStepIndex(0);
+      }
     }
 
-    const emailParam = searchParams.get("email") || "";
-    const activeEmail = emailParam || regEmail || user?.email || "";
-    const activeName = regName || user?.name || user?.firstName || "Valued Member";
-    const activePhone = regPhone || user?.phone || "";
+    let storedEmail = "";
+    let storedName = "";
+    let storedPhone = "";
+    if (typeof window !== "undefined") {
+      storedEmail = sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email") || "";
+      storedName = sessionStorage.getItem("wlc_reg_name") || localStorage.getItem("wlc_reg_name") || "";
+      storedPhone = sessionStorage.getItem("wlc_reg_phone") || localStorage.getItem("wlc_reg_phone") || "";
+    }
 
-    setCustomerEmail(activeEmail);
-    setCustomerName(activeName);
-    setCustomerPhone(activePhone);
+    const resolvedEmail = paramEmail || user?.email || storedEmail || "";
+    const resolvedName =
+      paramName ||
+      user?.name ||
+      user?.displayName ||
+      (user?.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "") ||
+      storedName ||
+      "";
+    const resolvedPhone = paramPhone || user?.phone || storedPhone || "";
+
+    if (resolvedEmail) setCustomerEmail(resolvedEmail);
+    if (resolvedName) setCustomerName(resolvedName);
+    if (resolvedPhone) setCustomerPhone(resolvedPhone);
   }, [user, searchParams]);
 
   // Step transitions
   const nextStep = () => {
-    setCurrentStepIndex((prev) => Math.min(prev + 1, 4));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentStepIndex(1);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const prevStep = () => {
-    setCurrentStepIndex((prev) => Math.max(prev - 1, 0));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentStepIndex(0);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   // Razorpay Checkout Trigger
@@ -100,17 +115,26 @@ function MembershipEnrollmentContent() {
 
     try {
       const sdkReady = await loadRazorpayScript();
-      if (!sdkReady || typeof window === "undefined" || !window.Razorpay) {
+      if (!sdkReady || typeof window === "undefined" || !(window).Razorpay) {
         throw new Error("Unable to initialize secure payment window. Please check your internet connection.");
       }
 
       setPaymentStatusText("Connecting to Club Gateway…");
-      const orderData = await paymentService.createOrder(customerEmail);
+      const activeEmail = customerEmail || (typeof window !== "undefined" ? (sessionStorage.getItem("wlc_reg_email") || localStorage.getItem("wlc_reg_email")) : "") || "";
+      const activeName = customerName || (typeof window !== "undefined" ? (sessionStorage.getItem("wlc_reg_name") || localStorage.getItem("wlc_reg_name")) : "") || "Valued Member";
+      const activePhone = customerPhone || (typeof window !== "undefined" ? (sessionStorage.getItem("wlc_reg_phone") || localStorage.getItem("wlc_reg_phone")) : "") || "";
+
+      const orderData = await paymentService.createOrder({
+        email: activeEmail,
+        name: activeName,
+        phone: activePhone,
+      });
+
       if (!orderData) {
         throw new Error("Unable to create payment order. Please refresh and try again.");
       }
 
-      const activeKeyId = orderData.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH";
+      const activeKeyId = orderData.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
       const razorpayOrderId = orderData.razorpay_order_id || "";
 
       setPaymentStatusText("Opening Secure Payment…");
@@ -122,25 +146,18 @@ function MembershipEnrollmentContent() {
         name: "Wellness Lovers Club",
         description: "VIP Annual Membership Pass",
         image: "/logo/logo.webp",
-        order_id: razorpayOrderId && razorpayOrderId.startsWith("order_") && razorpayOrderId.length > 15
-          ? razorpayOrderId
-          : undefined,
+        order_id:
+          razorpayOrderId && razorpayOrderId.startsWith("order_") && razorpayOrderId.length > 15
+            ? razorpayOrderId
+            : undefined,
         prefill: {
-          name: orderData.customer?.name || customerName,
-          email: orderData.customer?.email || customerEmail,
-          contact: orderData.customer?.contact || customerPhone,
+          name: orderData.customer?.name || activeName,
+          email: orderData.customer?.email || activeEmail,
+          contact: orderData.customer?.contact || activePhone,
         },
         theme: {
           color: "#0f8554",
           backdrop_color: "rgba(8, 12, 9, 0.9)",
-        },
-        config: {
-          display: {
-            hide: [
-              { method: "emi" },
-              { method: "paylater" },
-            ],
-          },
         },
         modal: {
           ondismiss: () => {
@@ -160,12 +177,21 @@ function MembershipEnrollmentContent() {
               razorpay_order_id: response.razorpay_order_id || orderData.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature || "",
-              email: orderData.customer?.email || customerEmail,
-              name: orderData.customer?.name || customerName,
+              email: activeEmail || orderData.customer?.email,
+              name: activeName || orderData.customer?.name,
             });
 
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem("wlc_membership_status", "Active");
+              localStorage.setItem("wlc_membership_status", "Active");
+              if (verifyRes.membership_id) {
+                sessionStorage.setItem("wlc_membership_id", verifyRes.membership_id);
+                localStorage.setItem("wlc_membership_id", verifyRes.membership_id);
+              }
+            }
+
             setSuccessDetails(verifyRes);
-            setCurrentStepIndex(5); // Step 5 = Confirmed state
+            setCurrentStepIndex(2); // Step 2 = Confirmed state
           } catch (err) {
             setVerificationPending(true);
             setPaymentError(err?.message || "We're securely confirming your membership. Please wait.");
@@ -175,10 +201,11 @@ function MembershipEnrollmentContent() {
         },
       };
 
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", () => {
+      const rzp = new (window).Razorpay(options);
+      rzp.on("payment.failed", (resp) => {
         setPaymentLoading(false);
-        setPaymentError("Your payment could not be completed. No membership activation has been made.");
+        const errMsg = resp?.error?.description || "Your payment could not be completed. No membership activation has been made.";
+        setPaymentError(errMsg);
       });
 
       rzp.open();
@@ -189,9 +216,9 @@ function MembershipEnrollmentContent() {
   };
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // SUCCESS / MEMBERSHIP CONFIRMED SCREEN (Step 5)
+  // SUCCESS / MEMBERSHIP CONFIRMED SCREEN (Step 2)
   // ─────────────────────────────────────────────────────────────────────────────
-  if (currentStepIndex === 5 && successDetails) {
+  if (currentStepIndex === 2 && successDetails) {
     return (
       <div style={{ minHeight: "100vh", background: "#070c09", color: "#ffffff", padding: "120px 20px 80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <motion.div
@@ -256,13 +283,13 @@ function MembershipEnrollmentContent() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Membership ID</span>
               <strong style={{ color: "#4ade80", letterSpacing: "0.06em", fontFamily: "monospace", fontSize: "14px" }}>
-                {successDetails.membership_id || "Pending Allocation"}
+                {successDetails.membership_id || "Active Member"}
               </strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Invoice Reference</span>
+              <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Payment Reference</span>
               <span style={{ color: "rgba(255, 255, 255, 0.9)", fontFamily: "monospace" }}>
-                {successDetails.invoice_number || "Processing..."}
+                {successDetails.razorpay_payment_id || successDetails.order_id || "Confirmed"}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -275,7 +302,7 @@ function MembershipEnrollmentContent() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>Status</span>
-              <span style={{ color: "#4ade80", fontWeight: "600" }}>Active (365 Days)</span>
+              <span style={{ color: "#4ade80", fontWeight: "600" }}>Active (365 Days Access)</span>
             </div>
           </div>
 
@@ -298,7 +325,7 @@ function MembershipEnrollmentContent() {
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
           >
-            <span>Enter Your Club</span>
+            <span>Enter Your Club Dashboard</span>
             <ArrowRight size={18} />
           </Link>
         </motion.div>
@@ -307,7 +334,7 @@ function MembershipEnrollmentContent() {
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // MAIN MULTI-STEP ONBOARDING SHELL
+  // MAIN ONBOARDING SHELL (Welcome -> Direct Payment)
   // ─────────────────────────────────────────────────────────────────────────────
   return (
     <div style={{ minHeight: "100vh", background: "#080c09", color: "#ffffff", padding: "100px 20px 80px", position: "relative", overflow: "hidden" }}>
@@ -316,16 +343,25 @@ function MembershipEnrollmentContent() {
 
       <div style={{ maxWidth: "1080px", margin: "0 auto", position: "relative", zIndex: 1 }}>
         
-        {/* Subtle Progress Bar */}
-        <div style={{ marginBottom: "3rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {/* Desktop Steps */}
-          <div className="enroll-progress-desktop" style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+        {/* Progress Bar (2-step: Welcome -> Payment) */}
+        <div style={{ marginBottom: "2.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             {STEPS.map((step, idx) => {
               const isActive = idx === currentStepIndex;
               const isPast = idx < currentStepIndex;
               return (
                 <React.Fragment key={step.id}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div
+                    onClick={() => {
+                      if (idx < currentStepIndex) setCurrentStepIndex(idx);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      cursor: idx < currentStepIndex ? "pointer" : "default",
+                    }}
+                  >
                     <div
                       style={{
                         width: 26,
@@ -363,20 +399,13 @@ function MembershipEnrollmentContent() {
               );
             })}
           </div>
-
-          {/* Mobile Progress Pill */}
-          <div className="enroll-progress-mobile" style={{ display: "none" }}>
-            <div style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", padding: "6px 16px", borderRadius: "30px", fontSize: "11px", color: "#bca374", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Step {currentStepIndex + 1} of 5 • {STEPS[currentStepIndex]?.label}
-            </div>
-          </div>
         </div>
 
         {/* Dynamic Step Content */}
         <AnimatePresence mode="wait">
           
           {/* ─────────────────────────────────────────────────────────────
-              STEP 0: WELCOME SCREEN
+              STEP 0: WELCOME & MEMBERSHIP OVERVIEW SCREEN
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 0 && (
             <motion.div
@@ -397,7 +426,7 @@ function MembershipEnrollmentContent() {
                 {/* Hero Visual Banner */}
                 <div
                   style={{
-                    minHeight: "380px",
+                    minHeight: "420px",
                     backgroundImage: "url('/images/buddha-bg.webp')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -410,7 +439,7 @@ function MembershipEnrollmentContent() {
                       Curated Sanctuary
                     </span>
                     <h3 style={{ fontFamily: "Georgia, serif", fontSize: "24px", color: "#fff", margin: "6px 0 0" }}>
-                      Elevated Wellbeing
+                      VIP Annual Membership
                     </h3>
                   </div>
                 </div>
@@ -422,17 +451,26 @@ function MembershipEnrollmentContent() {
                     <span>VIP Enrollment</span>
                   </div>
 
-                  <h1 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(28px, 3.5vw, 38px)", fontWeight: "700", color: "#ffffff", lineHeight: 1.15, margin: "0 0 1rem" }}>
+                  <h1 style={{ fontFamily: "Georgia, serif", fontSize: "clamp(28px, 3.5vw, 36px)", fontWeight: "700", color: "#ffffff", lineHeight: 1.15, margin: "0 0 1rem" }}>
                     Welcome to Wellness Lovers Club
                   </h1>
 
-                  <p style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.7, margin: "0 0 1.5rem" }}>
-                    Your journey toward elevated wellness begins here. You have completed email verification, and your bespoke VIP membership dossier is ready for activation.
+                  <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6, margin: "0 0 1.5rem" }}>
+                    Your bespoke VIP membership dossier is ready. Activate your pass to unlock 365 days of private wellness retreats, luxury stays, spa treatments, and bespoke club privileges.
                   </p>
 
-                  <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "12px 16px", marginBottom: "2.5rem", display: "flex", alignItems: "center", gap: 10 }}>
-                    <Sparkles size={18} color="#bca374" style={{ flexShrink: 0 }} />
-                    <span style={{ fontSize: "13px", color: "#e6dfd5" }}>Your VIP Annual Membership awaits.</span>
+                  <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(188, 163, 116, 0.3)", borderRadius: "14px", padding: "16px 20px", marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontSize: "11px", color: "#bca374", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                        Annual VIP Pass
+                      </div>
+                      <div style={{ fontSize: "26px", fontWeight: "800", color: "#fff", letterSpacing: "-0.02em", marginTop: 2 }}>
+                        ₹29,000
+                      </div>
+                    </div>
+                    <div style={{ fontSize: "11px", background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.4)", color: "#4ade80", padding: "6px 12px", borderRadius: "8px", fontWeight: "600" }}>
+                      All-Inclusive
+                    </div>
                   </div>
 
                   <button
@@ -443,8 +481,8 @@ function MembershipEnrollmentContent() {
                       color: "#ffffff",
                       border: "none",
                       borderRadius: "12px",
-                      padding: "16px 28px",
-                      fontSize: "14px",
+                      padding: "18px 28px",
+                      fontSize: "15px",
                       fontWeight: "700",
                       cursor: "pointer",
                       display: "flex",
@@ -455,8 +493,8 @@ function MembershipEnrollmentContent() {
                       transition: "transform 0.2s ease",
                     }}
                   >
-                    <span>Discover Your Membership</span>
-                    <ArrowRight size={16} />
+                    <span>Proceed to Secure Payment</span>
+                    <ArrowRight size={18} />
                   </button>
                 </div>
               </div>
@@ -464,327 +502,9 @@ function MembershipEnrollmentContent() {
           )}
 
           {/* ─────────────────────────────────────────────────────────────
-              STEP 1: DISCOVER YOUR MEMBERSHIP
+              STEP 1: SECURE PAYMENT SCREEN (Direct from Welcome)
               ───────────────────────────────────────────────────────────── */}
           {currentStepIndex === 1 && (
-            <motion.div
-              key="step-membership"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "24px",
-                padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", color: "#bca374", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                  Membership Architecture
-                </span>
-                <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
-                  A Membership Designed Around You
-                </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
-                  Wellness Lovers Club grants private access to curated wellness experiences, world-class resort sanctuaries, and bespoke privileges.
-                </p>
-              </div>
-
-              {/* Large Premium Card */}
-              <div
-                style={{
-                  maxWidth: "520px",
-                  margin: "0 auto 3rem",
-                  background: "linear-gradient(135deg, rgba(20, 32, 24, 0.95) 0%, rgba(10, 16, 12, 0.95) 100%)",
-                  border: "1px solid rgba(188, 163, 116, 0.5)",
-                  borderRadius: "20px",
-                  padding: "2.5rem",
-                  boxShadow: "0 20px 50px rgba(0,0,0,0.5), inset 0 0 30px rgba(188, 163, 116, 0.08)",
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(188, 163, 116, 0.15)", border: "1px solid #bca374", padding: "4px 12px", borderRadius: "20px", fontSize: "11px", color: "#bca374", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1.25rem" }}>
-                  <Crown size={12} />
-                  <span>VIP Member</span>
-                </div>
-
-                <h3 style={{ fontFamily: "Georgia, serif", fontSize: "26px", color: "#fff", margin: "0 0 6px" }}>
-                  Annual VIP Membership
-                </h3>
-                <p style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.5rem" }}>
-                  365 Days of Unrestricted Privileges
-                </p>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", textAlign: "left", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "12px", padding: "1.25rem", marginBottom: "2rem" }}>
-                  {["Exclusive Curated Experiences", "Priority Spa & Sanctuary Bookings", "Handpicked Luxury Stays", "Global Wellness Community Access"].map((item, idx) => (
-                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <CheckCircle2 size={15} color="#4ade80" style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: "13px", color: "#e6dfd5" }}>{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "1.5rem" }}>
-                  <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
-                    Annual Membership
-                  </div>
-                  <div style={{ fontSize: "38px", fontWeight: "800", color: "#ffffff", letterSpacing: "-0.02em" }}>
-                    ₹29,000
-                  </div>
-                </div>
-              </div>
-
-              {/* Step Actions */}
-              <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  style={{ background: "#0f8554", color: "#ffffff", border: "none", padding: "14px 32px", borderRadius: "10px", fontWeight: "700", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 10px 25px rgba(15, 133, 84, 0.35)" }}
-                >
-                  <span>Explore Your Benefits</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ─────────────────────────────────────────────────────────────
-              STEP 2: MEMBERSHIP BENEFITS
-              ───────────────────────────────────────────────────────────── */}
-          {currentStepIndex === 2 && (
-            <motion.div
-              key="step-benefits"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "24px",
-                padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 3rem" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", color: "#bca374", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                  Curated Suite
-                </span>
-                <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
-                  Membership Privileges
-                </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
-                  Every benefit is meticulously crafted to support a lifestyle of vitality, mindful balance, and tranquil restoration.
-                </p>
-              </div>
-
-              {/* 6 Editorial Benefit Cards */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "3rem" }}>
-                {[
-                  {
-                    icon: <Sparkle size={20} color="#4ade80" />,
-                    title: "Curated Wellness",
-                    desc: "Access thoughtfully selected wellness experiences designed to support a balanced, restorative lifestyle.",
-                  },
-                  {
-                    icon: <BedDouble size={20} color="#bca374" />,
-                    title: "Luxury Stays",
-                    desc: "Discover premium hospitality, private suites, and handpicked wellness partner destinations.",
-                  },
-                  {
-                    icon: <Flower2 size={20} color="#4ade80" />,
-                    title: "Spa & Healing",
-                    desc: "Explore restorative spa therapies, thermal baths, and holistic healing sanctuaries with VIP booking privileges.",
-                  },
-                  {
-                    icon: <Compass size={20} color="#bca374" />,
-                    title: "Retreats & Destinations",
-                    desc: "Preferential access to transformative mindfulness retreats and immersive longevity programs.",
-                  },
-                  {
-                    icon: <Award size={20} color="#4ade80" />,
-                    title: "Exclusive Privileges",
-                    desc: "Enjoy preferential club rates, personalized concierge booking assistance, and bespoke amenities.",
-                  },
-                  {
-                    icon: <Users size={20} color="#bca374" />,
-                    title: "Global Community",
-                    desc: "Connect with like-minded wellness connoisseurs committed to health, vitality, and mindful living.",
-                  },
-                ].map((card, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      background: "rgba(255, 255, 255, 0.02)",
-                      border: "1px solid rgba(255, 255, 255, 0.07)",
-                      borderRadius: "16px",
-                      padding: "1.75rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "12px",
-                      transition: "transform 0.2s, border-color 0.2s",
-                    }}
-                  >
-                    <div style={{ width: 40, height: 40, borderRadius: "10px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {card.icon}
-                    </div>
-                    <h4 style={{ fontSize: "16px", fontWeight: "700", color: "#fff", margin: 0 }}>
-                      {card.title}
-                    </h4>
-                    <p style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.6)", lineHeight: 1.5, margin: 0 }}>
-                      {card.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Step Actions */}
-              <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  style={{ background: "#0f8554", color: "#ffffff", border: "none", padding: "14px 32px", borderRadius: "10px", fontWeight: "700", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 10px 25px rgba(15, 133, 84, 0.35)" }}
-                >
-                  <span>Continue to Membership Review</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ─────────────────────────────────────────────────────────────
-              STEP 3: MEMBERSHIP REVIEW
-              ───────────────────────────────────────────────────────────── */}
-          {currentStepIndex === 3 && (
-            <motion.div
-              key="step-review"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                background: "linear-gradient(180deg, #111a14 0%, #0a0f0c 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "24px",
-                padding: "3.5rem 3rem",
-                boxShadow: "0 25px 70px rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", color: "#bca374", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                  Confirmation
-                </span>
-                <h2 style={{ fontFamily: "Georgia, serif", fontSize: "34px", color: "#fff", margin: "8px 0 12px" }}>
-                  Almost There
-                </h2>
-                <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", lineHeight: 1.6 }}>
-                  Review your membership summary before completing your enrollment.
-                </p>
-              </div>
-
-              {/* Review Summary Card */}
-              <div
-                style={{
-                  maxWidth: "560px",
-                  margin: "0 auto 3rem",
-                  background: "rgba(255, 255, 255, 0.02)",
-                  border: "1px solid rgba(188, 163, 116, 0.4)",
-                  borderRadius: "20px",
-                  padding: "2rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <div>
-                  <span style={{ fontSize: "10px", color: "#bca374", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    Selected Tier
-                  </span>
-                  <div style={{ fontSize: "20px", fontWeight: "700", color: "#fff", marginTop: 4 }}>
-                    VIP Annual Membership
-                  </div>
-                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.5)", marginTop: 2 }}>
-                    365 Days of Comprehensive Access
-                  </div>
-                </div>
-
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem" }}>
-                  <span style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.4)", fontWeight: "600", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Registered Member
-                  </span>
-                  <div style={{ fontSize: "14px", fontWeight: "600", color: "#fff", marginTop: 4 }}>
-                    {customerName || "Valued Member"}
-                  </div>
-                  <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.6)", marginTop: 2 }}>
-                    {customerEmail}
-                  </div>
-                </div>
-
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                      Amount Payable
-                    </span>
-                    <div style={{ fontSize: "32px", fontWeight: "800", color: "#fff", letterSpacing: "-0.02em" }}>
-                      ₹29,000
-                    </div>
-                  </div>
-                  <div style={{ fontSize: "11px", background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.4)", color: "#4ade80", padding: "6px 12px", borderRadius: "8px", fontWeight: "600" }}>
-                    Annual Membership
-                  </div>
-                </div>
-
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "1rem", display: "flex", alignItems: "center", gap: 8, fontSize: "12px", color: "rgba(255, 255, 255, 0.45)" }}>
-                  <Lock size={14} color="#4ade80" />
-                  <span>Secure 256-bit encrypted transaction powered by Razorpay.</span>
-                </div>
-              </div>
-
-              {/* Step Actions */}
-              <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#ffffff", padding: "14px 24px", borderRadius: "10px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
-                >
-                  <ArrowLeft size={16} />
-                  <span>Back</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  style={{ background: "#0f8554", color: "#ffffff", border: "none", padding: "14px 32px", borderRadius: "10px", fontWeight: "700", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 10px 25px rgba(15, 133, 84, 0.35)" }}
-                >
-                  <span>Continue to Secure Payment</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ─────────────────────────────────────────────────────────────
-              STEP 4: SECURE PAYMENT SCREEN
-              ───────────────────────────────────────────────────────────── */}
-          {currentStepIndex === 4 && (
             <motion.div
               key="step-payment"
               initial={{ opacity: 0, y: 15 }}
@@ -801,7 +521,7 @@ function MembershipEnrollmentContent() {
                 margin: "0 auto",
               }}
             >
-              <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+              <div style={{ textAlign: "center", marginBottom: "2rem" }}>
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(15, 133, 84, 0.15)", border: "1px solid rgba(15, 133, 84, 0.35)", borderRadius: "30px", padding: "5px 14px", fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", color: "#4ade80", textTransform: "uppercase", marginBottom: "1rem" }}>
                   <Lock size={12} />
                   <span>Secure Payment</span>
@@ -810,7 +530,7 @@ function MembershipEnrollmentContent() {
                   Complete Your Membership
                 </h2>
                 <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.65)", margin: 0 }}>
-                  Secure your place in the Wellness Lovers Club.
+                  Confirm your details and proceed to secure Razorpay checkout.
                 </p>
               </div>
 
@@ -822,7 +542,7 @@ function MembershipEnrollmentContent() {
                   borderRadius: "16px",
                   padding: "1.75rem",
                   textAlign: "center",
-                  marginBottom: "2rem",
+                  marginBottom: "1.75rem",
                 }}
               >
                 <div style={{ fontSize: "11px", color: "#bca374", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "700", marginBottom: 6 }}>
@@ -832,7 +552,78 @@ function MembershipEnrollmentContent() {
                   ₹29,000
                 </div>
                 <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
-                  Final membership amount (All-inclusive)
+                  Final membership amount (All-inclusive, 365 Days Access)
+                </div>
+              </div>
+
+              {/* Member Details Review Box */}
+              <div
+                style={{
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: "1px solid rgba(188, 163, 116, 0.25)",
+                  borderRadius: "14px",
+                  padding: "1.25rem 1.5rem",
+                  marginBottom: "1.75rem",
+                }}
+              >
+                <span style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.4)", fontWeight: "600", letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: "10px" }}>
+                  Member Contact Details
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <User size={14} color="#bca374" style={{ flexShrink: 0 }} />
+                    <input
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="Full Name"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "6px",
+                        padding: "6px 10px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        flex: 1,
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <Mail size={14} color="#bca374" style={{ flexShrink: 0 }} />
+                    <input
+                      type="email"
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="Email Address"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "6px",
+                        padding: "6px 10px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        flex: 1,
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <Phone size={14} color="#bca374" style={{ flexShrink: 0 }} />
+                    <input
+                      type="tel"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="Mobile Number"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "6px",
+                        padding: "6px 10px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        flex: 1,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -842,7 +633,7 @@ function MembershipEnrollmentContent() {
                   <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 2 }} />
                   <div>
                     <div style={{ fontWeight: "700", marginBottom: 2 }}>
-                      {verificationPending ? "We're Confirming Your Payment" : "Payment Unsuccessful"}
+                      {verificationPending ? "We're Confirming Your Payment" : "Payment Notice"}
                     </div>
                     <div>{paymentError}</div>
                   </div>
@@ -853,8 +644,8 @@ function MembershipEnrollmentContent() {
                 <div style={{ background: "rgba(234, 179, 8, 0.12)", border: "1px solid rgba(234, 179, 8, 0.35)", borderRadius: "12px", padding: "14px 18px", marginBottom: "1.5rem", color: "#fde047", fontSize: "13px", display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 2 }} />
                   <div>
-                    <div style={{ fontWeight: "700", marginBottom: 2 }}>Payment Cancelled</div>
-                    <div>No payment was completed. You can try again whenever you&apos;re ready.</div>
+                    <div style={{ fontWeight: "700", marginBottom: 2 }}>Payment Window Dismissed</div>
+                    <div>No transaction was completed. Click below whenever you are ready to proceed.</div>
                   </div>
                 </div>
               )}
@@ -880,7 +671,7 @@ function MembershipEnrollmentContent() {
                   justifyContent: "center",
                   gap: 10,
                   boxShadow: "0 12px 30px rgba(15, 133, 84, 0.4)",
-                  marginBottom: "1.75rem",
+                  marginBottom: "1.5rem",
                   transition: "background 0.2s, transform 0.1s",
                 }}
               >
@@ -892,7 +683,7 @@ function MembershipEnrollmentContent() {
                 ) : (
                   <>
                     <Lock size={18} />
-                    <span>Pay ₹29,000</span>
+                    <span>Pay ₹29,000 via Razorpay</span>
                     <ChevronRight size={20} />
                   </>
                 )}
@@ -906,14 +697,14 @@ function MembershipEnrollmentContent() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <CreditCard size={14} color="#4ade80" />
-                  <span>Razorpay Direct Gateway</span>
+                  <span>Razorpay Official Gateway</span>
                 </div>
                 <div style={{ color: "rgba(255, 255, 255, 0.35)" }}>
                   UPI • Cards • Net Banking • Wallets
                 </div>
               </div>
 
-              {/* Back to review option */}
+              {/* Back to Welcome option */}
               <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
                 <button
                   type="button"
@@ -921,7 +712,7 @@ function MembershipEnrollmentContent() {
                   disabled={paymentLoading}
                   style={{ background: "none", border: "none", color: "rgba(255, 255, 255, 0.5)", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
                 >
-                  ← Back to Membership Review
+                  ← Back to Welcome Overview
                 </button>
               </div>
             </motion.div>
@@ -933,11 +724,6 @@ function MembershipEnrollmentContent() {
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        @media (max-width: 768px) {
-          .enroll-progress-desktop { display: none !important; }
-          .enroll-progress-mobile { display: block !important; }
-        }
       `}</style>
     </div>
   );

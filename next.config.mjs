@@ -6,7 +6,7 @@ const nextConfig = {
         // Allow images from your WordPress site (avatars, featured images, etc.)
         // Update 'hostname' to match your actual WordPress domain.
         protocol: "https",
-        hostname: "your-wordpress-site.com",
+        hostname: "cms.wellnessloversclub.com",
         pathname: "/wp-content/uploads/**",
       },
       {
@@ -15,6 +15,15 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
+  },
+  async rewrites() {
+    const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://cms.wellnessloversclub.com").replace(/\/$/, "");
+    return [
+      {
+        source: "/wp-json/:path*",
+        destination: `${wpBase}/wp-json/:path*`,
+      },
+    ];
   },
   async redirects() {
     return [

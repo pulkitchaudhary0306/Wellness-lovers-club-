@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import "./Header.css";
@@ -51,10 +52,13 @@ function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Automatically close menu when path changes
+  // Close menus when route changes
   useEffect(() => {
-    setIsMenuOpen(false);
-    setIsUserDropdownOpen(false);
+    const timer = setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsUserDropdownOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   // Close menu when resizing to desktop layout
@@ -74,10 +78,12 @@ function Header() {
     <header className="site-header">
       <div className="logo-section">
         <Link href="/" onClick={closeMenu}>
-          <img
-            loading="lazy"
+          <Image
             src="/logo/logo.webp"
             alt="Wellness Lovers Club Logo"
+            width={220}
+            height={220}
+            priority
             className="site-logo"
           />
         </Link>

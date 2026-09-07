@@ -226,11 +226,11 @@ export default function HomePage() {
           </Link>
  
           {/* Card 3 */}
-          <Link href="/contact" className="offering-card" style={{ textDecoration: "none" }}>
+          <Link href="/offerings/products" className="offering-card" style={{ textDecoration: "none" }}>
             <div className="offering-image-wrapper">
               <Image
-                src="/images/community-experiences-lounge.webp"
-                alt="Exclusive Community Experiences"
+                src="/images/products/pemf-crystal-mat.webp"
+                alt="Products"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="offering-img"
@@ -242,9 +242,9 @@ export default function HomePage() {
               </div>
             </div>
             <div className="offering-info">
-              <h3 className="offering-title">Exclusive Community Experiences</h3>
+              <h3 className="offering-title">Products</h3>
               <p className="offering-desc">
-                Meaningful connections that inspire growth, collaboration and conscious living.
+                Curated bio-frequency devices, quantum wellness technologies, and cellular rejuvenation systems.
               </p>
             </div>
           </Link>

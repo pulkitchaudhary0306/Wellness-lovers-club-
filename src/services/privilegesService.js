@@ -1,19 +1,15 @@
-import { PARTNERS_DATA, getPartnerBySlug, getAllPartners } from "@/data/partnerOffers";
-
-const API_URL = process.env.NEXT_PUBLIC_WP_API_URL || "https://cms.wellnessloversclub.com/wp-json";
+import { getPartnerBySlug, getAllPartners } from "@/data/partnerOffers";
+import { wpGet } from "@/lib/wpFetch";
 
 /**
  * Service to fetch member privileges and partner-specific offers
  */
 export async function fetchAllPartners() {
   try {
-    const res = await fetch(`${API_URL}/custom/v1/privileges`, {
-      next: { revalidate: 300 }
-    });
-    if (!res.ok) {
-      return getAllPartners();
-    }
-    const data = await res.json();
+    const data = await wpGet(
+      "/wp-json/custom/v1/privileges",
+      { unauthenticated: true }
+    );
     if (data && data.success && Array.isArray(data.partners)) {
       return data.partners;
     }
@@ -32,13 +28,10 @@ export async function fetchPartnerBySlug(slug) {
   const localPartner = getPartnerBySlug(slug);
 
   try {
-    const res = await fetch(`${API_URL}/custom/v1/privileges?partner=${encodeURIComponent(slug)}`, {
-      next: { revalidate: 300 }
-    });
-    if (!res.ok) {
-      return localPartner;
-    }
-    const data = await res.json();
+    const data = await wpGet(
+      `/wp-json/custom/v1/privileges?partner=${encodeURIComponent(slug)}`,
+      { unauthenticated: true }
+    );
     if (data && data.success && data.partner) {
       return data.partner;
     }

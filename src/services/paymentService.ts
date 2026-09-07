@@ -105,7 +105,7 @@ export const paymentService = {
       if (res.ok) {
         const payload = await res.json();
         return {
-          key_id: payload.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
+          key_id: payload.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
           currency: payload.currency || "INR",
           amount: payload.amount || 29000,
           amount_paise: payload.amount_paise || 2900000,
@@ -119,7 +119,7 @@ export const paymentService = {
     }
 
     return {
-      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH",
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
       currency: "INR",
       amount: 29000,
       amount_paise: 2900000,
@@ -186,7 +186,7 @@ export const paymentService = {
 
     const payload: RazorpayOrderResponse = json.data || json;
     if (!payload.key_id) {
-      payload.key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_TR9Dw0VTSvX6yH";
+      payload.key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "";
     }
 
     return payload;

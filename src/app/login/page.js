@@ -10,17 +10,21 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Loader2, Award, ArrowRight, Check } from "lucide-react";
 
 const loginSchema = z.object({
-  usernameOrEmail: z.string().min(1, "Username or Email is required"),
-  password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
+  usernameOrEmail: z.string().trim().min(1, "Email Address or Username is required"),
+  password: z.string().min(1, "Password is required"),
   rememberMe: z.boolean().default(false),
 });
 
-function PasswordInput({ error, ...rest }) {
+function PasswordInput({ id = "password-input", error, ...rest }) {
   const [show, setShow] = useState(false);
   return (
     <div style={{ position: "relative" }}>
       <input
+        id={id}
         type={show ? "text" : "password"}
+        autoComplete="current-password"
+        aria-invalid={error ? "true" : "false"}
+        aria-describedby={error ? `${id}-error` : undefined}
         style={{
           width: "100%", background: "transparent", border: "none",
           borderBottom: error ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)",
@@ -34,6 +38,8 @@ function PasswordInput({ error, ...rest }) {
       <button
         type="button"
         onClick={() => setShow(v => !v)}
+        aria-label={show ? "Hide password" : "Show password"}
+        title={show ? "Hide password" : "Show password"}
         style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", padding: 2 }}
       >
         {show ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -42,17 +48,25 @@ function PasswordInput({ error, ...rest }) {
   );
 }
 
-function FieldInput({ label, error, type = "text", ...rest }) {
+function FieldInput({ id, label, error, type = "text", autoComplete, ...rest }) {
+  const inputId = id || (type === "password" ? "password-input" : "username-input");
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <label style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+      <label
+        htmlFor={inputId}
+        style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.06em", cursor: "pointer" }}
+      >
         {label}
       </label>
       {type === "password" ? (
-        <PasswordInput error={error} {...rest} />
+        <PasswordInput id={inputId} error={error} {...rest} />
       ) : (
         <input
+          id={inputId}
           type={type}
+          autoComplete={autoComplete || "username"}
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={error ? `${inputId}-error` : undefined}
           style={{
             width: "100%", background: "transparent", border: "none",
             borderBottom: error ? "1.5px solid #f87171" : "1.25px solid rgba(255,255,255,0.2)",
@@ -64,7 +78,11 @@ function FieldInput({ label, error, type = "text", ...rest }) {
           {...rest}
         />
       )}
-      {error && <span style={{ fontSize: 10, color: "#f87171" }}>{error}</span>}
+      {error && (
+        <span id={`${inputId}-error`} role="alert" style={{ fontSize: 10, color: "#f87171" }}>
+          {error}
+        </span>
+      )}
     </div>
   );
 }
@@ -81,21 +99,63 @@ export default function LoginPage() {
   });
 
   const onPasswordSubmit = async (data) => {
+    if (isLoading) return;
     setIsLoading(true);
     setApiError("");
     try {
-      await login(data.usernameOrEmail, data.password, data.rememberMe);
+      const identifier = (data.usernameOrEmail || "").trim();
+      const pwd = data.password || "";
+      if (!identifier || !pwd) {
+        setApiError("Please enter your email or username and password.");
+        setIsLoading(false);
+        return;
+      }
+
+      await login(identifier, pwd, data.rememberMe);
       router.push("/dashboard");
     } catch (err) {
       if (err?.code === "email_not_verified" || err?.code === "phone_not_verified" || err?.code === "EMAIL_NOT_VERIFIED") {
-        const unverifiedEmail = err?.email || (data.usernameOrEmail.includes("@") ? data.usernameOrEmail : "");
+        const unverifiedEmail = err?.email || (data.usernameOrEmail.includes("@") ? data.usernameOrEmail.trim() : "");
         if (typeof window !== "undefined" && unverifiedEmail) {
           sessionStorage.setItem("wlc_reg_email", unverifiedEmail);
         }
         router.push("/verify-otp?email=" + encodeURIComponent(unverifiedEmail));
         return;
       }
-      setApiError(err.message || "Invalid credentials. Please try again.");
+
+      // Friendly categorized error mapping without revealing internal system details
+      if (
+        err?.code === "network_error" ||
+        err?.status === 0 ||
+        err?.code === "timeout" ||
+        err?.message?.toLowerCase().includes("failed to fetch") ||
+        err?.message?.toLowerCase().includes("unable to connect")
+      ) {
+        setApiError("Unable to connect to the server. Please try again.");
+      } else if (
+        err?.code === "invalid_credentials" ||
+        err?.code === "incorrect_password" ||
+        err?.code === "invalid_username" ||
+        err?.code === "invalid_email" ||
+        err?.status === 401
+      ) {
+        setApiError("Invalid email/username or password.");
+      } else if (err?.status === 403 || err?.code === "forbidden") {
+        setApiError("You do not have permission to sign in.");
+      } else if (
+        err?.status === 429 ||
+        err?.code === "too_many_requests" ||
+        err?.code === "too_many_attempts" ||
+        err?.code === "rate_limited"
+      ) {
+        setApiError("Too many login attempts. Please try again later.");
+      } else if (err?.status >= 500) {
+        setApiError("Something went wrong on the server. Please try again later.");
+      } else if (err?.message && !err.message.includes("Failed to fetch") && !err.message.includes("Object")) {
+        setApiError(err.message);
+      } else {
+        setApiError("Invalid email/username or password.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +183,7 @@ export default function LoginPage() {
           <h3 style={{ fontSize: 22, fontWeight: 700, color: "#fff", margin: 0 }}>You&apos;re Signed In</h3>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.6, margin: 0 }}>
             Welcome back, <strong style={{ color: "#fff" }}>{user.firstName} {user.lastName}</strong>.<br />
-            Your {user.membershipTier || "Lotus Club"} membership is active.
+            Your {user.membershipTier || "Wellness Lovers Club"} membership is active.
           </p>
           <div style={{ display: "flex", gap: 12, width: "100%" }}>
             <Link href="/dashboard" style={{ flex: 1, textDecoration: "none" }}>
@@ -194,27 +254,35 @@ export default function LoginPage() {
           </div>
 
           {apiError && (
-            <div style={{
-              padding: "10px 14px", background: "rgba(248,113,113,0.1)",
-              border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8,
-              fontSize: 12, color: "#f87171", textAlign: "center", marginBottom: "1.25rem",
-            }}>
+            <div
+              role="alert"
+              aria-live="assertive"
+              style={{
+                padding: "10px 14px", background: "rgba(248,113,113,0.1)",
+                border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8,
+                fontSize: 12, color: "#f87171", textAlign: "center", marginBottom: "1.25rem",
+              }}
+            >
               {apiError}
             </div>
           )}
 
           <form onSubmit={handleSubmit(onPasswordSubmit)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <FieldInput
+              id="usernameOrEmail"
               label="Email Address or Username"
               type="text"
+              autoComplete="username"
               placeholder="e.g. aria@example.com"
               error={errors.usernameOrEmail?.message}
               {...register("usernameOrEmail")}
             />
 
             <FieldInput
+              id="password"
               label="Password"
               type="password"
+              autoComplete="current-password"
               placeholder="Enter your password"
               error={errors.password?.message}
               {...register("password")}
@@ -222,8 +290,9 @@ export default function LoginPage() {
 
             {/* Remember Me + Forgot Password row */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <label htmlFor="rememberMe" style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
                 <input
+                  id="rememberMe"
                   type="checkbox"
                   {...register("rememberMe")}
                   style={{ accentColor: "#0f8554", width: 14, height: 14, cursor: "pointer" }}

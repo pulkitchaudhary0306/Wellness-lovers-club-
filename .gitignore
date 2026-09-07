@@ -33,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -41,3 +42,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 scratch/
+
+# ── Security: old credential backups — NEVER commit ──────────────────────────
+/wordpress-plugin-restore/
+/wordpress-backup/
+/wp-backup/
+/backup/
+/backups/
+
+# WordPress plugin ZIPs (may contain compiled PHP with previously exposed keys)
+*.zip
+!/deployment_package/
+
+# Deployment packages (excluded from Git; distribute via secure channel only)
+/deployment_package/
+/production_packages/

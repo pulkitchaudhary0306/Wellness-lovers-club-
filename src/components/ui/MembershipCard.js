@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { Download, Copy, Check, Sparkles } from "lucide-react";
+import { Download, Copy, Check } from "lucide-react";
 import "@/app/dashboard/Dashboard.css";
 
 /**
@@ -133,7 +133,23 @@ export default function MembershipCard({
   const cardRef = useRef(null);
   const preloadedImgRef = useRef(null);
 
-  // Dynamic Card Values — sourced strictly from live backend
+  // Global Card Configuration from WordPress Backend
+  const cardConfig = membershipCard?.cardConfig || {};
+
+  const mottoLines =
+    Array.isArray(cardConfig.mottoLines) && cardConfig.mottoLines.length > 0
+      ? cardConfig.mottoLines
+      : ["NOURISH", "RELAX", "THRIVE"];
+
+  const lifestyleText = cardConfig.lifestyleText || "WELLNESS IS A LIFESTYLE.";
+  const memberNameLabel = cardConfig.memberNameLabel || "MEMBER NAME";
+  const membershipNoLabel = cardConfig.membershipNoLabel || "MEMBERSHIP NO.";
+  const validToLabel = cardConfig.validToLabel || "VALID TO";
+  const bgImageUrl = cardConfig.backgroundImage || "/images/wlc-membership-card-bg.webp";
+  const downloadBtnText = cardConfig.downloadButtonText || "DOWNLOAD MEMBERSHIP CARD";
+  const downloadCaption = cardConfig.downloadCaption || "High-resolution printable digital membership card format (PNG).";
+
+  // Dynamic Member-Specific Values — sourced strictly from live backend
   const memberName = (
     membershipCard?.displayName ||
     membershipCard?.name ||
@@ -166,12 +182,13 @@ export default function MembershipCard({
   const validToMonthYear = formatMonthYear(rawValidTo, 0);
   const validToFull = formatFullDate(rawValidTo, 0);
 
-  // Preload background image in memory on mount
+  // Preload background image in memory on mount or when bgImageUrl changes
   useEffect(() => {
     const img = new Image();
-    img.src = "/images/wlc-membership-card-bg.webp";
+    img.crossOrigin = "anonymous";
+    img.src = bgImageUrl;
     preloadedImgRef.current = img;
-  }, []);
+  }, [bgImageUrl]);
 
   const handleCopyNo = async () => {
     try {
@@ -185,6 +202,7 @@ export default function MembershipCard({
 
   /**
    * Guaranteed High-Resolution Card Download Handler (2400 x 1500 PNG)
+   * Strictly uses the SAME WordPress dynamic parameters as HTML/React view.
    */
   const handleDownloadCard = useCallback(async () => {
     if (isDownloading) return;
@@ -203,7 +221,8 @@ export default function MembershipCard({
       let bgImg = preloadedImgRef.current;
       if (!bgImg || !bgImg.complete || bgImg.naturalWidth === 0) {
         bgImg = new Image();
-        bgImg.src = "/images/wlc-membership-card-bg.webp";
+        bgImg.crossOrigin = "anonymous";
+        bgImg.src = bgImageUrl;
         await new Promise((resolve) => {
           bgImg.onload = () => resolve(true);
           bgImg.onerror = () => resolve(false);
@@ -226,35 +245,40 @@ export default function MembershipCard({
         ctx.fillRect(0, 0, width, height);
       }
 
-      // ─── 2. TOP RIGHT: NOURISH / RELAX / THRIVE + Leaf Loops Icon ───
+      // ─── 2. TOP RIGHT: Dynamic Motto Words + Leaf Loops Icon ───
       ctx.save();
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
       ctx.font = "700 20px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "3px";
-      ctx.fillText("NOURISH", width - 260, 150);
-      ctx.fillText("RELAX", width - 260, 185);
-      ctx.fillText("THRIVE", width - 260, 220);
+      
+      const startY = 150;
+      const lineSpacing = 35;
+      mottoLines.forEach((line, idx) => {
+        ctx.fillText(String(line).toUpperCase(), width - 260, startY + (idx * lineSpacing));
+      });
+
+      const centerMottoY = startY + ((mottoLines.length - 1) * lineSpacing) / 2;
 
       // Overlapping Leaf Loop Curves
       ctx.strokeStyle = "#8fa89b";
       ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.ellipse(width - 200, 185, 36, 20, Math.PI / 4, 0, Math.PI * 2);
+      ctx.ellipse(width - 200, centerMottoY, 36, 20, Math.PI / 4, 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.ellipse(width - 170, 185, 36, 20, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.ellipse(width - 170, centerMottoY, 36, 20, -Math.PI / 4, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
 
-      // ─── 3. MIDDLE: MEMBER NAME (Left Zone) ───
+      // ─── 3. MIDDLE: Dynamic MEMBER NAME Label & Value ───
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
       ctx.font = "700 26px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "4px";
-      ctx.fillText("MEMBER NAME", 150, 680);
+      ctx.fillText(memberNameLabel.toUpperCase(), 150, 680);
 
       ctx.font = "800 72px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#ffffff";
@@ -264,12 +288,12 @@ export default function MembershipCard({
       ctx.fillText(memberName, 150, 765);
       ctx.shadowBlur = 0;
 
-      // ─── 4. BOTTOM FIELDS: MEMBERSHIP NO. | VALID TO (Left Zone) ───
-      // Column 1: MEMBERSHIP NO.
+      // ─── 4. BOTTOM FIELDS: Dynamic MEMBERSHIP NO. | VALID TO ───
+      // Column 1: MEMBERSHIP NO. Label & Value
       ctx.font = "700 24px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "4px";
-      ctx.fillText("MEMBERSHIP NO.", 150, 950);
+      ctx.fillText(membershipNoLabel.toUpperCase(), 150, 950);
 
       const isPending = membershipNo.toUpperCase() === "PENDING ALLOCATION";
       ctx.font = isPending ? "700 42px 'Montserrat', Arial, sans-serif" : "800 62px 'Montserrat', Arial, sans-serif";
@@ -285,11 +309,11 @@ export default function MembershipCard({
       ctx.lineTo(850, 1060);
       ctx.stroke();
 
-      // Column 2: VALID TO
+      // Column 2: VALID TO Label & Value
       ctx.font = "700 24px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "4px";
-      ctx.fillText("VALID TO", 910, 950);
+      ctx.fillText(validToLabel.toUpperCase(), 910, 950);
 
       ctx.font = "800 62px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#ffffff";
@@ -304,7 +328,7 @@ export default function MembershipCard({
       ctx.lineTo(width - 120, 1260);
       ctx.stroke();
 
-      // Bottom-Left: Circle Outline + WELLNESS IS A LIFESTYLE.
+      // Bottom-Left: Circle Outline + Dynamic Lifestyle Text
       ctx.save();
       ctx.strokeStyle = "#8fa89b";
       ctx.lineWidth = 2.5;
@@ -315,7 +339,7 @@ export default function MembershipCard({
       ctx.font = "600 22px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "4px";
-      ctx.fillText("WELLNESS IS A LIFESTYLE.", 205, 1345);
+      ctx.fillText(lifestyleText.toUpperCase(), 205, 1345);
       ctx.restore();
 
       // Bottom-Right: Contactless NFC Waves
@@ -371,7 +395,18 @@ export default function MembershipCard({
     } finally {
       setIsDownloading(false);
     }
-  }, [memberName, membershipNo, validToMonthYear, isDownloading]);
+  }, [
+    memberName,
+    membershipNo,
+    validToMonthYear,
+    mottoLines,
+    lifestyleText,
+    memberNameLabel,
+    membershipNoLabel,
+    validToLabel,
+    bgImageUrl,
+    isDownloading,
+  ]);
 
   const isPendingAllocation = membershipNo.toUpperCase() === "PENDING ALLOCATION";
 
@@ -382,14 +417,21 @@ export default function MembershipCard({
         <div className="wlc-zen-card">
           
           {/* Card Background Image with Leaves on Deep Forest Green */}
-          <div className="wlc-zen-card-bg" />
+          <div
+            className="wlc-zen-card-bg"
+            style={
+              bgImageUrl && bgImageUrl !== "/images/wlc-membership-card-bg.webp"
+                ? { backgroundImage: `url('${bgImageUrl}')` }
+                : undefined
+            }
+          />
 
-          {/* Top-Right: NOURISH / RELAX / THRIVE + Leaf Loops Icon */}
+          {/* Top-Right: Dynamic Motto Words + Leaf Loops Icon */}
           <div className="wlc-zen-top-right">
             <div className="wlc-zen-motto">
-              <span>NOURISH</span>
-              <span>RELAX</span>
-              <span>THRIVE</span>
+              {mottoLines.map((line, idx) => (
+                <span key={idx}>{String(line).toUpperCase()}</span>
+              ))}
             </div>
             <div className="wlc-zen-motto-icon">
               <svg width="30" height="22" viewBox="0 0 36 24" fill="none" stroke="#8fa89b" strokeWidth="1.8">
@@ -401,7 +443,7 @@ export default function MembershipCard({
 
           {/* Member Name Section */}
           <div className="wlc-zen-name-section">
-            <span className="wlc-zen-field-label">MEMBER NAME</span>
+            <span className="wlc-zen-field-label">{memberNameLabel}</span>
             <h2 className="wlc-zen-member-name">{memberName}</h2>
           </div>
 
@@ -409,7 +451,7 @@ export default function MembershipCard({
           <div className="wlc-zen-details-row">
             {/* Column 1: MEMBERSHIP NO. */}
             <div className="wlc-zen-col">
-              <span className="wlc-zen-field-label">MEMBERSHIP NO.</span>
+              <span className="wlc-zen-field-label">{membershipNoLabel}</span>
               <div className="wlc-zen-val-with-copy">
                 <span className={`wlc-zen-field-val ${isPendingAllocation ? "pending" : ""}`}>
                   {membershipNo}
@@ -418,7 +460,7 @@ export default function MembershipCard({
                   type="button"
                   className="wlc-zen-copy-btn"
                   onClick={handleCopyNo}
-                  title="Copy Membership No."
+                  title={`Copy ${membershipNoLabel}`}
                 >
                   {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                 </button>
@@ -430,7 +472,7 @@ export default function MembershipCard({
 
             {/* Column 2: VALID TO */}
             <div className="wlc-zen-col valid-to-col">
-              <span className="wlc-zen-field-label">VALID TO</span>
+              <span className="wlc-zen-field-label">{validToLabel}</span>
               <span className="wlc-zen-field-val">{validToMonthYear}</span>
             </div>
           </div>
@@ -441,7 +483,7 @@ export default function MembershipCard({
             <div className="wlc-zen-bottom-row">
               <div className="wlc-zen-bottom-left">
                 <div className="wlc-zen-circle-badge" />
-                <span className="wlc-zen-lifestyle-text">WELLNESS IS A LIFESTYLE.</span>
+                <span className="wlc-zen-lifestyle-text">{lifestyleText}</span>
               </div>
               <div className="wlc-zen-nfc-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2.2" strokeLinecap="round">
@@ -459,15 +501,15 @@ export default function MembershipCard({
       <div className="wlc-actions-bar">
         <div className="wlc-membership-summary-meta">
           <div className="wlc-meta-pill">
-            <span className="wlc-meta-label">Member Name:</span>
+            <span className="wlc-meta-label">{memberNameLabel}:</span>
             <strong className="wlc-meta-val">{memberName}</strong>
           </div>
           <div className="wlc-meta-pill">
-            <span className="wlc-meta-label">Membership No.:</span>
+            <span className="wlc-meta-label">{membershipNoLabel}:</span>
             <strong className="wlc-meta-val gold">{membershipNo}</strong>
           </div>
           <div className="wlc-meta-pill">
-            <span className="wlc-meta-label">Valid To:</span>
+            <span className="wlc-meta-label">{validToLabel}:</span>
             <strong className="wlc-meta-val active">{validToFull}</strong>
           </div>
         </div>
@@ -491,13 +533,13 @@ export default function MembershipCard({
           ) : (
             <>
               <Download size={18} />
-              <span>DOWNLOAD MEMBERSHIP CARD</span>
+              <span>{downloadBtnText}</span>
             </>
           )}
         </button>
 
         <p className="wlc-download-caption">
-          High-resolution printable digital membership card format (PNG).
+          {downloadCaption}
         </p>
       </div>
     </div>

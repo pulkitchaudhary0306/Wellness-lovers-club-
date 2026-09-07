@@ -1,6 +1,9 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import React, { useState, useEffect, Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -115,7 +118,7 @@ function normalizeMembership(m, index, user, paymentInfo) {
   const start = displayText(m?.startDate ?? m?.start_date, getTodayDateFormatted());
   return {
     id: displayText(m?.id ?? m?.membershipId ?? m?.subscription_id, `membership-${user.id}-${index}`),
-    tier: displayText(m?.tier ?? m?.membershipTier, user.membershipTier || "Lotus Club"),
+    tier: displayText(m?.tier ?? m?.membershipTier, user.membershipTier || "Wellness Lovers Club"),
     status: displayText(m?.status ?? m?.membershipStatus, user.membershipStatus || "Active"),
     startDate: start,
     endDate: displayText(m?.endDate ?? m?.end_date ?? m?.validUntil ?? m?.validTill, getOneYearValidTillFormatted(start)),
@@ -129,7 +132,7 @@ function SidebarNav({ activeTab, onTabChange, onLogout, onClose, isAuthenticated
     <>
       <div className="db-sidebar-logo">
         <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-          <img loading="lazy" src="/logo/logo.webp" alt="WLC" />
+          <Image src="/logo/logo.webp" alt="WLC" width={112} height={32} style={{ height: 32, width: "auto" }} />
         </Link>
         <span className="db-sidebar-logo-badge">Club Hub</span>
       </div>
@@ -179,17 +182,17 @@ function DashboardContent() {
   const searchParams = useSearchParams();
 
   const queryTab = searchParams.get("tab");
-  const initialTab = (queryTab === "membership" ? "dashboard" : queryTab) || "dashboard";
-  const [activeTab, setActiveTab] = useState(
-    menuItems.some((item) => item.id === initialTab) ? initialTab : "dashboard"
-  );
+  const normalizedQuery = queryTab === "membership" ? "dashboard" : queryTab;
+  const activeTab = menuItems.some((item) => item.id === normalizedQuery) ? normalizedQuery : "dashboard";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [payments, setPayments] = useState([]);
   const [memberships, setMemberships] = useState([]);
   const [profileSuccess, setProfileSuccess] = useState(false);
+  const [profileError, setProfileError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [supportSuccess, setSupportSuccess] = useState(false);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
@@ -205,18 +208,7 @@ function DashboardContent() {
   const { register: rProfile, handleSubmit: hProfile, setValue: sProfile, formState: { errors: eProfile } } = useForm({ resolver: zodResolver(profileSchema) });
   const { register: rPwd, handleSubmit: hPwd, reset: resetPwd, formState: { errors: ePwd } } = useForm({ resolver: zodResolver(passwordSchema), defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" } });
 
-  // Sync tab with URL query param
-  useEffect(() => {
-    if (queryTab) {
-      const normalized = queryTab === "membership" ? "dashboard" : queryTab;
-      if (menuItems.some((item) => item.id === normalized)) {
-        setActiveTab(normalized);
-      }
-    }
-  }, [queryTab]);
-
   const handleTabChange = (newTab) => {
-    setActiveTab(newTab);
     if (newTab === "dashboard") {
       router.replace("/dashboard", { scroll: false });
     } else {
@@ -309,13 +301,9 @@ function DashboardContent() {
   const currentLabel = menuItems.find(i => i.id === activeTab)?.label || "My Membership";
   const hasSuccessfulMembershipPayment = ["Active", "Lifetime"].includes(effectiveUser.membershipStatus);
   const confirmedMembershipPayment = {
-    id: `PAY-${effectiveUser.id || Date.now()}`,
+    id: `PAY-${effectiveUser.id || "MEMBERSHIP"}`,
     method: "UPI / Razorpay Verified",
-    date: new Date().toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }),
+    date: effectiveUser.paidAt || "Verified",
     status: "Successful",
     amount: `${paymentInfo.amount} (${paymentInfo.gst})`,
   };
@@ -327,7 +315,7 @@ function DashboardContent() {
         : [];
   const fallbackMembership = {
     id: `membership-${effectiveUser.id || "active"}`,
-    tier: effectiveUser.membershipTier || "Lotus Club",
+    tier: effectiveUser.membershipTier || "Wellness Lovers Club",
     status: effectiveUser.membershipStatus || "Active",
     startDate: effectiveUser.membershipStartDate || effectiveUser.startDate || getTodayDateFormatted(),
     endDate: dynamicValidTill || getOneYearValidTillFormatted(),
@@ -347,13 +335,21 @@ function DashboardContent() {
 
   const handleProfileUpdate = async (data) => {
     if (!isAuthenticated) {
-      alert("Please sign in to update your live profile.");
+      setProfileError("Please sign in to update your live profile.");
+      setTimeout(() => setProfileError(""), 4000);
       return;
     }
     setIsUpdatingProfile(true);
-    try { await updateProfile(data); setProfileSuccess(true); setTimeout(() => setProfileSuccess(false), 3000); }
-    catch (e) { alert("Update failed: " + e.message); }
-    finally { setIsUpdatingProfile(false); }
+    setProfileError("");
+    try {
+      await updateProfile(data);
+      setProfileSuccess(true);
+      setTimeout(() => setProfileSuccess(false), 3000);
+    } catch (e) {
+      setProfileError("Update failed: " + (e.message || "Please try again."));
+    } finally {
+      setIsUpdatingProfile(false);
+    }
   };
 
   const handlePasswordUpdate = async (data) => {
@@ -511,7 +507,7 @@ function DashboardContent() {
 
         {/* Mobile top bar */}
         <header className="db-mobile-header">
-          <img loading="lazy" src="/logo/logo.webp" alt="WLC" style={{ height: 28 }} />
+          <Image src="/logo/logo.webp" alt="WLC" width={98} height={28} style={{ height: 28, width: "auto" }} />
           <button type="button" className="db-mobile-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Open menu">
             <Menu size={20} />
           </button>
@@ -581,6 +577,7 @@ function DashboardContent() {
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: "1.5rem", fontFamily: "'Montserrat', sans-serif" }}>Profile Details</h3>
                   <form onSubmit={hProfile(handleProfileUpdate)} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     {profileSuccess && <div className="db-form-success"><CheckCircle size={15} /> Profile updated successfully!</div>}
+                    {profileError && <div className="db-form-alert-error">{profileError}</div>}
 
                     <div className="db-form-grid">
                       {[
@@ -687,7 +684,7 @@ function DashboardContent() {
                     </div>
                   </div>
                   <div className="db-payment-qr-box">
-                    <img src={paymentInfo.qrPath} alt="Scan to Pay Membership Fee" />
+                    <Image src={paymentInfo.qrPath} alt="Scan to Pay Membership Fee" width={180} height={180} />
                     <span>Scan to Pay</span>
                   </div>
                 </div>
@@ -810,7 +807,7 @@ function DashboardContent() {
                     { img: "/homepage/Introimages/storiesofdesign.webp", name: "Coastal Healing & Thalasso Spa", loc: "Algarve, Portugal" },
                   ].map(w => (
                     <div className="db-card" key={w.name} style={{ overflow: "hidden" }}>
-                      <img loading="lazy" className="db-wishlist-img" src={w.img} alt={w.name} />
+                      <Image className="db-wishlist-img" src={w.img} alt={w.name} width={500} height={300} style={{ width: "100%", height: "200px", objectFit: "cover" }} />
                       <div className="db-wishlist-body">
                         <div className="db-wishlist-title">{w.name}</div>
                         <div className="db-wishlist-sub">{w.loc}</div>
@@ -828,7 +825,7 @@ function DashboardContent() {
                 <div className="db-card db-card-pad">
                   {[
                     { icon: <Bell size={16} />, iconBg: "#eff6ff", iconColor: "#3b82f6", title: "Welcome to Club Hub!", body: "We're excited to help you elevate your wellness journey. Check out your personalized digital membership pass above.", time: "Just now" },
-                    { icon: <CheckCircle size={16} />, iconBg: "var(--green-pale)", iconColor: "var(--green)", title: "Annual Membership Active", body: `Your Official Lotus Club Membership ${dynamicMembershipNo} was successfully confirmed.`, time: "3 days ago" },
+                    { icon: <CheckCircle size={16} />, iconBg: "var(--green-pale)", iconColor: "var(--green)", title: "Annual Membership Active", body: `Your Official Wellness Lovers Club Membership ${dynamicMembershipNo} was successfully confirmed.`, time: "3 days ago" },
                   ].map(n => (
                     <div className="db-notif-item" key={n.title}>
                       <div className="db-notif-icon" style={{ background: n.iconBg, color: n.iconColor }}>{n.icon}</div>
@@ -849,9 +846,21 @@ function DashboardContent() {
                 <div className="db-card db-card-pad" style={{ maxWidth: 560 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, fontFamily: "'Montserrat', sans-serif" }}>Contact Member Concierge</h3>
                   <p style={{ fontSize: 12.5, color: "var(--text-faint)", marginTop: 4, marginBottom: "1.5rem", fontWeight: 400 }}>Need assistance with a retreat booking or membership privilege? Open a ticket below.</p>
+                  
+                  {supportSuccess && (
+                    <div className="db-form-success" style={{ marginBottom: "1.25rem", padding: "0.85rem 1rem" }}>
+                      <CheckCircle size={16} /> Inquiry submitted successfully! A WLC member concierge will respond within 4 hours.
+                    </div>
+                  )}
+
                   <form
                     className="db-support-form"
-                    onSubmit={e => { e.preventDefault(); alert("Ticket submitted. A WLC member concierge will respond within 4 hours."); e.target.reset(); }}
+                    onSubmit={e => {
+                      e.preventDefault();
+                      setSupportSuccess(true);
+                      e.currentTarget.reset();
+                      setTimeout(() => setSupportSuccess(false), 5000);
+                    }}
                   >
                     <div className="db-form-field">
                       <label className="db-form-label">Subject</label>

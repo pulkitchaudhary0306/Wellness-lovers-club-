@@ -26,10 +26,11 @@ export default function OfferingsPage() {
       link: "/offerings/movement-mindfulness"
     },
     {
-      title: "Exclusive Community Experiences",
-      desc: "Meaningful connections that inspire growth, high-vibrational collaboration, and conscious luxury living.",
-      img: "/images/community-experiences-lounge.webp",
-      category: "Community"
+      title: "Products",
+      desc: "Curated bio-frequency devices, quantum wellness technologies, and cellular rejuvenation systems.",
+      img: "/images/products/pemf-crystal-mat.webp",
+      category: "Products",
+      link: "/offerings/products"
     },
     {
       title: "Priority Access",

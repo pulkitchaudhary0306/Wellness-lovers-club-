@@ -718,5 +718,63 @@ export const PARTNERS_DATA = [
         terms: "AED 800 per person Monday to Friday / AED 1,200 per person Saturday & Sunday."
       }
     ]
+  },
+  {
+    id: 17,
+    slug: "energetika369",
+    name: "Energetika369",
+    location: "Global & PAN India Direct Consultation",
+    region: "INDIA & GLOBAL",
+    shortDesc: "Pioneering bio-frequency systems, scalar wave technology, and cellular resonance devices including PEMF Crystal Mats, Rife Machines, Hexa Flow, and NeuroPulse TMS.",
+    category: "Bio-Frequency & Quantum Wellness",
+    image: "/images/products/pemf-crystal-mat.webp",
+    flag: "⚡",
+    website: "https://energetika369.com/",
+    bookingPeriod: "Member Allocations & Consultations: Available Year-Round",
+    offers: [
+      {
+        id: "e369-1",
+        title: "Exclusive WLC Member Concierge & Product Consultation",
+        discount: "WLC EXCLUSIVE ALLOCATION",
+        badge: "Bio-Frequency Technology",
+        description: "Direct priority allocation, bespoke practitioner consultation, and preferred club pricing on all Energetika369 wellness systems.",
+        inclusions: [
+          "1-on-1 Bio-frequency and wellness technology consultation",
+          "Personalized protocol recommendations for home or clinical practice",
+          "Priority dispatch and allocation support",
+          "Dedicated manufacturer onboarding and technical guidance"
+        ],
+        terms: "Exclusive to verified Wellness Lovers Club members. Inquire to claim member privileges."
+      }
+    ]
+  },
+  {
+    id: 18,
+    slug: "environics",
+    name: "Environics",
+    location: "Global & PAN India Environmental Wellness",
+    region: "INDIA & GLOBAL",
+    shortDesc: "Scientifically proven radiation management solutions and environmental health systems designed to neutralize harmful electromagnetic radiation (EMR/EMF).",
+    category: "Radiation Management & Environmental Wellness",
+    image: "/images/conscious-living.webp",
+    flag: "🛡️",
+    website: "https://environics.in/",
+    bookingPeriod: "Member Allocations & Consultations: Available Year-Round",
+    offers: [
+      {
+        id: "env-1",
+        title: "WLC Member Environmental Wellness Audit & Allocation",
+        discount: "WLC EXCLUSIVE PRIVILEGE",
+        badge: "EMR Protection",
+        description: "Priority member access to Environics radiation protection technology, environmental audits, and home/workplace protection systems.",
+        inclusions: [
+          "Home and workplace environmental radiation assessment guidance",
+          "Priority allocation of radiation management systems",
+          "Certified clinical research consultation and test data access",
+          "Exclusive WLC member privileges on all upcoming allocations"
+        ],
+        terms: "Exclusive to verified Wellness Lovers Club members. Inquire to claim member privileges."
+      }
+    ]
   }
 ];

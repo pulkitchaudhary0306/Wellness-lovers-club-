@@ -4,70 +4,28 @@ import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PARTNERS_DATA } from "@/data/partnerOffers";
+import { wpPost } from "@/lib/wpFetch";
 import "./explore-offer.css";
 import "../contact/contact.css";
 
 export const dynamic = "force-dynamic";
 
-const WP_BASE = (
-  process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://cms.wellnessloversclub.com"
-).replace(/\/$/, "");
-
 async function submitInquiryToWordPress(data, destinationName, websiteUrl) {
-  // First attempt dedicated offerings endpoint, with seamless fallback to general contact endpoint
-  try {
-    const res = await fetch(`${WP_BASE}/wp-json/wlc/v1/offering-inquiry`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        phone: data.phone,
-        destination_name: destinationName,
-        destination_slug: destinationName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        offer_title: "All Member Privileges & Inclusions Bundle",
-        offer_discount: "WLC Exclusive Member Privileges",
-        travel_date: data.travelDate || "Flexible",
-        duration: data.duration || "Standard Package",
-        num_guests: data.guests || "1-2",
-        message: data.message,
-        partner_website: websiteUrl || "",
-        website: "", // Honeypot
-      }),
-    });
-
-    const json = await res.json();
-    if (res.ok && json.success) {
-      return json;
-    }
-  } catch (e) {
-    // Fallback to legacy endpoint
-  }
-
-  const fallbackRes = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  const json = await wpPost(
+    "/wp-json/custom/v1/contact",
+    {
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
       phone: data.phone,
       subject: `Exclusive Privileges Claim - ${destinationName}`,
-      message: `Preferred Booking/Travel Date: ${data.travelDate || "Not Specified"}\nPackage Duration: ${data.duration || "Standard Package"}\nGuests: ${data.guests || "1-2"}\n\nPrivileges: All Member Privileges & Inclusions Bundle\n\nGuest Message: ${data.message}`,
-      website: "",
-    }),
-  });
+      message: `Preferred Booking/Travel Date: ${data.travelDate || "Not Specified"}\nPackage Duration: ${data.duration || "Standard Package"}\nGuests: ${data.guests || "1-2"}\n\nPrivileges: All Member Privileges & Inclusions Bundle\n\nGuest Message: ${data.message || "N/A"}${websiteUrl ? `\nPartner Website: ${websiteUrl}` : ""}`,
+      website: "", // Honeypot field - must stay empty
+    },
+    { unauthenticated: true }
+  );
 
-  const fallbackJson = await fallbackRes.json();
-  if (!fallbackRes.ok || !fallbackJson.success) {
-    throw new Error(fallbackJson.message || "Failed to send inquiry. Please try again.");
-  }
-  return fallbackJson;
+  return json;
 }
 
 function normalizeStr(str) {
@@ -118,6 +76,9 @@ function findPartnerByDestination(rawDest) {
     { key: "bhutan", partnerSlug: "como-uma-paro-bhutan" },
     { key: "paro", partnerSlug: "como-uma-paro-bhutan" },
     { key: "palm", partnerSlug: "ja-palm-tree-court-calm-spa" },
+    { key: "energetika", partnerSlug: "energetika369" },
+    { key: "pemf", partnerSlug: "energetika369" },
+    { key: "environics", partnerSlug: "environics" },
   ];
 
   for (const item of keywords) {

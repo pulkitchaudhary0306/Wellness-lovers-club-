@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { wpPost } from "@/lib/wpFetch";
 import "./contact.css";
-
-const WP_BASE = (
-  process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://your-wordpress-site.com"
-).replace(/\/$/, "");
 
 /**
  * Submits the contact form to WordPress custom REST API endpoint.
@@ -15,12 +12,9 @@ const WP_BASE = (
  * Body:     JSON
  */
 async function submitContactToWordPress(data) {
-  const res = await fetch(`${WP_BASE}/wp-json/custom/v1/contact`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  const json = await wpPost(
+    "/wp-json/custom/v1/contact",
+    {
       first_name: data.firstName,
       last_name: data.lastName,
       email: data.email,
@@ -28,42 +22,34 @@ async function submitContactToWordPress(data) {
       subject: "Website Contact Inquiry",
       message: data.message,
       website: "", // Honeypot field - must stay empty
-    }),
-  });
-
-  const json = await res.json();
-
-  if (!res.ok || !json.success) {
-    throw new Error(json.message || "Failed to send message.");
-  }
+    },
+    { unauthenticated: true }
+  );
 
   return json;
 }
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-
-  useEffect(() => {
+  const [formData, setFormData] = useState(() => {
+    let initialMsg = "";
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const dest = params.get("destination");
       if (dest) {
-        setFormData((prev) => ({
-          ...prev,
-          message: `I am interested in exploring the offer for: ${dest}.`
-        }));
+        initialMsg = `I am interested in exploring the offer for: ${dest}.`;
       }
     }
-  }, []);
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      message: initialMsg,
+    };
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,10 +64,15 @@ export default function ContactPage() {
     try {
       await submitContactToWordPress(formData);
       setIsSubmitted(true);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
     } catch (err) {
-      setSubmitError(
-        err.message || "Something went wrong. Please try again later."
-      );
+      setSubmitError(err.message || "Something went wrong. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
@@ -89,23 +80,21 @@ export default function ContactPage() {
 
   return (
     <div className="contact-page">
-      {/* Page Header / Breadcrumbs */}
-      <div className="contact-header">
-        <div className="contact-header-content">
-          <span className="contact-header-eyebrow">GET IN TOUCH</span>
-          <h1>Contact Us</h1>
-          <p className="contact-header-desc">
-            Have questions about our exclusive wellness retreats, spa rituals, or membership benefits? Reach out to our concierge team.
-          </p>
-          <div className="contact-breadcrumbs">
-            <Link href="/">Home</Link>
-            <span className="separator">/</span>
-            <span>Contact Us</span>
-          </div>
-        </div>
-      </div>
+      {/* Background Ambience */}
+      <div className="contact-glow-1" />
+      <div className="contact-glow-2" />
 
-      {/* Contact Content Container */}
+      {/* Header Banner */}
+      <section className="contact-header">
+        <span className="contact-badge">DIRECT CONCIERGE</span>
+        <h1 className="contact-title">Connect with Us</h1>
+        <p className="contact-subtitle">
+          Whether you seek private retreats, exclusive partner inclusions, or personalized assistance,
+          our dedicated concierge team is at your service.
+        </p>
+      </section>
+
+      {/* Main Content Grid */}
       <div className="contact-container">
         {/* Left Column: Contact Details */}
         <div className="contact-info">
@@ -113,7 +102,7 @@ export default function ContactPage() {
             <h2 className="contact-info-title">Get In Touch</h2>
             <p className="contact-info-subtitle">
               Have questions about our exclusive wellness retreats, spa rituals, or membership benefits? 
-              Reach out to us and we'll get back to you shortly.
+              Reach out to us and we&apos;ll get back to you shortly.
             </p>
           </div>
 

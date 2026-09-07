@@ -816,7 +816,7 @@ class WLC_Core_Auth_Controller {
         }
 
         $key      = isset( $params['key'] )      ? sanitize_text_field( $params['key'] ) : '';
-        $login    = isset( $params['login'] )    ? sanitize_text_field( $params['login'] ) : ( isset( $params['email'] ) ? sanitize_email( $params['email'] ) : '' );
+        $login    = isset( $params['login'] )    ? sanitize_text_field( $params['login'] ) : '';
         $password = isset( $params['password'] ) ? $params['password'] : '';
 
         if ( empty( $password ) ) {

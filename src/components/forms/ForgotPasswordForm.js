@@ -46,11 +46,8 @@ export default function ForgotPasswordForm({ isEmbed = false }) {
     try {
       await forgotPassword(data.email);
       setIsSuccess(true);
-      setTimeout(() => {
-        router.push(`/verify-otp?email=${encodeURIComponent(data.email)}&type=reset`);
-      }, 1500);
     } catch (err) {
-      setApiError(err.message || "Unable to send verification code. Please try again.");
+      setApiError(err.message || "Unable to send reset link. Please try again.");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
     } finally {
@@ -69,14 +66,14 @@ export default function ForgotPasswordForm({ isEmbed = false }) {
         <div className="wlc-auth-icon-wrap" style={{ color: "#34d399", background: "rgba(16, 185, 129, 0.12)", borderColor: "rgba(16, 185, 129, 0.3)" }}>
           <CheckCircle2 size={32} />
         </div>
-        <h2 className="wlc-auth-title">OTP Sent</h2>
+        <h2 className="wlc-auth-title">Reset Link Sent</h2>
         <p className="wlc-auth-desc">
-          Check your registered email <strong>({submittedEmail})</strong> for the 6-digit verification code.
+          We have sent password reset instructions to <strong>({submittedEmail})</strong>. Please check your inbox and click the link inside to set a new password.
         </p>
-        <Link href={`/verify-otp?email=${encodeURIComponent(submittedEmail)}&type=reset`} style={{ textDecoration: "none" }}>
+        <Link href="/login" style={{ textDecoration: "none" }}>
           <button type="button" className="wlc-auth-submit-btn">
-            Enter 6-Digit OTP Code
-            <ArrowLeft size={16} style={{ transform: "rotate(180deg)" }} />
+            <ArrowLeft size={16} />
+            Return to Sign In
           </button>
         </Link>
       </motion.div>
