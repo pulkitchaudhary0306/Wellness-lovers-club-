@@ -14,6 +14,8 @@ export default function MembershipBanner() {
               alt="Premium spa therapy setup with candles and flowers"
               width={400}
               height={300}
+              sizes="(max-width: 768px) 100vw, 400px"
+              loading="lazy"
               style={{ objectFit: "cover" }}
               className="banner-img"
             />
@@ -40,6 +42,8 @@ export default function MembershipBanner() {
               alt="Luxury resort relaxation area with arched view"
               width={400}
               height={300}
+              sizes="(max-width: 768px) 100vw, 400px"
+              loading="lazy"
               style={{ objectFit: "cover" }}
               className="banner-img"
             />

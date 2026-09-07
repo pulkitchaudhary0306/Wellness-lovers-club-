@@ -141,6 +141,7 @@ export default function AboutPage() {
               alt="Luxury tropical wellness resort pool with palm trees"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
+              loading="lazy"
               className="arch-image"
             />
           </div>
@@ -179,6 +180,7 @@ export default function AboutPage() {
                   alt={`${leader.name} headshot`}
                   fill
                   sizes="(max-width: 991px) 100vw, 420px"
+                  loading="lazy"
                   className="arch-image"
                   style={{ objectPosition: leader.imgPosition || "center center" }}
                 />

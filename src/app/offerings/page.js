@@ -87,7 +87,8 @@ export default function OfferingsPage() {
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   style={{ objectFit: "cover" }}
-                  priority={idx < 3}
+                  priority={idx < 2}
+                  loading={idx < 2 ? "eager" : "lazy"}
                 />
               </div>
               <div className="offering-card-content">

@@ -144,7 +144,7 @@ export default function HomePage() {
                   src="/images/philosophy-pool.webp"
                   alt="Luxury tropical wellness resort pool with palm trees"
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
                   priority
                   className="philosophy-main-img"
                 />
@@ -154,7 +154,8 @@ export default function HomePage() {
                   src="/images/journey-wellness.webp"
                   alt="Wellness journey concept"
                   fill
-                  sizes="200px"
+                  sizes="(max-width: 768px) 140px, 200px"
+                  loading="lazy"
                   className="philosophy-detail-img"
                 />
               </div>
@@ -180,7 +181,8 @@ export default function HomePage() {
                 src="/images/wellness-retreat-cabin.webp"
                 alt="Wellness retreats"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -206,7 +208,8 @@ export default function HomePage() {
                 src="/images/movement-mindfulness-yoga.webp"
                 alt="Movement & Mindfulness"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -232,7 +235,8 @@ export default function HomePage() {
                 src="/images/products/pemf-crystal-mat.webp"
                 alt="Products"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -256,7 +260,8 @@ export default function HomePage() {
                 src="/images/wellness-experience.webp"
                 alt="Priority Access"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -280,7 +285,8 @@ export default function HomePage() {
                 src="/images/spa-healing-room.webp"
                 alt="Spa & Holistic Healing Experiences"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -306,7 +312,8 @@ export default function HomePage() {
                 src="/images/luxury-stays-cabana.webp"
                 alt="Exceptional Accommodations"
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 className="offering-img"
               />
               <div className="offering-icon-badge">
@@ -419,7 +426,7 @@ export default function HomePage() {
               alt="Spa candles, essential oil, ferns, stones, and rolled towels"
               fill
               sizes="(max-width: 767px) 100vw, 32vw"
-              loading="eager"
+              loading="lazy"
               className="banner-still-life-img"
             />
           </div>
@@ -452,6 +459,7 @@ export default function HomePage() {
                 alt="Sunlit spa lounge with a pool and tropical greenery"
                 fill
                 sizes="(max-width: 767px) 100vw, 34vw"
+                loading="lazy"
                 className="banner-lounge-img"
               />
             </div>
@@ -630,6 +638,7 @@ export default function HomePage() {
             alt="Stacked zen stones on a sandy beach at sunset"
             fill
             sizes="(max-width: 767px) 100vw, 35vw"
+            loading="lazy"
             className="journey-img"
           />
         </div>

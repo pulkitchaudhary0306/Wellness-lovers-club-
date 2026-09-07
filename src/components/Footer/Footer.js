@@ -19,6 +19,7 @@ function Footer() {
                 alt="Wellness Lovers Club Logo"
                 width={160}
                 height={40}
+                loading="lazy"
                 className="footer-logo-img"
               />
             </Link>

@@ -14,6 +14,8 @@ export default function JourneyCTA() {
               alt="Stacked zen stones on a peaceful beach at sunset"
               width={500}
               height={350}
+              sizes="(max-width: 768px) 100vw, 500px"
+              loading="lazy"
               style={{ objectFit: "cover" }}
               className="journey-img"
             />

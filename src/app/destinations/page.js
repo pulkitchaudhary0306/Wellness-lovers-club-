@@ -288,7 +288,7 @@ export default function DestinationsPage() {
 
         <div className="properties-grid">
           {filteredProperties.length > 0 ? (
-            filteredProperties.map((prop) => (
+            filteredProperties.map((prop, idx) => (
               <div className="property-card" key={prop.slug || prop.id}>
                 <div className="property-img-container">
                   <span className="property-category-badge">
@@ -300,6 +300,8 @@ export default function DestinationsPage() {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
+                    priority={idx < 2}
+                    loading={idx < 2 ? "eager" : "lazy"}
                   />
                 </div>
                 <div className="property-card-content">

@@ -98,6 +98,8 @@ export default function Offerings() {
                   alt={card.title}
                   width={380}
                   height={250}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 380px"
+                  loading="lazy"
                   style={{ objectFit: "cover" }}
                   className="offering-img"
                 />

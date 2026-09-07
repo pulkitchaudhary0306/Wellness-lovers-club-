@@ -63,6 +63,7 @@ export default function ProductsOfferingsPage() {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       priority={product.id === "pemf-crystal-mat"}
+                      loading={product.id === "pemf-crystal-mat" ? "eager" : "lazy"}
                     />
                   </div>
                   <div className="product-card-content">

@@ -78,8 +78,10 @@ export default function BenefitsPage() {
                     src={b.img}
                     alt={b.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
+                    priority={idx < 2}
+                    loading={idx < 2 ? "eager" : "lazy"}
                   />
                 </div>
                 <div className="card-body">

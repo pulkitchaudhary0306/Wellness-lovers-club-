@@ -76,6 +76,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-wellness.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

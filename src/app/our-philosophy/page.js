@@ -141,6 +141,7 @@ export default function OurPhilosophyPage() {
               alt="Conscious living and wellness lifestyle"
               fill
               sizes="(max-width: 991px) 100vw, 420px"
+              loading="lazy"
               className="arch-image"
             />
           </div>
@@ -179,6 +180,7 @@ export default function OurPhilosophyPage() {
                   alt={`${leader.name} headshot`}
                   fill
                   sizes="(max-width: 991px) 100vw, 420px"
+                  loading="lazy"
                   className="arch-image"
                   style={{ objectPosition: leader.imgPosition || "center center" }}
                 />

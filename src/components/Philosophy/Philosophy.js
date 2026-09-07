@@ -21,9 +21,10 @@ export default function Philosophy() {
               alt="Luxury tropical wellness resort infinity pool"
               width={600}
               height={400}
+              sizes="(max-width: 768px) 100vw, 600px"
+              loading="lazy"
               style={{ objectFit: "cover" }}
               className="philosophy-img"
-              priority={false}
             />
           </div>
         </div>

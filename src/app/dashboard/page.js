@@ -807,7 +807,16 @@ function DashboardContent() {
                     { img: "/homepage/Introimages/storiesofdesign.webp", name: "Coastal Healing & Thalasso Spa", loc: "Algarve, Portugal" },
                   ].map(w => (
                     <div className="db-card" key={w.name} style={{ overflow: "hidden" }}>
-                      <Image className="db-wishlist-img" src={w.img} alt={w.name} width={500} height={300} style={{ width: "100%", height: "200px", objectFit: "cover" }} />
+                      <Image
+                        className="db-wishlist-img"
+                        src={w.img}
+                        alt={w.name}
+                        width={500}
+                        height={300}
+                        sizes="(max-width: 768px) 100vw, 500px"
+                        loading="lazy"
+                        style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                      />
                       <div className="db-wishlist-body">
                         <div className="db-wishlist-title">{w.name}</div>
                         <div className="db-wishlist-sub">{w.loc}</div>
