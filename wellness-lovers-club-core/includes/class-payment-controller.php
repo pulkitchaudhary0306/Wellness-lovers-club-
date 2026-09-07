@@ -225,8 +225,152 @@ class WLC_Core_Payment_Controller {
     }
 
     /**
+     * Atomically allocates a unique sequential membership number in format: WLC-XXXX
+     * Starts from WLC-4100 onwards (or highest existing number + 1).
+     * Strictly preserves existing valid membership numbers for existing members.
+     *
+     * @param int $user_id
+     * @return string
+     */
+    public static function allocate_membership_number( $user_id ) {
+        global $wpdb;
+        $user_id = (int) $user_id;
+
+        if ( $user_id > 0 ) {
+            // 1. Check if user already has a valid membership number
+            $existing = get_user_meta( $user_id, 'wlc_membership_number', true );
+            if ( empty( $existing ) || $existing === 'Pending Allocation' ) {
+                $existing = get_user_meta( $user_id, 'wlc_membership_id', true );
+            }
+            if ( empty( $existing ) || $existing === 'Pending Allocation' ) {
+                $existing = get_user_meta( $user_id, 'membershipNumber', true );
+            }
+            if ( empty( $existing ) || $existing === 'Pending Allocation' ) {
+                $existing = get_user_meta( $user_id, 'membershipId', true );
+            }
+
+            if ( ! empty( $existing ) && $existing !== 'Pending Allocation' && strpos( trim( $existing ), 'WLC-' ) === 0 ) {
+                $canonical_existing = strtoupper( trim( $existing ) );
+                // Ensure all legacy keys are synced with the canonical value
+                update_user_meta( $user_id, 'wlc_membership_number', $canonical_existing );
+                update_user_meta( $user_id, 'wlc_membership_id', $canonical_existing );
+                update_user_meta( $user_id, 'membershipNumber', $canonical_existing );
+                update_user_meta( $user_id, 'membershipId', $canonical_existing );
+                update_user_meta( $user_id, 'membership_id', $canonical_existing );
+                return $canonical_existing;
+            }
+        }
+
+        // 2. Sequential unique number search starting from WLC-4100
+        $last_opt = (int) get_option( 'wlc_last_membership_number', 4099 );
+        if ( $last_opt < 4099 ) {
+            $last_opt = 4099;
+        }
+
+        $next_num = $last_opt + 1;
+        $found_unique = false;
+        $max_attempts = 1000;
+        $attempts = 0;
+
+        while ( ! $found_unique && $attempts < $max_attempts ) {
+            $attempts++;
+            $candidate = 'WLC-' . $next_num;
+
+            // Check across all usermeta keys for any other user
+            $exists = $wpdb->get_var( $wpdb->prepare(
+                "SELECT user_id FROM {$wpdb->usermeta} 
+                 WHERE meta_key IN ('wlc_membership_number', 'wlc_membership_id', 'membershipNumber', 'membershipId') 
+                 AND meta_value = %s AND user_id != %d LIMIT 1",
+                $candidate,
+                $user_id
+            ) );
+
+            if ( ! $exists ) {
+                $found_unique = true;
+                break;
+            }
+
+            $next_num++;
+        }
+
+        // Update sequence option atomically
+        update_option( 'wlc_last_membership_number', $next_num );
+        $final_membership_number = 'WLC-' . $next_num;
+
+        if ( $user_id > 0 ) {
+            update_user_meta( $user_id, 'wlc_membership_number', $final_membership_number );
+            update_user_meta( $user_id, 'wlc_membership_id', $final_membership_number );
+            update_user_meta( $user_id, 'membershipNumber', $final_membership_number );
+            update_user_meta( $user_id, 'membershipId', $final_membership_number );
+            update_user_meta( $user_id, 'membership_id', $final_membership_number );
+
+            if ( class_exists( 'WLC_Core_Logger' ) ) {
+                WLC_Core_Logger::log( "Assigned unique membership number {$final_membership_number} to user ID: {$user_id}", 'INFO' );
+            }
+        }
+
+        return $final_membership_number;
+    }
+
+    /**
+     * Activates membership for a user upon verified payment
+     *
+     * @param int $user_id
+     * @param string $tier
+     * @param int $duration_months
+     * @return array
+     */
+    public static function activate_membership_for_user( $user_id, $tier = 'VIP Annual', $duration_months = 12 ) {
+        $user_id = (int) $user_id;
+        if ( $user_id <= 0 ) {
+            return array(
+                'membershipNumber' => 'Pending Allocation',
+                'membershipId'     => 'Pending Allocation',
+                'membershipStatus' => 'Inactive',
+                'membershipTier'   => $tier,
+                'startDate'        => current_time( 'Y-m-d' ),
+                'validUntil'       => gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
+            );
+        }
+
+        $membership_id = self::allocate_membership_number( $user_id );
+        
+        $start_date  = current_time( 'Y-m-d' );
+        $valid_until = gmdate( 'Y-m-d', strtotime( "+{$duration_months} months", strtotime( $start_date ) ) );
+
+        update_user_meta( $user_id, 'wlc_membership_status', 'Active' );
+        update_user_meta( $user_id, 'membership_status', 'Active' );
+        update_user_meta( $user_id, 'membershipStatus', 'Active' );
+
+        update_user_meta( $user_id, 'wlc_membership_tier', $tier );
+        update_user_meta( $user_id, 'membership_tier', $tier );
+        update_user_meta( $user_id, 'membershipTier', $tier );
+
+        update_user_meta( $user_id, 'wlc_membership_start_date', $start_date );
+        update_user_meta( $user_id, 'membership_start_date', $start_date );
+        update_user_meta( $user_id, 'startDate', $start_date );
+
+        update_user_meta( $user_id, 'wlc_membership_valid_until', $valid_until );
+        update_user_meta( $user_id, 'membership_valid_until', $valid_until );
+        update_user_meta( $user_id, 'validUntil', $valid_until );
+        update_user_meta( $user_id, 'validTill', $valid_until );
+        update_user_meta( $user_id, 'wlc_membership_valid_till', $valid_until );
+        update_user_meta( $user_id, 'wlc_membership_expiry', $valid_until . ' 23:59:59' );
+
+        return array(
+            'membershipNumber' => $membership_id,
+            'membershipId'     => $membership_id,
+            'membershipStatus' => 'Active',
+            'membershipTier'   => $tier,
+            'startDate'        => $start_date,
+            'validUntil'       => $valid_until,
+        );
+    }
+
+    /**
      * 3. POST /custom/v1/payment/verify-payment
      * Cryptographically verifies the Razorpay signature via HMAC-SHA256 (hash_equals)
+     * and activates user membership with a unique WLC-XXXX number.
      */
     public function verify_payment( $request ) {
         global $wpdb;
@@ -251,19 +395,29 @@ class WLC_Core_Payment_Controller {
             $order = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_payments} WHERE gateway_order_id = %s", $razorpay_order_id ) );
         }
 
-        // Idempotency: If already completed, return existing success state immediately
+        $user_id = $order ? $order->user_id : WLC_Core_JWT::get_current_user_id();
+
+        // Idempotency: If already completed, return existing success state with assigned membership number
         if ( $order && $order->status === 'completed' ) {
+            $current_membership_no = $user_id ? get_user_meta( $user_id, 'wlc_membership_number', true ) : $order->membership_id;
             return Wellness_API_Response::success( array(
                 'success'           => true,
                 'message'           => 'Payment verified successfully.',
                 'order_id'          => $order->order_id,
                 'razorpay_order_id' => $order->gateway_order_id,
                 'razorpay_payment_id'=> $order->gateway_payment_id,
-                'membership_id'     => $order->membership_id,
+                'membership_id'     => $current_membership_no,
+                'membership_number' => $current_membership_no,
+                'membershipId'      => $current_membership_no,
+                'membershipNumber'  => $current_membership_no,
+                'membershipStatus'  => 'Active',
+                'membershipTier'    => 'VIP Annual',
                 'invoice_number'    => $order->invoice_number,
                 'amount'            => floatval( $order->amount ),
                 'status'            => 'completed',
-                'valid_until'       => gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
+                'startDate'         => get_user_meta( $user_id, 'wlc_membership_start_date', true ) ?: current_time( 'Y-m-d' ),
+                'validUntil'        => get_user_meta( $user_id, 'wlc_membership_valid_until', true ) ?: gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
+                'valid_until'       => get_user_meta( $user_id, 'wlc_membership_valid_until', true ) ?: gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
             ) );
         }
 
@@ -280,28 +434,13 @@ class WLC_Core_Payment_Controller {
             }
         }
 
-        $user_id = $order ? $order->user_id : WLC_Core_JWT::get_current_user_id();
-
-        // ── Sequential WLC-4099+ Membership Number Allocation ──
-        $existing_membership_id = $user_id ? get_user_meta( $user_id, 'wlc_membership_number', true ) : '';
-        if ( empty( $existing_membership_id ) && $user_id ) {
-            $existing_membership_id = get_user_meta( $user_id, 'wlc_membership_id', true );
-        }
-
-        if ( ! empty( $existing_membership_id ) && strpos( $existing_membership_id, 'WLC-' ) === 0 ) {
-            $membership_id = $existing_membership_id;
-        } else {
-            $last_no = intval( get_option( 'wlc_last_membership_number', 0 ) );
-            $next_no = ( $last_no < 4104 ) ? 4104 : ( $last_no + 1 );
-            update_option( 'wlc_last_membership_number', $next_no );
-            $membership_id = 'WLC-' . $next_no;
-        }
-
+        // ── Activate Membership and Allocate Unique Sequential Number ──
         $duration_months = intval( get_option( 'wlc_membership_duration_months', 12 ) );
         if ( $duration_months <= 0 ) $duration_months = 12;
 
-        $start_date = current_time( 'Y-m-d' );
-        $valid_till = gmdate( 'Y-m-d', strtotime( "+{$duration_months} months", strtotime( $start_date ) ) );
+        $activation = self::activate_membership_for_user( $user_id, 'VIP Annual', $duration_months );
+        $membership_id = $activation['membershipNumber'];
+
         $invoice_number = 'INV-' . gmdate( 'Y' ) . '-' . strtoupper( wp_generate_password( 6, false, false ) );
 
         // Update or insert payment row in WordPress database
@@ -344,18 +483,6 @@ class WLC_Core_Payment_Controller {
             );
         }
 
-        // Activate user membership in WP meta
-        if ( $user_id ) {
-            update_user_meta( $user_id, 'wlc_membership_status', 'Active' );
-            update_user_meta( $user_id, 'membership_status', 'Active' );
-            update_user_meta( $user_id, 'wlc_membership_id', $membership_id );
-            update_user_meta( $user_id, 'wlc_membership_number', $membership_id );
-            update_user_meta( $user_id, 'wlc_membership_tier', 'Lotus Club' );
-            update_user_meta( $user_id, 'wlc_membership_start_date', $start_date );
-            update_user_meta( $user_id, 'wlc_membership_valid_till', $valid_till );
-            update_user_meta( $user_id, 'wlc_membership_expiry', $valid_till . ' 23:59:59' );
-        }
-
         // Dispatch Official Welcome & Thank You Email
         $user_obj = $user_id ? get_userdata( $user_id ) : null;
         $customer_email = $user_obj ? $user_obj->user_email : ( isset( $params['email'] ) ? sanitize_email( $params['email'] ) : '' );
@@ -382,16 +509,27 @@ class WLC_Core_Payment_Controller {
         }
 
         return Wellness_API_Response::success( array(
-            'success'           => true,
-            'message'           => 'VIP Membership activated successfully.',
-            'order_id'          => $order ? $order->order_id : $order_id,
-            'razorpay_order_id' => $razorpay_order_id,
-            'razorpay_payment_id'=> $razorpay_payment_id,
-            'membership_id'     => $membership_id,
-            'invoice_number'    => $invoice_number,
-            'amount'            => self::FIXED_FINAL_PRICE,
-            'status'            => 'completed',
-            'valid_until'       => gmdate( 'Y-m-d', strtotime( '+1 year' ) ),
+            'success'              => true,
+            'message'              => 'VIP Membership activated successfully.',
+            'order_id'             => $order ? $order->order_id : $order_id,
+            'razorpay_order_id'    => $razorpay_order_id,
+            'razorpay_payment_id'  => $razorpay_payment_id,
+            'membership_id'        => $activation['membershipNumber'],
+            'membership_number'    => $activation['membershipNumber'],
+            'membershipId'         => $activation['membershipId'],
+            'membershipNumber'     => $activation['membershipNumber'],
+            'membershipStatus'     => $activation['membershipStatus'],
+            'membership_status'    => $activation['membershipStatus'],
+            'membershipTier'       => $activation['membershipTier'],
+            'membership_tier'      => $activation['membershipTier'],
+            'startDate'            => $activation['startDate'],
+            'start_date'           => $activation['startDate'],
+            'validUntil'           => $activation['validUntil'],
+            'valid_until'          => $activation['validUntil'],
+            'valid_till'           => $activation['validUntil'],
+            'invoice_number'       => $invoice_number,
+            'amount'               => self::FIXED_FINAL_PRICE,
+            'status'               => 'completed',
         ) );
     }
 
@@ -418,6 +556,7 @@ class WLC_Core_Payment_Controller {
             'status'         => $row->status,
             'is_paid'        => ( $row->status === 'completed' ),
             'membership_id'  => $row->membership_id,
+            'membership_number' => $row->membership_id,
             'invoice_number' => $row->invoice_number,
             'paid_at'        => $row->paid_at,
         ) );
@@ -452,8 +591,9 @@ class WLC_Core_Payment_Controller {
 
             $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE gateway_order_id = %s", $rzp_order_id ) );
             if ( $row && $row->status !== 'completed' ) {
-                $user_id        = $row->user_id;
-                $membership_id  = 'WLC-' . gmdate( 'Y' ) . '-' . str_pad( (string) $user_id, 6, '0', STR_PAD_LEFT );
+                $user_id        = (int) $row->user_id;
+                $activation     = self::activate_membership_for_user( $user_id );
+                $membership_id  = $activation['membershipNumber'];
                 $invoice_number = 'INV-' . gmdate( 'Y' ) . '-' . strtoupper( wp_generate_password( 6, false, false ) );
 
                 $wpdb->update(
@@ -468,11 +608,6 @@ class WLC_Core_Payment_Controller {
                     ),
                     array( 'id' => $row->id )
                 );
-
-                if ( $user_id ) {
-                    update_user_meta( $user_id, 'wlc_membership_status', 'Active' );
-                    update_user_meta( $user_id, 'wlc_membership_id', $membership_id );
-                }
             }
         }
 
