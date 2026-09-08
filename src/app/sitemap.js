@@ -10,6 +10,8 @@ export default function sitemap() {
     "/offerings/luxury-stays",
     "/offerings/movement-mindfulness",
     "/offerings/products",
+    "/offerings/products/energetika369",
+    "/offerings/products/environics",
     "/offerings/spa-healing",
     "/offerings/wellness-retreats",
     "/destinations",

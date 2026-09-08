@@ -1,70 +1,24 @@
 /**
  * Wellness Lovers Club - Products Dataset
  * 
- * Sourced directly from official Energetika369 product catalogues and manuals
- * located in /public/products/
+ * Curated bio-frequency devices, quantum wellness technologies,
+ * and science-backed environmental radiation management solutions.
  * 
- * Enquiry-only offerings with zero prices, checkout, or cart functionality.
+ * Enquiry-only offerings with exclusive privileges for verified WLC members.
  */
-
-export const PRODUCT_CATALOGUE_PDFS = [
-  {
-    id: "e369-main-cat",
-    title: "Energetika369 Complete Catalogue",
-    category: "Full Product Lineup",
-    fileName: "Energetika369 Catalogue.pdf",
-    filePath: "/products/Energetika369 Catalogue.pdf",
-    description: "Complete product catalogue covering HexaFlow devices (Pulse, Sync, Lux), NeuroPulse TMS, Digital Iridoscope, Mini Rife Imprinter, AquaMAG, LumiPen Pro, LumiPulse Neuro, and Essential Bio-Frequency Oils.",
-    icon: "📘"
-  },
-  {
-    id: "pemf-mat-doc",
-    title: "Beyond PEMF Wellness Mat Specification",
-    category: "Technical Guide & Protocols",
-    fileName: "Beyond PEMF Wellness Mat.pdf",
-    filePath: "/products/Beyond PEMF Wellness Mat.pdf",
-    description: "Comprehensive guide to natural crystal PEMF therapy, photon bio-light wavelengths, far-infrared thermal penetration, and cellular recovery protocols.",
-    icon: "🧘"
-  },
-  {
-    id: "diji-wave-doc",
-    title: "Energetika Digi-Wave 369 Clinical Resonance",
-    category: "Clinical Research & Protocols",
-    fileName: "Energetika Diji-Wave 369.pdf",
-    filePath: "/products/Energetika Diji-Wave 369.pdf",
-    description: "Advanced millimeter wave therapy, clinical resonance studies, cellular frequency pathways, and application protocols.",
-    icon: "⚡"
-  },
-  {
-    id: "hexa-sense-manual",
-    title: "Hexa Sense Ai Operation Manual",
-    category: "User & Practitioner Manual",
-    fileName: "Hexa Sense Ai Manual.pdf",
-    filePath: "/products/Hexa Sense Ai Manual.pdf",
-    description: "AI-powered bioresonance scanning guide, sensor calibration, bioenergetic signature analysis, and client report interpretation.",
-    icon: "🔬"
-  },
-  {
-    id: "aligne369-doc",
-    title: "Aligne369 2026 Overview",
-    category: "Brand & Strategic Vision",
-    fileName: "Aligne369 2026.pdf",
-    filePath: "/products/Aligne369 2026.pdf",
-    description: "Comprehensive overview of the 369 Hz frequency resonance ecosystem, lifestyle integration, and holistic practitioner frameworks.",
-    icon: "📑"
-  }
-];
 
 export const PRODUCTS_BRANDS = [
   {
     id: "energetika369",
     name: "Energetika369",
+    slug: "energetika369",
+    category: "energetika369",
     tagline: "Bio-Frequency Technology & Quantum Wellness",
     description: "Pioneering cellular restoration, scalar resonance, and bio-frequency systems engineered to restore energetic coherence, vitality, and cellular harmony.",
     badge: "Bio-Frequency & Quantum Medicine",
     logo: "/images/products/pemf-crystal-mat.webp",
     website: "https://energetika369.com/",
-    catalogues: PRODUCT_CATALOGUE_PDFS,
+    route: "/offerings/products/energetika369",
     products: [
       {
         id: "pemf-crystal-mat",
@@ -73,8 +27,6 @@ export const PRODUCTS_BRANDS = [
         category: "PEMF & Thermal Recovery",
         tag: "Cellular Recharging",
         image: "/images/products/pemf-crystal-mat.webp",
-        pdfPath: "/products/Beyond PEMF Wellness Mat.pdf",
-        pdfName: "Beyond PEMF Wellness Mat.pdf",
         shortDesc: "A multi-layer natural crystal PEMF mat integrating 3-color photon light therapy, far-infrared deep heat, 7 natural chakra healing crystal layers, and pulsed electromagnetic field frequencies.",
         features: [
           "7 Healing Crystal Layers (Amethyst, Tourmaline, Jade, Obsidian, Quartz)",
@@ -90,8 +42,6 @@ export const PRODUCTS_BRANDS = [
         category: "Scalar Wave Technology",
         tag: "Harmonic Resonance",
         image: "/images/products/digi-wave-369.webp",
-        pdfPath: "/products/Energetika Diji-Wave 369.pdf",
-        pdfName: "Energetika Diji-Wave 369.pdf",
         shortDesc: "Advanced millimeter wave bio-frequency generator and scalar resonance system delivering clinical harmonic vibrational waveforms tuned to natural energetic frequencies for physiological renewal.",
         features: [
           "Advanced Millimeter Wave & Clinical Resonance",
@@ -107,8 +57,6 @@ export const PRODUCTS_BRANDS = [
         category: "Bioenergetic Analysis",
         tag: "AI Bio-Scanning",
         image: "/images/products/hexa-sense-ai.webp",
-        pdfPath: "/products/Hexa Sense Ai Manual.pdf",
-        pdfName: "Hexa Sense Ai Manual.pdf",
         shortDesc: "Non-invasive AI-powered bioenergetic analysis and frequency scanning system designed to assess electromagnetic bio-signatures, stress patterns, organ coherence, and systemic balance.",
         features: [
           "Non-Invasive Sensor Bio-Feedback",
@@ -124,8 +72,6 @@ export const PRODUCTS_BRANDS = [
         category: "Vibrational Botanicals",
         tag: "Transdermal & Aromatic",
         image: "/images/products/bio-frequency-oils.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "Harmonically imprinted Qi Oil Balance essential formulations and transdermal frequency patches crafted to provide localized energetic grounding, meridian support, and cellular calm.",
         features: [
           "Qi Oil Balance Frequency-Infused Pure Botanicals",
@@ -141,8 +87,6 @@ export const PRODUCTS_BRANDS = [
         category: "Frequency Systems",
         tag: "Clinical & Personal",
         image: "/images/products/hexa-flow-devices.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "Precision multi-channel frequency modulation devices including HexaFlow Pulse, HexaFlow Sync, and HexaFlow Lux engineered for structured clinical therapy rooms and home self-care routines.",
         features: [
           "HexaFlow Pulse, Sync & Lux Multi-Tier Configurations",
@@ -158,8 +102,6 @@ export const PRODUCTS_BRANDS = [
         category: "Neuro-Wellness & TMS",
         tag: "Cognitive Balance",
         image: "/images/products/neuropulse-tms.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "Transcranial magnetic stimulation (TMS) and neuro-resonance device engineered to support neurological coherence, deep relaxation, cognitive recovery, and neuroelectric alignment.",
         features: [
           "Non-Invasive Brain Rehabilitation & Neuro-Stimulation",
@@ -175,8 +117,6 @@ export const PRODUCTS_BRANDS = [
         category: "Rife Resonance Systems",
         tag: "Precision Frequency Sweeps",
         image: "/images/products/rifemachine-2nd-gen.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "Second-generation precision multi-frequency resonance generator with advanced programmable pulsed field modulation, electromagnetic sweeps, and harmonic cellular balancing.",
         features: [
           "Wide-Spectrum Programmable Frequency Sweeps",
@@ -192,8 +132,6 @@ export const PRODUCTS_BRANDS = [
         category: "Holistic Diagnostics",
         tag: "Optical Bio-Imaging",
         image: "/images/products/digital-iridoscope.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "High-resolution optical analysis station for iridological, dermatological, and trichological examination to evaluate constitutional vitality and tissue health states.",
         features: [
           "Ultra High-Definition Optical Sensor Array",
@@ -209,8 +147,6 @@ export const PRODUCTS_BRANDS = [
         category: "Photobiomodulation",
         tag: "Light Spectrum Therapy",
         image: "/images/products/lumicare-line.webp",
-        pdfPath: "/products/Energetika369 Catalogue.pdf",
-        pdfName: "Energetika369 Catalogue.pdf",
         shortDesc: "Clinical-grade photobiomodulation line featuring LumiPen Pro (multi-wavelength red/blue/infrared) and LumiPulse Neuro therapeutic brain helmet for mitochondrial stimulation.",
         features: [
           "LumiPen Pro: Blue (460nm), Red (630/660nm) & Infrared (850/940nm)",
@@ -220,6 +156,104 @@ export const PRODUCTS_BRANDS = [
         ]
       }
     ]
+  },
+  {
+    id: "environics",
+    name: "Environics",
+    slug: "environics",
+    category: "environics",
+    tagline: "Radiation Management & Environmental Wellness",
+    heading: "Create a Healthier Environment with Environics",
+    description: "Dedicated to creating healthier, safer and more balanced spaces through science-backed environmental and electromagnetic solutions designed for modern living.",
+    badge: "50% OFF EXCLUSIVE PRIVILEGE",
+    discountOffer: "50% OFF",
+    logo: "/images/products/environics-main-cover.webp",
+    website: "https://environics.in/",
+    route: "/offerings/products/environics",
+    bodyParagraphs: [
+      "Your environment plays a significant role in your overall wellbeing. Environics is dedicated to creating healthier, safer and more balanced spaces through science-backed environmental and electromagnetic solutions designed for modern living.",
+      "With a thoughtfully developed range of products, including Envirochips, Enviroglobe, Envirocare, Enviromat and more, Environics offers innovative solutions that help address invisible environmental influences and support a healthier everyday environment.",
+      "Rooted in the belief that wellbeing extends beyond the individual to the spaces we inhabit, Environics combines science, innovation and conscious living to create solutions for homes, workplaces and everyday life.",
+      "As a Wellness Lovers Club member, you can now enjoy an exclusive 50% OFF on the entire range of Environics products.",
+      "Explore thoughtful solutions designed to help you create a healthier and a more balanced environment."
+    ],
+    products: [
+      {
+        id: "envirochips",
+        name: "Envirochips",
+        brand: "Environics",
+        category: "Personal EMR Protection",
+        tag: "Electrosmog Neutralizer",
+        image: "/images/products/envirochips.webp",
+        shortDesc: "Clinically tested and patented radiation protection chip designed to neutralize the harmful biological effects of electromagnetic radiation emitted from mobile phones, laptops, Wi-Fi routers, and smart devices without altering signal strength.",
+        features: [
+          "Patented & CE Certified Radiation Protection Technology",
+          "Changes the Nature of Harmful EMR to Bio-Friendly Frequencies",
+          "Compatible with All Smartphones, Laptops, Tablets & Routers",
+          "Maintains Device Battery Life & Full Network Signal Integrity"
+        ],
+        memberPrivilege: "50% OFF for WLC Members"
+      },
+      {
+        id: "enviroglobe",
+        name: "Enviroglobe",
+        brand: "Environics",
+        category: "Ambient Space Protection",
+        tag: "360° Living Space Shield",
+        image: "/images/products/enviroglobe.webp",
+        shortDesc: "Comprehensive 360-degree ambient environmental radiation protection system engineered to neutralize electro-smog across areas up to 300-350 sq.ft in homes, luxury suites, executive offices, and vehicles.",
+        features: [
+          "360° Spherical Radiation Neutralization (Up to 350 sq.ft coverage)",
+          "Neutralizes Radiation from Mobile Towers, High-Tension Lines & Wi-Fi",
+          "Improves Sleep Quality, Cellular Energy & Heart Rate Variability",
+          "Elegant Brass & Copper Handcrafted Design for Refined Interiors"
+        ],
+        memberPrivilege: "50% OFF for WLC Members"
+      },
+      {
+        id: "envirocare",
+        name: "Envirocare",
+        brand: "Environics",
+        category: "Environmental Wellness & Air Balance",
+        tag: "Vitality & Bio-Harmonizer",
+        image: "/images/products/envirocare.webp",
+        shortDesc: "Intelligent holistic environmental device formulated to optimize atmospheric resonance, neutralize geopathic stresses, and promote restorative ambient air quality across personal living spaces.",
+        features: [
+          "Mitigates Hartmann & Curry Geopathic Grid Stress Fields",
+          "Bio-Energetic Ambient Field Harmonization",
+          "Supports Deep Relaxation, Immunity & Mental Clarity",
+          "Compact & Portable for Travel, Bedside & Desk Integration"
+        ],
+        memberPrivilege: "50% OFF for WLC Members"
+      },
+      {
+        id: "enviromat",
+        name: "Enviromat",
+        brand: "Environics",
+        category: "Grounding & EMF Mitigation",
+        tag: "Conductive Bio-Neutralizer",
+        image: "/images/products/enviromat.webp",
+        shortDesc: "Advanced multi-layer electromagnetic radiation neutralizing and grounding mat engineered for work desks, meditation rooms, and sleeping areas to drain static charges and shield against low-frequency EMF.",
+        features: [
+          "Conductive Carbon & Natural Mineral Grid Layering",
+          "Direct Earth Grounding & Static Voltage Dissipation",
+          "Mitigates Computer & Electrical Equipment Electromagnetic Fields",
+          "Premium Eco-Friendly Textured Surface for Daily Grounding"
+        ],
+        memberPrivilege: "50% OFF for WLC Members"
+      }
+    ]
   }
 ];
 
+export function getProductBrand(id) {
+  return PRODUCTS_BRANDS.find((b) => b.id === id || b.slug === id);
+}
+
+export function getAllProductBrands() {
+  return PRODUCTS_BRANDS;
+}
+
+export function getAllProducts() {
+  return PRODUCTS_BRANDS.flatMap((b) => b.products);
+}

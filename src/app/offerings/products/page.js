@@ -3,114 +3,86 @@ import Link from "next/link";
 import "../wellness-retreats/retreats.css";
 import "../offerings.css";
 import "./products.css";
-import { PRODUCTS_BRANDS } from "@/data/productsData";
+import ProductCategoryTabs from "@/components/Products/ProductCategoryTabs";
+import { getAllProductBrands } from "@/data/productsData";
 
 export const metadata = {
-  title: "Products & Bio-Frequency Technology | Wellness Lovers Club",
-  description: "Explore curated bio-frequency devices and quantum wellness technologies from Energetika369.",
+  title: "Products & Wellness Technology | Wellness Lovers Club",
+  description: "Explore curated bio-frequency devices from Energetika369 and science-backed radiation management solutions from Environics.",
 };
 
 export const dynamic = "force-dynamic";
 
 export default function ProductsOfferingsPage() {
-  const energetikaBrand = PRODUCTS_BRANDS.find((b) => b.id === "energetika369");
+  const brands = getAllProductBrands();
 
   return (
     <article className="offerings-page">
       {/* ─── Hero Banner ─────────────────────────────────────────────────── */}
       <section className="offerings-hero" aria-label="Products Hero">
         <div className="offerings-hero-container">
-          <span className="offerings-hero-eyebrow">BIO-FREQUENCY & WELLNESS INNOVATION</span>
+          <span className="offerings-hero-eyebrow">BIO-FREQUENCY & ENVIRONMENTAL WELLNESS</span>
           <h1 className="offerings-hero-title">Products</h1>
           <p className="offerings-hero-desc">
-            Explore advanced bio-frequency devices and quantum wellness technologies curated for conscious living and cellular vitality.
+            Explore advanced bio-frequency devices, quantum wellness technologies, and science-backed environmental solutions curated for conscious living and cellular vitality.
           </p>
         </div>
       </section>
 
       {/* ─── Main Content Section ────────────────────────────────────────── */}
-      <section className="offerings-main-section" aria-label="Products Catalog">
+      <section className="offerings-main-section" aria-label="Products Hub">
         <div className="offerings-section-header">
-          <span className="eyebrow">PRODUCTS & TECHNOLOGIES</span>
+          <span className="eyebrow">CURATED WELLNESS INNOVATIONS</span>
           <h2 className="offerings-section-title">Harmonizing Mind, Body & Environment</h2>
           <p>
-            As a verified Wellness Lovers Club member, access preferred consultations, concierge allocations, and exclusive privileges across our trusted wellness technology partners.
+            Choose a specialized product category to explore bio-energetic technologies and environmental wellness solutions curated exclusively for Wellness Lovers Club members.
           </p>
         </div>
 
-        {/* ─── BRAND 1: Energetika369 ──────────────────────────────────────── */}
-        {energetikaBrand && (
-          <div className="products-brand-section" id="energetika369">
-            <div className="brand-header-card">
-              <div className="brand-header-info">
-                <span className="brand-tagline">{energetikaBrand.tagline}</span>
-                <h3 className="brand-name">{energetikaBrand.name}</h3>
-                <p className="brand-desc">{energetikaBrand.description}</p>
+        {/* ─── Category Selection Tabs ────────────────────────────────────── */}
+        <ProductCategoryTabs activeCategory="all" />
+
+        {/* ─── Category Entry Point Cards ─────────────────────────────────── */}
+        <div className="category-hub-grid">
+          {brands.map((brand) => (
+            <Link
+              href={brand.route}
+              className="category-hub-card"
+              key={brand.id}
+              aria-label={`Explore ${brand.name} collection`}
+            >
+              <div className="category-hub-img-wrap">
+                <Image
+                  src={brand.logo}
+                  alt={brand.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority={brand.id === "energetika369"}
+                  loading={brand.id === "energetika369" ? "eager" : "lazy"}
+                />
+                <span className={`category-hub-badge ${brand.id === "environics" ? "gold" : ""}`}>
+                  {brand.id === "environics" ? "50% OFF Privilege" : "Bio-Frequency Tech"}
+                </span>
               </div>
-              <div className="brand-badge-pill">
-                <span>⚡</span> {energetikaBrand.badge}
-              </div>
-            </div>
-
-            {/* ─── Product Cards Grid ──────────────────────────────────────── */}
-            <div className="offerings-grid-container">
-              {energetikaBrand.products.map((product) => (
-                <div className="product-card" key={product.id}>
-                  <div className="product-card-img-wrap">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      priority={product.id === "pemf-crystal-mat"}
-                      loading={product.id === "pemf-crystal-mat" ? "eager" : "lazy"}
-                    />
-                  </div>
-                  <div className="product-card-content">
-                    <div className="product-meta-row">
-                      <span className="product-tag">{product.tag}</span>
-                      <span className="product-brand-tag">{product.brand}</span>
-                    </div>
-
-                    <h4 className="product-title">{product.name}</h4>
-                    <p className="product-desc">{product.shortDesc}</p>
-
-                    {Array.isArray(product.features) && product.features.length > 0 && (
-                      <ul className="product-features-list">
-                        {product.features.map((feature, idx) => (
-                          <li key={idx}>{feature}</li>
-                        ))}
-                      </ul>
-                    )}
-
-                    <div className="product-card-footer">
-                      {product.pdfPath && (
-                        <a
-                          href={product.pdfPath}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="product-pdf-link"
-                          title={`View ${product.pdfName}`}
-                        >
-                          📄 View Official Catalogue PDF ↗
-                        </a>
-                      )}
-                      <Link
-                        href={`/explore-offer?destination=${encodeURIComponent(`${product.brand} - ${product.name}`)}`}
-                        className="product-enquiry-btn"
-                        title={`Enquire about ${product.name}`}
-                      >
-                        Enquire Now <span>→</span>
-                      </Link>
-                    </div>
-                  </div>
+              <div className="category-hub-content">
+                <span className="category-hub-tagline">{brand.tagline}</span>
+                <h3 className="category-hub-title">{brand.name}</h3>
+                <p className="category-hub-desc">{brand.description}</p>
+                
+                <div className="category-hub-footer">
+                  <span className="category-hub-cta">
+                    View Collection <span>→</span>
+                  </span>
+                  <span className="category-hub-count">
+                    {brand.products.length} Products
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            </Link>
+          ))}
+        </div>
 
-        {/* ─── Bottom Actions ──────────────────────────────────────────────── */}
+        {/* ─── Bottom Navigation Actions ─────────────────────────────────── */}
         <div className="offerings-nav-buttons">
           <Link href="/offerings" className="btn btn-green">
             ← All Offerings
