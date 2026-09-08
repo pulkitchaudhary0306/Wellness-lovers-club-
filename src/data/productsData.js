@@ -184,7 +184,7 @@ export const PRODUCTS_BRANDS = [
         brand: "Environics",
         category: "Personal EMR Protection",
         tag: "Electrosmog Neutralizer",
-        image: "/images/products/envirochips.webp",
+        image: "/products/Envirochips.webp",
         shortDesc: "Clinically tested and patented radiation protection chip designed to neutralize the harmful biological effects of electromagnetic radiation emitted from mobile phones, laptops, Wi-Fi routers, and smart devices without altering signal strength.",
         features: [
           "Patented & CE Certified Radiation Protection Technology",
@@ -200,7 +200,7 @@ export const PRODUCTS_BRANDS = [
         brand: "Environics",
         category: "Ambient Space Protection",
         tag: "360° Living Space Shield",
-        image: "/images/products/enviroglobe.webp",
+        image: "/products/Enviroglobe.webp",
         shortDesc: "Comprehensive 360-degree ambient environmental radiation protection system engineered to neutralize electro-smog across areas up to 300-350 sq.ft in homes, luxury suites, executive offices, and vehicles.",
         features: [
           "360° Spherical Radiation Neutralization (Up to 350 sq.ft coverage)",
@@ -216,7 +216,7 @@ export const PRODUCTS_BRANDS = [
         brand: "Environics",
         category: "Environmental Wellness & Air Balance",
         tag: "Vitality & Bio-Harmonizer",
-        image: "/images/products/envirocare.webp",
+        image: "/products/Envirocare.webp",
         shortDesc: "Intelligent holistic environmental device formulated to optimize atmospheric resonance, neutralize geopathic stresses, and promote restorative ambient air quality across personal living spaces.",
         features: [
           "Mitigates Hartmann & Curry Geopathic Grid Stress Fields",
@@ -232,7 +232,7 @@ export const PRODUCTS_BRANDS = [
         brand: "Environics",
         category: "Grounding & EMF Mitigation",
         tag: "Conductive Bio-Neutralizer",
-        image: "/images/products/enviromat.webp",
+        image: "/products/Enviromat.webp",
         shortDesc: "Advanced multi-layer electromagnetic radiation neutralizing and grounding mat engineered for work desks, meditation rooms, and sleeping areas to drain static charges and shield against low-frequency EMF.",
         features: [
           "Conductive Carbon & Natural Mineral Grid Layering",
