@@ -149,17 +149,23 @@ export default function MembershipCard({
   const downloadBtnText = cardConfig.downloadButtonText || "DOWNLOAD MEMBERSHIP CARD";
   const downloadCaption = cardConfig.downloadCaption || "High-resolution printable digital membership card format (PNG).";
 
-  // Dynamic Member-Specific Values — sourced strictly from live backend
+  // Member name resolution: Prioritize full first + last name, then display/full name, then user object names
+  const constructFullName = (first, last) => {
+    if (first && last) return `${String(first).trim()} ${String(last).trim()}`;
+    return String(first || "").trim() || String(last || "").trim() || "";
+  };
+
   const memberName = (
+    constructFullName(membershipCard?.firstName, membershipCard?.lastName) ||
+    constructFullName(user?.firstName, user?.lastName) ||
+    constructFullName(user?.first_name, user?.last_name) ||
     membershipCard?.displayName ||
     membershipCard?.name ||
-    (membershipCard?.firstName
-      ? `${membershipCard.firstName} ${membershipCard?.lastName || ""}`.trim()
-      : "") ||
+    membershipCard?.fullName ||
     propName ||
     user?.fullName ||
+    user?.displayName ||
     user?.display_name ||
-    `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
     user?.name ||
     "VALUED MEMBER"
   ).toUpperCase();
@@ -245,31 +251,19 @@ export default function MembershipCard({
         ctx.fillRect(0, 0, width, height);
       }
 
-      // ─── 2. TOP RIGHT: Dynamic Motto Words + Leaf Loops Icon ───
+      // ─── 2. TOP RIGHT: Dynamic Motto Words (Clean layout without icon) ───
       ctx.save();
       ctx.textAlign = "right";
       ctx.textBaseline = "middle";
-      ctx.font = "700 20px 'Montserrat', Arial, sans-serif";
+      ctx.font = "700 22px 'Montserrat', Arial, sans-serif";
       ctx.fillStyle = "#8fa89b";
       ctx.letterSpacing = "3px";
       
       const startY = 150;
       const lineSpacing = 35;
       mottoLines.forEach((line, idx) => {
-        ctx.fillText(String(line).toUpperCase(), width - 260, startY + (idx * lineSpacing));
+        ctx.fillText(String(line).toUpperCase(), width - 160, startY + (idx * lineSpacing));
       });
-
-      const centerMottoY = startY + ((mottoLines.length - 1) * lineSpacing) / 2;
-
-      // Overlapping Leaf Loop Curves
-      ctx.strokeStyle = "#8fa89b";
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.ellipse(width - 200, centerMottoY, 36, 20, Math.PI / 4, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(width - 170, centerMottoY, 36, 20, -Math.PI / 4, 0, Math.PI * 2);
-      ctx.stroke();
       ctx.restore();
 
       // ─── 3. MIDDLE: Dynamic MEMBER NAME Label & Value ───
@@ -280,9 +274,15 @@ export default function MembershipCard({
       ctx.letterSpacing = "4px";
       ctx.fillText(memberNameLabel.toUpperCase(), 150, 680);
 
-      ctx.font = "800 72px 'Montserrat', Arial, sans-serif";
-      ctx.fillStyle = "#ffffff";
+      // Dynamically fit font size for long member names so text never overflows
+      let nameFontSize = 72;
+      ctx.font = `800 ${nameFontSize}px 'Montserrat', Arial, sans-serif`;
       ctx.letterSpacing = "2px";
+      while (ctx.measureText(memberName).width > (width - 320) && nameFontSize > 36) {
+        nameFontSize -= 4;
+        ctx.font = `800 ${nameFontSize}px 'Montserrat', Arial, sans-serif`;
+      }
+      ctx.fillStyle = "#ffffff";
       ctx.shadowColor = "rgba(0, 0, 0, 0.75)";
       ctx.shadowBlur = 14;
       ctx.fillText(memberName, 150, 765);
@@ -426,18 +426,12 @@ export default function MembershipCard({
             }
           />
 
-          {/* Top-Right: Dynamic Motto Words + Leaf Loops Icon */}
+          {/* Top-Right: Dynamic Motto Words (Clean layout without icon) */}
           <div className="wlc-zen-top-right">
             <div className="wlc-zen-motto">
               {mottoLines.map((line, idx) => (
                 <span key={idx}>{String(line).toUpperCase()}</span>
               ))}
-            </div>
-            <div className="wlc-zen-motto-icon">
-              <svg width="30" height="22" viewBox="0 0 36 24" fill="none" stroke="#8fa89b" strokeWidth="1.8">
-                <ellipse cx="13" cy="12" rx="11" ry="8" transform="rotate(-15 13 12)" />
-                <ellipse cx="23" cy="12" rx="11" ry="8" transform="rotate(15 23 12)" />
-              </svg>
             </div>
           </div>
 

@@ -299,7 +299,7 @@ class WLC_Core_Privileges_Controller {
                 'id'        => 9,
                 'slug'      => 'andaz-delhi-hyatt',
                 'name'      => 'Andaz Delhi — Hyatt Hotel',
-                'location'  => 'Hyatt Hotel, Vasant Vihar / Aerocity, Delhi',
+                'location'  => 'Hyatt Hotel, Aerocity, Delhi',
                 'region'    => 'NORTH INDIA',
                 'shortDesc' => 'A luxury lifestyle Hyatt property blending contemporary Indian craftsmanship with urban wellness, heated pools, and artisanal spa sanctuaries.',
                 'category'  => 'Urban Luxury Spa & Wellness',

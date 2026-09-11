@@ -6,7 +6,20 @@ import { usePathname, useRouter } from "next/navigation";
 import "./Header.css";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, LayoutDashboard, Award, LogOut, ChevronDown } from "lucide-react";
+import {
+  Home,
+  Compass,
+  Gift,
+  MapPin,
+  Mail,
+  User,
+  LayoutDashboard,
+  Award,
+  LogOut,
+  ChevronDown,
+  CreditCard,
+  ShieldCheck,
+} from "lucide-react";
 
 function Header() {
   const pathname = usePathname();
@@ -117,35 +130,40 @@ function Header() {
               className={isActive("/") ? "active-link" : ""}
               onClick={closeMenu}
             >
-              Home
+              <Home size={22} strokeWidth={1.8} className="nav-link-icon" />
+              <span>Home</span>
             </Link>
             <Link
               href="/our-philosophy"
               className={isActive("/our-philosophy") ? "active-link" : ""}
               onClick={closeMenu}
             >
-              Our Philosophy
+              <Compass size={22} strokeWidth={1.8} className="nav-link-icon" />
+              <span>Our Philosophy</span>
             </Link>
             <Link
               href="/offerings"
               className={isActive("/offerings") ? "active-link" : ""}
               onClick={closeMenu}
             >
-              Offerings
+              <Gift size={22} strokeWidth={1.8} className="nav-link-icon" />
+              <span>Offerings</span>
             </Link>
             <Link
               href="/destinations"
               className={isActive("/destinations") ? "active-link" : ""}
               onClick={closeMenu}
             >
-              Destinations
+              <MapPin size={22} strokeWidth={1.8} className="nav-link-icon" />
+              <span>Destinations</span>
             </Link>
             <Link
               href="/contact"
               className={isActive("/contact") ? "active-link" : ""}
               onClick={closeMenu}
             >
-              Contact Us
+              <Mail size={22} strokeWidth={1.8} className="nav-link-icon" />
+              <span>Contact Us</span>
             </Link>
             
             {/* Mobile Only: Member action buttons placed inside mobile drawer */}
@@ -158,7 +176,7 @@ function Header() {
                     onClick={closeMenu}
                   >
                     <LayoutDashboard size={16} style={{ marginRight: 6 }} />
-                    DASHBOARD ({displayName})
+                    <span>DASHBOARD ({displayName})</span>
                   </Link>
                   <button
                     type="button"
@@ -166,7 +184,7 @@ function Header() {
                     className="mobile-logout-btn"
                   >
                     <LogOut size={15} style={{ marginRight: 6 }} />
-                    Sign Out
+                    <span>Sign Out</span>
                   </button>
                 </div>
               ) : (
@@ -176,14 +194,16 @@ function Header() {
                     className="mobile-login-link"
                     onClick={closeMenu}
                   >
-                    Sign In
+                    <User size={15} style={{ marginRight: 6, display: "inline-block", verticalAlign: "middle" }} />
+                    <span>Sign In</span>
                   </Link>
                   <Link
                     href="/membership"
                     className="member-button mobile-member-button"
                     onClick={closeMenu}
                   >
-                    BECOME A MEMBER →
+                    <CreditCard size={15} style={{ marginRight: 6 }} />
+                    <span>BECOME A MEMBER →</span>
                   </Link>
                 </div>
               )}
@@ -220,13 +240,15 @@ function Header() {
                   href="/login"
                   className="header-signin-link"
                 >
-                  Sign In
+                  <User size={15} className="nav-btn-icon" />
+                  <span>Sign In</span>
                 </Link>
                 <Link
                   href="/membership"
                   className="member-button"
                 >
-                  BECOME A MEMBER →
+                  <CreditCard size={15} className="nav-btn-icon" />
+                  <span>BECOME A MEMBER →</span>
                 </Link>
               </div>
             )}

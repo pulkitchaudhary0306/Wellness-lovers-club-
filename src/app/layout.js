@@ -34,8 +34,12 @@ export const metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/logo/logo.webp",
-    apple: "/logo/logo.webp",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Wellness Lovers Club | Luxury Wellness Sanctuary & Member Privileges",

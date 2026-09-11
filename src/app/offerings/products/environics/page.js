@@ -55,7 +55,7 @@ export default function EnvironicsProductPage() {
               <p>{brand.bodyParagraphs[2]}</p>
               
               <div className="environics-highlight-box">
-                <p>✨ {brand.bodyParagraphs[3]}</p>
+                <p>{brand.bodyParagraphs[3]}</p>
               </div>
               
               <p>{brand.bodyParagraphs[4]}</p>

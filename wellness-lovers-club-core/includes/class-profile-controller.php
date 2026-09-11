@@ -138,12 +138,16 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
             $country     = get_user_meta( $user_id, 'wlc_country', true ) ?: ( get_user_meta( $user_id, 'country', true ) ?: '' );
             $address     = get_user_meta( $user_id, 'wlc_correspondence_address', true ) ?: ( get_user_meta( $user_id, 'address', true ) ?: '' );
 
-            $display_name = $user->display_name ?: ( trim( $user->first_name . ' ' . $user->last_name ) ?: $user->user_login );
+            $first_name   = $user->first_name ?: ( get_user_meta( $user_id, 'first_name', true ) ?: '' );
+            $last_name    = $user->last_name ?: ( get_user_meta( $user_id, 'last_name', true ) ?: '' );
+            $full_name    = trim( $first_name . ' ' . $last_name );
+            $display_name = $full_name ?: ( $user->display_name ?: $user->user_login );
 
             return array(
                 'userId'                => (string) $user_id,
-                'firstName'             => $user->first_name,
-                'lastName'              => $user->last_name,
+                'firstName'             => $first_name,
+                'lastName'              => $last_name,
+                'fullName'              => $display_name,
                 'displayName'           => $display_name,
                 'name'                  => $display_name,
                 'email'                 => $user->user_email,

@@ -42,7 +42,7 @@ export default function MovementMindfulnessPage() {
     {
       name: "Andaz Delhi — Hyatt Hotel",
       flag: "🇮🇳",
-      stats: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+      stats: "Hyatt Hotel, Aerocity, Delhi",
       img: "/images/andaz-mindfulness.webp",
       website: "https://www.hyatt.com/andaz/en-US/delaz-andaz-delhi"
     }

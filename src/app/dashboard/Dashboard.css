@@ -371,7 +371,7 @@
   z-index: 0;
 }
 
-/* Card Top-Right: NOURISH / RELAX / THRIVE + Leaf Loops */
+/* Card Top-Right: NOURISH / RELAX / THRIVE (Clean Motto) */
 .wlc-zen-top-right {
   position: absolute;
   top: 7%;
@@ -379,7 +379,6 @@
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: clamp(6px, 1.2vw, 10px);
   user-select: none;
 }
 
@@ -396,20 +395,14 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
 }
 
-.wlc-zen-motto-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.85;
-}
-
 /* Member Name Section - Positioned at 43.5% from top, 6.5% from left */
 .wlc-zen-name-section {
   position: absolute;
   top: 43.5%;
   left: 6.5%;
+  right: 6.5%;
   z-index: 3;
-  max-width: 46%;
+  max-width: 87%;
 }
 
 .wlc-zen-field-label {
@@ -426,7 +419,7 @@
 }
 
 .wlc-zen-member-name {
-  font-size: clamp(16px, 2.7vw, 27px);
+  font-size: clamp(14px, 2.4vw, 26px);
   font-weight: 800;
   letter-spacing: 0.04em;
   color: #ffffff;

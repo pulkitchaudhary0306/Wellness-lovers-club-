@@ -42,7 +42,7 @@ export default function LuxuryStaysPage() {
     {
       name: "Andaz Delhi — Hyatt Hotel",
       flag: "🇮🇳",
-      stats: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+      stats: "Hyatt Hotel, Aerocity, Delhi",
       img: "/images/andaz-stay.webp",
       website: "https://www.hyatt.com/andaz/en-US/delaz-andaz-delhi"
     },

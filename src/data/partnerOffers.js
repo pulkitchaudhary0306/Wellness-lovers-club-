@@ -291,7 +291,7 @@ export const PARTNERS_DATA = [
     id: 9,
     slug: "andaz-delhi-hyatt-hotel",
     name: "Andaz Delhi — Hyatt Hotel",
-    location: "Hyatt Hotel, Vasant Vihar / Aerocity, Delhi",
+    location: "Hyatt Hotel, Aerocity, Delhi",
     region: "NORTH INDIA",
     shortDesc: "A luxury lifestyle Hyatt hotel inspired by the soul of Delhi, featuring the serene Andaz Spa, curated organic apothecary treatments, and an oasis pool.",
     category: "Luxury Hotel & Day Spa",

@@ -3,6 +3,7 @@
 import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Calendar, Clock } from "lucide-react";
 import { PARTNERS_DATA } from "@/data/partnerOffers";
 import { wpPost } from "@/lib/wpFetch";
 import "./explore-offer.css";
@@ -217,14 +218,14 @@ function ExploreOfferContent() {
       {/* ─── All-Inclusive Privileges Callout Banner ─────────────────────── */}
       <div className="inclusive-banner">
         <div className="inclusive-banner-text">
-          <h4>✨ All-Inclusive Member Privileges</h4>
+          <h4>All-Inclusive Member Privileges</h4>
           <p>
             As a Wellness Lovers Club member, you receive <strong>all listed offers and package inclusions</strong> for this property together — no need to choose just one.
           </p>
         </div>
         {matchedPartner.bookingPeriod && (
           <div className="booking-period-pill">
-            <span>📅</span>
+            <Calendar size={13} style={{ flexShrink: 0 }} />
             <span>{matchedPartner.bookingPeriod}</span>
           </div>
         )}
@@ -239,8 +240,8 @@ function ExploreOfferContent() {
                 <span className="offer-savings-pill">{offer.discount}</span>
                 {offer.badge && <span className="offer-badge">{offer.badge}</span>}
                 {offer.duration && (
-                  <span style={{ fontSize: "11px", color: "#bca374", fontWeight: 700 }}>
-                    ⏳ {offer.duration}
+                  <span style={{ fontSize: "11px", color: "#bca374", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Clock size={12} /> {offer.duration}
                   </span>
                 )}
               </div>
