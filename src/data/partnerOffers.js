@@ -359,7 +359,7 @@ export const PARTNERS_DATA = [
     slug: "pema-wellness-resort",
     name: "Pema Wellness",
     location: "Visakhapatnam, Andhra Pradesh, India",
-    region: "SOUTH & EAST INDIA",
+    region: "SOUTH INDIA",
     shortDesc: "Perched atop the Healing Hills overlooking the Bay of Bengal, delivering holistic naturopathy, integrative medicine, therapeutic diets, and yoga.",
     category: "Integrative Wellness & Longevity",
     image: "/images/pema-wellness-spa.webp",
