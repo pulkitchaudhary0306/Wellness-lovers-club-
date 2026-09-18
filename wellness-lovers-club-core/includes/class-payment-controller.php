@@ -218,7 +218,7 @@ class WLC_Core_Payment_Controller {
                 'contact'        => $phone,
             ),
             'item'               => array(
-                'title'          => 'VIP Annual Membership Pass',
+                'title'          => 'VIP Annual Membership Card',
                 'total_payable'  => $total_amount,
             ),
         ) );

@@ -385,7 +385,7 @@ function DashboardContent() {
         amount: orderData.amount_paise || config.amount_paise,
         currency: orderData.currency || "INR",
         name: "Wellness Lovers Club",
-        description: "VIP Annual Membership Pass",
+        description: "VIP Annual Membership Card",
         image: "/logo/logo.webp",
         order_id: orderData.razorpay_order_id,
         prefill: {
@@ -525,11 +525,11 @@ function DashboardContent() {
                   <div className="db-hero-header">
                     <span className="db-hero-eyebrow">
                       <Sparkles size={13} />
-                      Official Pass
+                      Official Card
                     </span>
                     <h2 className="db-hero-title">MY DIGITAL MEMBERSHIP</h2>
                     <p className="db-hero-subtitle">
-                      Your personalized Wellness Lovers Club digital pass is active, verified, and ready for use.
+                      Your personalized Wellness Lovers Club digital card is active, verified, and ready for use.
                     </p>
                   </div>
 
@@ -553,7 +553,7 @@ function DashboardContent() {
                           Explore 21 Partner Sanctuaries & All-Inclusive Privileges
                         </h3>
                         <p style={{ fontSize: 13, color: "#555", margin: 0 }}>
-                          Your active pass unlocks 20%–58% savings, complimentary treatments, room upgrades, and VIP concierge assistance across all partner resorts and longevity clinics.
+                          Your active digital card unlocks 20%–58% savings, complimentary treatments, room upgrades, and VIP concierge assistance across all partner resorts and longevity clinics.
                         </p>
                       </div>
                       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -833,7 +833,7 @@ function DashboardContent() {
               <motion.div key="notifications" className="db-fadein">
                 <div className="db-card db-card-pad">
                   {[
-                    { icon: <Bell size={16} />, iconBg: "#eff6ff", iconColor: "#3b82f6", title: "Welcome to Club Hub!", body: "We're excited to help you elevate your wellness journey. Check out your personalized digital membership pass above.", time: "Just now" },
+                    { icon: <Bell size={16} />, iconBg: "#eff6ff", iconColor: "#3b82f6", title: "Welcome to Club Hub!", body: "We're excited to help you elevate your wellness journey. Check out your personalized digital membership card above.", time: "Just now" },
                     { icon: <CheckCircle size={16} />, iconBg: "var(--green-pale)", iconColor: "var(--green)", title: "Annual Membership Active", body: `Your Official Wellness Lovers Club Membership ${dynamicMembershipNo} was successfully confirmed.`, time: "3 days ago" },
                   ].map(n => (
                     <div className="db-notif-item" key={n.title}>

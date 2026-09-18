@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
           customer_name: name,
           customer_email: email,
           customer_phone: phone,
-          item: "VIP Annual Membership Pass",
+          item: "VIP Annual Membership Card",
           total_price: "29000.00",
         },
       }),
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
           contact: phone,
         },
         item: {
-          title: "VIP Annual Membership Pass",
+          title: "VIP Annual Membership Card",
           total_payable: 29000,
         },
       });

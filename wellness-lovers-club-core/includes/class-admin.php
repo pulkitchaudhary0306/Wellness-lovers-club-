@@ -416,7 +416,7 @@ class WLC_Core_Admin {
 
                 <?php if ( isset( $_GET['message'] ) && $_GET['message'] === 'card_saved' ) : ?>
                     <div class="updated notice is-dismissible" style="margin-top: 15px;">
-                        <p><strong>Success:</strong> Membership Card details updated and synchronized with live frontend pass.</p>
+                        <p><strong>Success:</strong> Membership Card details updated and synchronized with live frontend digital card.</p>
                     </div>
                 <?php endif; ?>
                 <?php if ( isset( $_GET['error'] ) ) : ?>
@@ -491,14 +491,14 @@ class WLC_Core_Admin {
                         <p class="submit" style="margin-top: 25px; display: flex; gap: 12px; align-items: center;">
                             <input type="submit" name="submit" id="submit" class="button button-primary button-large" value="Save Membership Card" />
                             <a href="<?php echo admin_url( 'admin.php?page=wlc-memberships' ); ?>" class="button button-large">Cancel</a>
-                            <a href="https://wellnessloversclub.com/dashboard" target="_blank" class="button button-secondary button-large" style="margin-left: auto;">View Live Frontend Pass &rarr;</a>
+                            <a href="https://wellnessloversclub.com/dashboard" target="_blank" class="button button-secondary button-large" style="margin-left: auto;">View Live Frontend Digital Card &rarr;</a>
                         </p>
                     </form>
 
-                    <!-- Pass Preview & Audit Sidebar -->
+                    <!-- Digital Card Preview & Audit Sidebar -->
                     <div style="flex: 1; min-width: 300px;">
                         <div style="background: #0f172a; color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                            <div style="color: #bca374; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Live Digital Pass Preview</div>
+                            <div style="color: #bca374; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Live Digital Card Preview</div>
                             <div style="font-size: 18px; font-weight: bold; margin-top: 8px;"><?php echo esc_html( $card['displayName'] ); ?></div>
                             <div id="wlc_preview_no" style="font-family: monospace; font-size: 14px; color: #cbd5e1; margin-top: 4px;"><?php echo esc_html( $card['membershipNumber'] ?: 'Pending Allocation' ); ?></div>
                             <div style="display: flex; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px;">

@@ -360,7 +360,7 @@ class WLC_Core_Privileges_Controller {
                 'slug'      => 'pema-wellness',
                 'name'      => 'Pema Wellness',
                 'location'  => 'Visakhapatnam, Andhra Pradesh, India',
-                'region'    => 'EAST INDIA',
+                'region'    => 'SOUTH & EAST INDIA',
                 'shortDesc' => 'A hilltop naturopathy and holistic healing resort overlooking the Bay of Bengal, offering evidence-based lifestyle medicine and bespoke longevity cures.',
                 'category'  => 'Naturopathy & Holistic Healing Sanctuary',
                 'image'     => '/images/pema-wellness-spa.webp',

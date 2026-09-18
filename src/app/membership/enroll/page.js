@@ -144,7 +144,7 @@ function MembershipEnrollmentContent() {
         amount: orderData.amount_paise || 2900000,
         currency: orderData.currency || "INR",
         name: "Wellness Lovers Club",
-        description: "VIP Annual Membership Pass",
+        description: "VIP Annual Membership Card",
         image: "/logo/logo.webp",
         order_id:
           razorpayOrderId && razorpayOrderId.startsWith("order_") && razorpayOrderId.length > 15
@@ -456,13 +456,13 @@ function MembershipEnrollmentContent() {
                   </h1>
 
                   <p style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.6, margin: "0 0 1.5rem" }}>
-                    Your bespoke VIP membership dossier is ready. Activate your pass to unlock 365 days of private wellness retreats, luxury stays, spa treatments, and bespoke club privileges.
+                    Your bespoke VIP membership dossier is ready. Activate your digital card to unlock 365 days of private wellness retreats, luxury stays, spa treatments, and bespoke club privileges.
                   </p>
 
                   <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(188, 163, 116, 0.3)", borderRadius: "14px", padding: "16px 20px", marginBottom: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
                       <div style={{ fontSize: "11px", color: "#bca374", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                        Annual VIP Pass
+                        Annual VIP Digital Card
                       </div>
                       <div style={{ fontSize: "26px", fontWeight: "800", color: "#fff", letterSpacing: "-0.02em", marginTop: 2 }}>
                         ₹29,000

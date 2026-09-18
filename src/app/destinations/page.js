@@ -67,31 +67,31 @@ export default function DestinationsPage() {
       region: "NORTH INDIA",
       title: "Delhi NCR & Longevity",
       cities: "Delhi · Gurgaon · Karma Lakelands",
-      stats: `${PARTNERS_DATA.filter((p) => p.region === "NORTH INDIA").length} partners`
+      stats: `${PARTNERS_DATA.filter((p) => p.region?.includes("NORTH INDIA")).length} partners`
     },
     {
       region: "SOUTH INDIA",
       title: "Ayurvedic & Holistic",
-      cities: "Kovalam · Kumarakom · Hyderabad",
-      stats: `${PARTNERS_DATA.filter((p) => p.region === "SOUTH INDIA").length} partners`
+      cities: "Kovalam · Kumarakom · Hyderabad · Visakhapatnam",
+      stats: `${PARTNERS_DATA.filter((p) => p.region?.includes("SOUTH INDIA")).length} partners`
     },
     {
       region: "WEST INDIA",
       title: "Sanctuary & Naturopathy",
       cities: "Pune · Nashik · Mumbai · Ahmedabad",
-      stats: `${PARTNERS_DATA.filter((p) => p.region === "WEST INDIA").length} partners`
+      stats: `${PARTNERS_DATA.filter((p) => p.region?.includes("WEST INDIA")).length} partners`
     },
     {
       region: "EAST INDIA",
       title: "Coastal Lifestyle Medicine",
       cities: "Visakhapatnam · Bay of Bengal",
-      stats: `${PARTNERS_DATA.filter((p) => p.region === "EAST INDIA").length} partners`
+      stats: `${PARTNERS_DATA.filter((p) => p.region?.includes("EAST INDIA")).length} partners`
     },
     {
       region: "INTERNATIONAL",
       title: "Global Sanctuaries",
       cities: "Austria · Thailand · Croatia · Bhutan · Dubai",
-      stats: `${PARTNERS_DATA.filter((p) => p.region === "INTERNATIONAL").length} partners`
+      stats: `${PARTNERS_DATA.filter((p) => p.region?.includes("INTERNATIONAL")).length} partners`
     }
   ];
 
@@ -100,11 +100,11 @@ export default function DestinationsPage() {
   );
 
   const filteredProperties = PARTNERS_DATA.filter(
-    (prop) => activeFilter === "ALL" || prop.region === activeFilter
+    (prop) => activeFilter === "ALL" || (prop.region && prop.region.includes(activeFilter))
   );
 
   const internationalPartners = PARTNERS_DATA.filter(
-    (p) => p.region === "INTERNATIONAL"
+    (p) => p.region && p.region.includes("INTERNATIONAL")
   );
 
   const handleFilterClick = (value) => {
@@ -184,8 +184,10 @@ export default function DestinationsPage() {
 
               {/* Interactive SVG Markers */}
               {markers.map((marker) => {
-                const isDimmed = activeFilter !== "ALL" && marker.region !== activeFilter;
-                const isHighlighted = activeFilter !== "ALL" && marker.region === activeFilter;
+                const isHighlighted =
+                  activeFilter !== "ALL" &&
+                  (marker.region === activeFilter || (activeFilter === "EAST INDIA" && marker.id === "hyderabad"));
+                const isDimmed = activeFilter !== "ALL" && !isHighlighted;
 
                 return (
                   <g

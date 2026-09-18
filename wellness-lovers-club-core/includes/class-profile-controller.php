@@ -511,7 +511,7 @@ if ( ! class_exists( 'WLC_Core_Profile_Controller' ) ) {
                                 'date'   => $pay->paid_at ? gmdate( 'd / m / Y', strtotime( $pay->paid_at ) ) : gmdate( 'd / m / Y', strtotime( $pay->created_at ) ),
                                 'status' => 'Completed',
                                 'total'  => '₹' . number_format( (float) $pay->amount, 2 ) . ' (GST 18%)',
-                                'item'   => 'VIP Annual Membership Pass',
+                                'item'   => 'VIP Annual Membership Card',
                             );
                         }
                     }

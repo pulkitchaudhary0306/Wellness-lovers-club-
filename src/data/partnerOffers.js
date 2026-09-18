@@ -358,8 +358,8 @@ export const PARTNERS_DATA = [
     id: 11,
     slug: "pema-wellness-resort",
     name: "Pema Wellness",
-    location: "Visakhapatnam, India",
-    region: "EAST INDIA",
+    location: "Visakhapatnam, Andhra Pradesh, India",
+    region: "SOUTH & EAST INDIA",
     shortDesc: "Perched atop the Healing Hills overlooking the Bay of Bengal, delivering holistic naturopathy, integrative medicine, therapeutic diets, and yoga.",
     category: "Integrative Wellness & Longevity",
     image: "/images/pema-wellness-spa.webp",
@@ -422,7 +422,7 @@ export const PARTNERS_DATA = [
         discount: "20% PRIVILEGE",
         badge: "Haute Couture Salon",
         description: "20% privilege on all salon and spa services to all registered Wellness Lovers Club members.",
-        terms: "Valid across all locations in Mumbai, Ahmedabad, Hyderabad, and Pune upon displaying WLC membership pass."
+        terms: "Valid across all locations in Mumbai, Ahmedabad, Hyderabad, and Pune upon displaying WLC digital card."
       }
     ]
   },
