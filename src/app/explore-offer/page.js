@@ -79,6 +79,7 @@ function findPartnerByDestination(rawDest) {
     { key: "palm", partnerSlug: "ja-palm-tree-court-calm-spa" },
     { key: "energetika", partnerSlug: "energetika369" },
     { key: "pemf", partnerSlug: "energetika369" },
+    { key: "hexa", partnerSlug: "energetika369" },
     { key: "environics", partnerSlug: "environics" },
   ];
 
