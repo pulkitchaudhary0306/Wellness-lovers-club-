@@ -727,7 +727,7 @@ export const PARTNERS_DATA = [
     region: "INDIA & GLOBAL",
     shortDesc: "Pioneering bio-frequency systems, scalar wave technology, and cellular resonance devices including PEMF Crystal Mats, Rife Machines, Hexa Flow, and NeuroPulse TMS.",
     category: "Bio-Frequency & Quantum Wellness",
-    image: "/images/products/pemf-crystal-mat.webp",
+    image: "/images/products/pemf-mat-session.webp",
     flag: "⚡",
     website: "https://energetika369.com/",
     bookingPeriod: "Member Allocations & Consultations: Available Year-Round",
@@ -764,7 +764,7 @@ export const PARTNERS_DATA = [
       {
         id: "env-1",
         title: "WLC Member Environmental Wellness Audit & Allocation",
-        discount: "WLC EXCLUSIVE PRIVILEGE",
+        discount: "FLAT 50% OFF WLC MEMBER PRIVILEGE",
         badge: "EMR Protection",
         description: "Priority member access to Environics radiation protection technology, environmental audits, and home/workplace protection systems.",
         inclusions: [

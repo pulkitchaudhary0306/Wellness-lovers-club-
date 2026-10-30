@@ -1,312 +1,322 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductCardWithModal({ product, idx }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [selectedModelIdx, setSelectedModelIdx] = useState(0);
+export default function ProductCardWithModal({ product, brandName, brandId }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
 
-  const hasModels = Array.isArray(product.models) && product.models.length > 0;
-  const currentItem = hasModels ? product.models[selectedModelIdx] : product;
+  const resolvedBrandId =
+    brandId ||
+    product.brandId ||
+    (String(brandName || product.brandName || "")
+      .toLowerCase()
+      .includes("environics")
+      ? "environics"
+      : "energetika369");
 
-  const images = currentItem.gallery && currentItem.gallery.length > 0
-    ? currentItem.gallery
-    : [currentItem.image || product.image];
+  const resolvedBrandName =
+    brandName ||
+    product.brandName ||
+    (resolvedBrandId === "environics" ? "Environics" : "Energetika369");
 
-  const hasRichDetails = Boolean(
-    currentItem.overview ||
-    currentItem.description ||
-    currentItem.whatsIncluded ||
-    currentItem.specs ||
-    currentItem.idealFor ||
-    currentItem.trainingSupport ||
-    hasModels ||
-    (images && images.length > 1)
-  );
+  const detailHref =
+    product.detailUrl || `/offerings/products/${resolvedBrandId}/${product.id}`;
 
-  const handleModelChange = (modelIdx) => {
-    setSelectedModelIdx(modelIdx);
-    setActiveImageIndex(0);
-  };
+  const enquiryDest =
+    product.enquiryDestination || `${resolvedBrandName} - ${product.name}`;
 
-  const enquiryTitle = hasModels
-    ? `${product.brand} - ${product.name} (${currentItem.shortName || currentItem.name})`
-    : `${product.brand} - ${product.name}`;
+  const enquiryHref = `/explore-offer?destination=${encodeURIComponent(enquiryDest)}`;
+
+  const highlights =
+    Array.isArray(product.highlights) && product.highlights.length > 0
+      ? product.highlights.slice(0, 3)
+      : Array.isArray(product.features)
+        ? product.features
+          .slice(0, 3)
+          .map((f) => (typeof f === "object" ? f.title : f))
+        : [];
+
+  const galleryItems =
+    Array.isArray(product.gallery) && product.gallery.length > 0
+      ? product.gallery.map((g) =>
+        typeof g === "string" ? { src: g, alt: product.name } : g
+      )
+      : [{ src: product.image, alt: product.name }];
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsModalOpen(false);
+    };
+    if (isModalOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [isModalOpen]);
+
+  const isEnvironics = resolvedBrandId === "environics";
 
   return (
     <>
-      <div className={`product-card ${hasModels ? "product-card-has-models" : ""}`}>
-        {/* ─── Product Image & Gallery Badge ─────────────────────────────── */}
-        <div
-          className="product-card-img-wrap"
-          onClick={() => hasRichDetails && setIsOpen(true)}
-          style={{ cursor: hasRichDetails ? "pointer" : "default" }}
-        >
-          <Image
-            src={currentItem.image || product.image}
-            alt={currentItem.name || product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={idx === 0}
-            loading={idx === 0 ? "eager" : "lazy"}
-          />
-          {images && images.length > 1 && (
-            <span className="product-gallery-badge">
-              📷 {images.length} Views
-            </span>
-          )}
-          {hasModels && (
-            <span className="product-series-badge">
-              ⚡ 3 Models Series
-            </span>
-          )}
-        </div>
+      <article className="wlc-lux-card" id={product.anchorId || product.id}>
+        {/* Image Header */}
+        <div className="wlc-lux-card-media">
+          <Link
+            href={detailHref}
+            className="wlc-lux-card-img-link"
+            aria-label={`View full details for ${product.name}`}
+          >
+            <Image
+              src={product.image}
+              alt={`${product.name} — ${product.tagline || resolvedBrandName}`}
+              fill
+              className="wlc-lux-card-img"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </Link>
 
-        {/* ─── Product Card Body ────────────────────────────────────────── */}
-        <div className="product-card-content">
-          <div className="product-meta-row">
-            <span className="product-tag">{currentItem.tag || product.tag}</span>
-            <span className="product-brand-tag">{product.brand}</span>
+          {/* Top Left Category Pill */}
+          <div className="wlc-lux-card-badges">
+            <span className="wlc-lux-badge-category">
+              {product.category || resolvedBrandName}
+            </span>
+            {product.tag && (
+              <span
+                className={`wlc-lux-badge-tag ${isEnvironics ? "is-gold" : ""
+                  }`}
+              >
+                {product.tag}
+              </span>
+            )}
           </div>
 
-          <h4 className="product-title">{product.name}</h4>
+          {/* Quick View Button */}
+          <button
+            type="button"
+            className="wlc-lux-quickview-btn"
+            onClick={() => {
+              setActiveImgIndex(0);
+              setIsModalOpen(true);
+            }}
+            aria-label={`Quick view ${product.name}`}
+            title="Quick View Specifications"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Quick View</span>
+          </button>
+        </div>
 
-          {/* Model Switcher Buttons if Product contains Models */}
-          {hasModels && (
-            <div className="product-card-model-pills" role="tablist" aria-label="Device models">
-              {product.models.map((mod, mIdx) => (
-                <button
-                  key={mod.id || mIdx}
-                  type="button"
-                  className={`model-pill-btn ${selectedModelIdx === mIdx ? "active" : ""}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleModelChange(mIdx);
-                  }}
-                  role="tab"
-                  aria-selected={selectedModelIdx === mIdx}
-                >
-                  {mod.shortName || mod.name}
-                </button>
-              ))}
-            </div>
+        {/* Card Content Body */}
+        <div className="wlc-lux-card-body">
+          <div className="wlc-lux-card-brand-row">
+            <span className="wlc-lux-card-brand">{resolvedBrandName}</span>
+            {galleryItems.length > 1 && (
+              <span className="wlc-lux-card-gallery-count">
+                {galleryItems.length} Photos
+              </span>
+            )}
+          </div>
+
+          <h3 className="wlc-lux-card-title">
+            <Link href={detailHref}>{product.name}</Link>
+          </h3>
+
+          {product.tagline && (
+            <p className="wlc-lux-card-tagline">{product.tagline}</p>
           )}
 
-          <p className="product-desc">
-            {currentItem.shortDesc || currentItem.tagline || product.shortDesc}
-          </p>
+          <p className="wlc-lux-card-desc">{product.shortDesc}</p>
 
-          {Array.isArray(currentItem.features) && currentItem.features.length > 0 && (
-            <ul className="product-features-list">
-              {currentItem.features.slice(0, 4).map((feature, fIdx) => (
-                <li key={fIdx}>{feature}</li>
+          {/* 3 Important Product Highlights */}
+          {highlights.length > 0 && (
+            <ul className="wlc-lux-card-highlights" aria-label="Product highlights">
+              {highlights.map((item, idx) => (
+                <li key={idx}>
+                  <span className="wlc-lux-check" aria-hidden="true">
+                    ✓
+                  </span>
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           )}
 
-          <div className="product-card-footer">
-            {hasRichDetails && (
-              <button
-                type="button"
-                className="product-details-btn"
-                onClick={() => setIsOpen(true)}
-                title={`View full specifications for ${currentItem.name || product.name}`}
-              >
-                View Full Details & Specs <span>🔍</span>
-              </button>
-            )}
-            <Link
-              href={`/explore-offer?destination=${encodeURIComponent(enquiryTitle)}`}
-              className="product-enquiry-btn"
-              title={`Enquire about ${currentItem.name || product.name}`}
-            >
-              Enquire Now <span>→</span>
+          {/* Card Footer Actions */}
+          <div className="wlc-lux-card-footer">
+            <Link href={detailHref} className="wlc-lux-btn-primary">
+              <span>Explore Product</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link href={enquiryHref} className="wlc-lux-btn-secondary">
+              {isEnvironics ? "Claim 50% OFF" : "Enquire"}
             </Link>
           </div>
         </div>
-      </div>
+      </article>
 
-      {/* ─── Rich Product Details Modal ────────────────────────────────────── */}
-      {isOpen && (
-        <div className="product-modal-backdrop" onClick={() => setIsOpen(false)}>
+      {/* Quick-View Modal */}
+      {isModalOpen && (
+        <div
+          className="prod-modal-overlay"
+          onClick={() => setIsModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`modal-title-${product.id}`}
+        >
           <div
-            className="product-modal-card"
+            className="prod-modal-content"
             onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`modal-title-${product.id}`}
           >
             <button
-              type="button"
-              className="product-modal-close-btn"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close details modal"
+              className="prod-modal-close"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close Quick View"
             >
               ✕
             </button>
 
-            {/* Model Switcher Tabs inside Modal if Applicable */}
-            {hasModels && (
-              <div className="product-modal-model-tabs">
-                <div className="model-tabs-header">
-                  <span className="model-tabs-label">Available Models in Series:</span>
-                </div>
-                <div className="model-tabs-nav">
-                  {product.models.map((mod, mIdx) => (
-                    <button
-                      key={mod.id || mIdx}
-                      type="button"
-                      className={`modal-model-tab ${selectedModelIdx === mIdx ? "active" : ""}`}
-                      onClick={() => handleModelChange(mIdx)}
-                    >
-                      <span className="tab-tier-num">0{mIdx + 1}</span>
-                      <span className="tab-tier-info">
-                        <strong>{mod.name.split("–")[0].trim()}</strong>
-                        <small>{mod.tier || "System"}</small>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="product-modal-grid">
-              {/* Left Column: Interactive Image Gallery */}
-              <div className="product-modal-media-col">
-                <div className="product-modal-main-image-wrap">
+            <div className="prod-modal-grid">
+              {/* Left Column: Interactive Gallery */}
+              <div className="prod-modal-visual">
+                <div className="prod-modal-img-wrapper">
                   <Image
-                    src={images[activeImageIndex] || currentItem.image || product.image}
-                    alt={`${currentItem.name || product.name} - View ${activeImageIndex + 1}`}
+                    src={galleryItems[activeImgIndex]?.src || product.image}
+                    alt={galleryItems[activeImgIndex]?.alt || product.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 500px"
+                    className="prod-modal-img"
+                    sizes="(max-width: 900px) 100vw, 50vw"
                   />
+                  {product.tag && (
+                    <span className="prod-modal-badge">{product.tag}</span>
+                  )}
                 </div>
 
-                {images.length > 1 && (
-                  <div className="product-modal-thumbs-row">
-                    {images.map((img, thumbIdx) => (
+                {galleryItems.length > 1 && (
+                  <div className="prod-modal-thumbs">
+                    {galleryItems.map((imgObj, idx) => (
                       <button
-                        key={thumbIdx}
+                        key={idx}
                         type="button"
-                        className={`product-modal-thumb-btn ${thumbIdx === activeImageIndex ? "active" : ""}`}
-                        onClick={() => setActiveImageIndex(thumbIdx)}
-                        aria-label={`View photo ${thumbIdx + 1}`}
+                        className={`prod-modal-thumb ${activeImgIndex === idx ? "active" : ""
+                          }`}
+                        onClick={() => setActiveImgIndex(idx)}
+                        aria-label={`View image ${idx + 1}`}
                       >
                         <Image
-                          src={img}
-                          alt={`${currentItem.name || product.name} thumbnail ${thumbIdx + 1}`}
+                          src={imgObj.src}
+                          alt={imgObj.alt || `${product.name} view ${idx + 1}`}
                           fill
                           sizes="80px"
+                          style={{ objectFit: "cover" }}
                         />
                       </button>
                     ))}
                   </div>
                 )}
+
+                {product.idealFor && product.idealFor.length > 0 && (
+                  <div className="prod-modal-ideal-box">
+                    <h4>Ideal Applications</h4>
+                    <div className="prod-ideal-tags">
+                      {product.idealFor.map((item, idx) => (
+                        <span key={idx} className="prod-ideal-tag">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Right Column: Detailed Specifications & Content */}
-              <div className="product-modal-info-col">
-                <div className="product-modal-header">
-                  <div className="product-meta-row">
-                    <span className="product-tag">{currentItem.tag || product.tag}</span>
-                    <span className="product-brand-tag">{product.brand}</span>
-                  </div>
-                  <h3 id={`modal-title-${product.id}`} className="product-modal-title">
-                    {currentItem.name || product.name}
-                  </h3>
-                  {currentItem.tagline && (
-                    <p className="product-modal-tagline">{currentItem.tagline}</p>
-                  )}
+              {/* Right Column: Detailed Info */}
+              <div className="prod-modal-details">
+                <span className="prod-modal-brand">
+                  {resolvedBrandName} • {product.category}
+                </span>
+                <h2 id={`modal-title-${product.id}`} className="prod-modal-title">
+                  {product.name}
+                </h2>
+                {product.tagline && (
+                  <p className="prod-modal-tagline">{product.tagline}</p>
+                )}
+
+                <div className="prod-modal-section">
+                  <h4>Product Overview</h4>
+                  <p className="prod-modal-desc">
+                    {product.overview || product.shortDesc}
+                  </p>
                 </div>
 
-                {/* Long Overview / Description */}
-                {(currentItem.overview || currentItem.description) && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">📖 Overview</h5>
-                    <p className="product-modal-overview" style={{ whiteSpace: "pre-line" }}>
-                      {currentItem.overview || currentItem.description}
-                    </p>
-                  </div>
-                )}
-
-                {/* Core Features */}
-                {Array.isArray(currentItem.features) && currentItem.features.length > 0 && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">⚙️ Core Features</h5>
-                    <ul className="product-features-list modal-features">
-                      {currentItem.features.map((feat, fIdx) => (
-                        <li key={fIdx}>{feat}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* What's Included */}
-                {Array.isArray(currentItem.whatsIncluded) && currentItem.whatsIncluded.length > 0 && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">📦 What’s Included</h5>
-                    <ul className="product-modal-bullets">
-                      {currentItem.whatsIncluded.map((item, itemIdx) => (
-                        <li key={itemIdx}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Ideal For */}
-                {Array.isArray(currentItem.idealFor) && currentItem.idealFor.length > 0 && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">💡 Ideal For</h5>
-                    <ul className="product-modal-bullets">
-                      {currentItem.idealFor.map((target, tIdx) => (
-                        <li key={tIdx}>{target}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Technical Specifications Table */}
-                {currentItem.specs && typeof currentItem.specs === "object" && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">🔧 Technical Specifications</h5>
-                    <div className="product-modal-specs-table">
-                      {Object.entries(currentItem.specs).map(([key, value]) => {
-                        const formattedKey = key
-                          .replace(/([A-Z])/g, " $1")
-                          .replace(/^./, (str) => str.toUpperCase());
-                        return (
-                          <div className="spec-row" key={key}>
-                            <span className="spec-label">{formattedKey}</span>
-                            <span className="spec-val">{value}</span>
+                {product.features && product.features.length > 0 && (
+                  <div className="prod-modal-section">
+                    <h4>Key Features</h4>
+                    <ul className="prod-modal-features">
+                      {product.features.map((feat, idx) => (
+                        <li key={idx}>
+                          <span className="feat-icon">✦</span>
+                          <div>
+                            {typeof feat === "object" ? (
+                              <>
+                                <strong>{feat.title}:</strong> {feat.desc}
+                              </>
+                            ) : (
+                              feat
+                            )}
                           </div>
-                        );
-                      })}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {product.specs && Object.keys(product.specs).length > 0 && (
+                  <div className="prod-modal-section">
+                    <h4>Technical Specifications</h4>
+                    <div className="prod-specs-grid">
+                      {Object.entries(product.specs).map(([key, val], idx) => (
+                        <div key={idx} className="prod-spec-item">
+                          <span className="spec-label">{key}</span>
+                          <span className="spec-val">{val}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* Training & Support */}
-                {Array.isArray(currentItem.trainingSupport) && currentItem.trainingSupport.length > 0 && (
-                  <div className="product-modal-section">
-                    <h5 className="product-modal-section-title">🎓 Training & Support</h5>
-                    <ul className="product-modal-bullets">
-                      {currentItem.trainingSupport.map((supp, sIdx) => (
-                        <li key={sIdx}>{supp}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="product-modal-action-bar">
+                <div className="prod-modal-footer-actions">
                   <Link
-                    href={`/explore-offer?destination=${encodeURIComponent(enquiryTitle)}`}
-                    className="product-enquiry-btn modal-enquiry-btn"
-                    title={`Enquire about ${currentItem.name || product.name}`}
+                    href={detailHref}
+                    className="prod-modal-cta-outline"
+                    onClick={() => setIsModalOpen(false)}
                   >
-                    Enquire for Exclusive Member Privileges <span>→</span>
+                    Open Full Product Page
+                  </Link>
+                  <Link
+                    href={enquiryHref}
+                    className="prod-modal-cta"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    {product.ctaText || `Enquire About ${product.name}`} →
                   </Link>
                 </div>
               </div>

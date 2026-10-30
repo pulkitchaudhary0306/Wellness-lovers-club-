@@ -80,7 +80,20 @@ function findPartnerByDestination(rawDest) {
     { key: "energetika", partnerSlug: "energetika369" },
     { key: "pemf", partnerSlug: "energetika369" },
     { key: "hexa", partnerSlug: "energetika369" },
+    { key: "neuropulse", partnerSlug: "energetika369" },
+    { key: "rtms", partnerSlug: "energetika369" },
+    { key: "rife", partnerSlug: "energetika369" },
+    { key: "dermavision", partnerSlug: "energetika369" },
+    { key: "iridoscope", partnerSlug: "energetika369" },
+    { key: "dijiwave", partnerSlug: "energetika369" },
+    { key: "digiwave", partnerSlug: "energetika369" },
+    { key: "aligne", partnerSlug: "energetika369" },
+    { key: "lumicare", partnerSlug: "energetika369" },
     { key: "environics", partnerSlug: "environics" },
+    { key: "envirochip", partnerSlug: "environics" },
+    { key: "enviroglobe", partnerSlug: "environics" },
+    { key: "envirocare", partnerSlug: "environics" },
+    { key: "enviromat", partnerSlug: "environics" },
   ];
 
   for (const item of keywords) {
@@ -120,7 +133,9 @@ function ExploreOfferContent() {
     travelDate: "",
     duration: "Flexible / Recommended Duration",
     guests: "1-2 Guests",
-    message: `I would like to book and claim all member privileges and inclusions at ${matchedPartner.name}. Please share availability and apply club pricing.`,
+    message: rawDest && rawDest !== matchedPartner.name
+      ? `I would like to enquire about "${rawDest}" and claim my Wellness Lovers Club member privileges with ${matchedPartner.name}. Please share pricing, availability, and consultation details.`
+      : `I would like to book and claim all member privileges and inclusions at ${matchedPartner.name}. Please share availability and apply club pricing.`,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -330,7 +345,7 @@ function ExploreOfferContent() {
               Book & Claim Privileges at {matchedPartner.name}
             </h2>
             <p style={{ color: "#666", fontSize: "14.5px", maxWidth: "620px", margin: "0 auto" }}>
-              Submit your preferred dates and details below. Our member concierge will confirm availability, lock in your exclusive member rates, and ensure all partner inclusions are applied.
+              Submit your preferred dates and details below, or call our official concierge desk at <a href="tel:+919289330103" style={{ color: "#0d563f", fontWeight: 700, textDecoration: "underline" }}>+91 92893 30103</a>. Our member concierge will confirm availability, lock in your exclusive member rates, and ensure all partner inclusions are applied.
             </p>
           </div>
 

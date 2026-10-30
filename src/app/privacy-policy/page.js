@@ -370,6 +370,12 @@ const SECTIONS = [
               </a>
             </div>
             <div className="pp-contact-row">
+              <span className="pp-contact-label">Official Concierge:</span>
+              <a href="tel:+919289330103" className="pp-contact-value">
+                +91 92893 30103
+              </a>
+            </div>
+            <div className="pp-contact-row">
               <span className="pp-contact-label">Executive Leadership:</span>
               <a href="mailto:vinit@pinnacleconnect.in" className="pp-contact-value">
                 vinit@pinnacleconnect.in

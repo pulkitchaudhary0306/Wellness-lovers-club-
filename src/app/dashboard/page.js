@@ -854,7 +854,7 @@ function DashboardContent() {
               <motion.div key="support" className="db-fadein">
                 <div className="db-card db-card-pad" style={{ maxWidth: 560 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, fontFamily: "'Montserrat', sans-serif" }}>Contact Member Concierge</h3>
-                  <p style={{ fontSize: 12.5, color: "var(--text-faint)", marginTop: 4, marginBottom: "1.5rem", fontWeight: 400 }}>Need assistance with a retreat booking or membership privilege? Open a ticket below.</p>
+                  <p style={{ fontSize: 12.5, color: "var(--text-faint)", marginTop: 4, marginBottom: "1.5rem", fontWeight: 400 }}>Need assistance with a retreat booking or membership privilege? Call our official concierge at <a href="tel:+919289330103" style={{ color: "#bca374", fontWeight: 600 }}>+91 92893 30103</a> or open a ticket below.</p>
                   
                   {supportSuccess && (
                     <div className="db-form-success" style={{ marginBottom: "1.25rem", padding: "0.85rem 1rem" }}>

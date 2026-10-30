@@ -1620,3 +1620,108 @@
     transform: none !important;
   }
 }
+
+/* ─── Quick Jump Navigation & Dual Action Buttons ───────────────────────── */
+.e369-quick-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 44px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid rgba(188, 163, 116, 0.38);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(10, 42, 31, 0.05);
+}
+
+.e369-qnav-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #f6f8f7;
+  border: 1px solid rgba(13, 86, 63, 0.14);
+  color: #0d563f;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.22s ease;
+}
+
+.e369-qnav-pill:hover {
+  background: #0d563f;
+  color: #ffffff;
+  border-color: #0d563f;
+  transform: translateY(-1px);
+}
+
+.e369-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(188, 163, 116, 0.7);
+  background: rgba(188, 163, 116, 0.14);
+  color: #06281e !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.e369-secondary-btn:hover {
+  background: linear-gradient(135deg, #bca374 0%, #d4af37 100%);
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.e369-hf-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.e369-hf-title a:hover {
+  color: #9e814d;
+}
+
+.e369-hf-actions {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: 10px;
+}
+
+.e369-hf-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(188, 163, 116, 0.65);
+  background: rgba(188, 163, 116, 0.12);
+  color: #06281e !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.e369-hf-btn-outline:hover {
+  background: linear-gradient(135deg, #bca374 0%, #d4af37 100%);
+  border-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .e369-hf-actions {
+    grid-template-columns: 1fr;
+  }
+}

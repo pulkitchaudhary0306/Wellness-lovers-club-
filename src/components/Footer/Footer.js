@@ -41,6 +41,7 @@ function Footer() {
             <div className="footer-links-col">
               <h4 className="footer-links-title">SUPPORT</h4>
               <Link href="/contact">Contact Us</Link>
+              <a href="tel:+919289330103">+91 92893 30103</a>
               <Link href="/faq">FAQs</Link>
               <Link href="/privacy-policy">Privacy Policy</Link>
             </div>

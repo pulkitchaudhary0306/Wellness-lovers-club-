@@ -169,6 +169,9 @@ export default function FAQPage() {
           <a href="mailto:wlc@pinnacleconnect.in" className="faq-email-link">
             wlc@pinnacleconnect.in
           </a>
+          <a href="tel:+919289330103" className="faq-email-link">
+            +91 92893 30103
+          </a>
           <a href="mailto:vinit@pinnacleconnect.in" className="faq-email-link">
             vinit@pinnacleconnect.in
           </a>

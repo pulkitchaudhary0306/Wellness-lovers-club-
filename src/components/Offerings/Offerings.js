@@ -35,7 +35,7 @@ export default function Offerings() {
       id: "products",
       title: "Products",
       desc: "Curated bio-frequency devices, quantum wellness technologies, and cellular rejuvenation systems.",
-      img: "/images/products/pemf-crystal-mat.webp",
+      img: "/images/products/pemf-mat-session.webp",
       // Star icon
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

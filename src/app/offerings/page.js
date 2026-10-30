@@ -28,7 +28,7 @@ export default function OfferingsPage() {
     {
       title: "Products",
       desc: "Curated bio-frequency devices, quantum wellness technologies, and cellular rejuvenation systems.",
-      img: "/images/products/pemf-crystal-mat.webp",
+      img: "/images/products/pemf-mat-session.webp",
       category: "Products",
       link: "/offerings/products"
     },

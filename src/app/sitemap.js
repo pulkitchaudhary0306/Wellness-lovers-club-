@@ -1,8 +1,11 @@
+import { getAllProducts } from "@/data/productsData";
+
 export default function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wellnessloversclub.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.wellnessloversclub.com";
   const lastModified = new Date();
 
-  const routes = [
+  const staticRoutes = [
     "",
     "/about",
     "/our-philosophy",
@@ -20,13 +23,26 @@ export default function sitemap() {
     "/faq",
     "/privacy-policy",
     "/membership",
-    "/membership/enroll",
+    "/membership/enroll"
   ];
 
-  return routes.map((route) => ({
+  const productRoutes = getAllProducts().map((p) => p.detailUrl);
+  const allRoutes = [...staticRoutes, ...productRoutes];
+
+  return allRoutes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified,
-    changeFrequency: route === "" || route === "/offerings" ? "daily" : "weekly",
-    priority: route === "" ? 1.0 : route.startsWith("/offerings") || route === "/membership" ? 0.8 : 0.6,
+    changeFrequency:
+      route === "" || route === "/offerings" || route === "/offerings/products"
+        ? "daily"
+        : "weekly",
+    priority:
+      route === ""
+        ? 1.0
+        : route.startsWith("/offerings/products") ||
+          route.startsWith("/offerings") ||
+          route === "/membership"
+        ? 0.85
+        : 0.6
   }));
 }
