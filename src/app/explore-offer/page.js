@@ -87,7 +87,7 @@ function findPartnerByDestination(rawDest) {
     { key: "iridoscope", partnerSlug: "energetika369" },
     { key: "dijiwave", partnerSlug: "energetika369" },
     { key: "digiwave", partnerSlug: "energetika369" },
-    { key: "aligne", partnerSlug: "energetika369" },
+
     { key: "lumicare", partnerSlug: "energetika369" },
     { key: "environics", partnerSlug: "environics" },
     { key: "envirochip", partnerSlug: "environics" },

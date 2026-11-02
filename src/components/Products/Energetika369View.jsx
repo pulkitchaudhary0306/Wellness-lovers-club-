@@ -13,7 +13,7 @@ export default function Energetika369View({ brand }) {
   const syncProduct = products.find((p) => p.id === "hexa-sync");
   const luxProduct = products.find((p) => p.id === "hexa-lux");
 
-  // Additional 6 studio-photographed Energetika369 products
+  // Additional 5 studio-photographed Energetika369 products
   const dijiWaveProduct = products.find(
     (p) => p.id === "energetika-digi-wave-369"
   );
@@ -23,9 +23,6 @@ export default function Energetika369View({ brand }) {
   const rifeProProduct = products.find((p) => p.id === "rifemachine-2nd-gen");
   const dermaVisionProduct = products.find(
     (p) => p.id === "digital-iridoscope"
-  );
-  const aligneProduct = products.find(
-    (p) => p.id === "bio-frequency-oils-and-patches"
   );
   const lumicareProduct = products.find((p) => p.id === "lumicare-line");
 
@@ -75,17 +72,6 @@ export default function Energetika369View({ brand }) {
       ]
     },
     {
-      product: aligneProduct,
-      cardBadge: "Oils & Patches",
-      cardEyebrow: "Dual-Pathway Daily Ritual",
-      cardHighlights: [
-        "🌿 6 Frequency-Imprinted Botanical Oils",
-        "🩹 24–48 Hr Non-Transdermal Patches",
-        "✨ 100% Drug-Free & Non-Medicated",
-        "🧘 Pulse-Point & Meridian Layering Ritual"
-      ]
-    },
-    {
       product: lumicareProduct,
       cardBadge: "660nm & 850nm PBM",
       cardEyebrow: "LumiBody & LumiPulse Neuro",
@@ -107,10 +93,10 @@ export default function Energetika369View({ brand }) {
       >
         <div className="visual-groups-header">
           <span className="eyebrow">PRODUCT OVERVIEW</span>
-          <h3>Eleven Advanced Technologies Across Curated Disciplines</h3>
+          <h3>Ten Advanced Technologies Across Curated Disciplines</h3>
           <p>
             Explore Energetika369’s specialized wellness systems designed for
-            cellular rejuvenation, non-invasive bio-energetic assessment,
+            cellular rejuvenation, non-invasive bio magnetic analysis,
             multi-tier NLS frequency harmonization, transcranial
             neuromodulation, and targeted recovery.
           </p>
@@ -123,7 +109,7 @@ export default function Energetika369View({ brand }) {
               STANDALONE WELLNESS INNOVATIONS
             </span>
             <h4 className="overview-subgroup-title">
-              Cellular Recovery & AI Bio-Magnetic Analysis
+              Cellular Recovery &amp; Bio Magnetic Analysis
             </h4>
           </div>
 
@@ -140,7 +126,7 @@ export default function Energetika369View({ brand }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
                   priority
                 />
-                <span className="product-card-badge">Thermal & PEMF</span>
+                <span className="product-card-badge">Thermal &amp; PEMF</span>
               </div>
               <div className="product-card-body">
                 <span className="product-card-eyebrow">
@@ -163,7 +149,7 @@ export default function Energetika369View({ brand }) {
                     💎 7 Natural Gemstone Crystals
                   </span>
                   <span className="card-highlight-item">
-                    💡 Photon Light & Negative Ions
+                    💡 Photon Light &amp; Negative Ions
                   </span>
                 </div>
                 <div className="product-card-actions">
@@ -200,17 +186,17 @@ export default function Energetika369View({ brand }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
                   priority
                 />
-                <span className="product-card-badge">AI Bio-Resonance</span>
+                <span className="product-card-badge">Bio Magnetic Analysis</span>
               </div>
               <div className="product-card-body">
                 <span className="product-card-eyebrow">
-                  Non-Invasive Baseline
+                  Bio Magnetic Analysis
                 </span>
                 <h4 className="product-card-title">HEXA SENSE AI</h4>
                 <p className="product-card-desc">
-                  AI-powered bio-magnetic analysis system mapping 59
-                  comprehensive health reports in 60 seconds through an
-                  ergonomic solid alloy hand-grip sensor.
+                  Bio magnetic analysis system mapping 59 comprehensive health
+                  reports in 60 seconds through an ergonomic solid alloy
+                  hand-grip sensor.
                 </p>
                 <div className="product-card-highlights">
                   <span className="card-highlight-item">
@@ -399,7 +385,7 @@ export default function Energetika369View({ brand }) {
                 <h4 className="product-card-title">Hexa Lux</h4>
                 <p className="product-card-desc">
                   Flagship NLS bioresonance platform featuring 4D visual organ
-                  modeling, dual Adult & Child 6-sensor headsets, remote
+                  modeling, dual Adult &amp; Child 6-sensor headsets, remote
                   chamber, exclusive BioRod, and simultaneous metatherapy.
                 </p>
                 <div className="product-card-highlights">
@@ -407,7 +393,7 @@ export default function Energetika369View({ brand }) {
                     🧬 4D Visual Organ Scanning
                   </span>
                   <span className="card-highlight-item">
-                    🎧 Dual Adult & Pediatric Headsets
+                    🎧 Dual Adult &amp; Pediatric Headsets
                   </span>
                   <span className="card-highlight-item">
                     🦯 Exclusive BioRod Sensor
@@ -439,7 +425,7 @@ export default function Energetika369View({ brand }) {
           </div>
         </div>
 
-        {/* ── Clinical, Neuro & Bio-Frequency Innovation Suite Overview (6 New Products) ── */}
+        {/* ── Clinical, Neuro & Bio-Frequency Innovation Suite Overview (5 Products) ── */}
         {extendedShowcaseConfigs.length > 0 && (
           <div
             className="overview-standalone-section"
@@ -447,16 +433,16 @@ export default function Energetika369View({ brand }) {
           >
             <div className="overview-subgroup-header">
               <span className="overview-subgroup-eyebrow">
-                CLINICAL, NEURO & BIO-FREQUENCY EXPANSION SUITE
+                CLINICAL, NEURO &amp; BIO-FREQUENCY EXPANSION SUITE
               </span>
               <h4 className="overview-subgroup-title">
-                Millimeter Wave, rTMS Neuromodulation, 2nd Gen Rife, Iridology &
+                Millimeter Wave, rTMS Neuromodulation, 2nd Gen Rife, Iridology &amp;
                 Photobiomodulation
               </h4>
               <p className="overview-subgroup-desc">
-                Six specialized clinical and home-sanctuary technologies
+                Five specialized clinical and home-sanctuary technologies
                 expanding the Energetika369 ecosystem across targeted brain,
-                cellular, optical, and botanical modalities.
+                cellular, and optical modalities.
               </p>
             </div>
 
@@ -525,17 +511,16 @@ export default function Energetika369View({ brand }) {
       >
         <div className="disclaimer-icon-col">⚕️</div>
         <div className="disclaimer-content">
-          <h4>Wellness Lovers Club — Advisory & Medical Disclaimer</h4>
+          <h4>Wellness Lovers Club — Advisory &amp; Medical Disclaimer</h4>
           <p>
             The bio-frequency devices, quantum wellness systems, thermal mats,
-            optical inspection units, neuromodulation consoles, and
-            bio-resonance analysis instruments featured on this page—including
+            optical inspection units, neuromodulation consoles, and bio
+            magnetic analysis instruments featured on this page—including
             the Beyond PEMF Wellness Mat, HEXA SENSE AI, Hexa Pulse, Hexa Sync,
             Hexa Lux, Energetika Diji-Wave 369, NeuroPulse™ rTMS, Rife Frequency
-            Pro, DermaVision369, Aligné 369, and the Lumicare
-            Photobiomodulation Series—are non-invasive wellness technologies
-            engineered for relaxation, lifestyle assessment, and personal
-            energetic balancing.
+            Pro, DermaVision369, and the Lumicare Photobiomodulation
+            Series—are non-invasive wellness technologies engineered for
+            relaxation, lifestyle assessment, and personal energetic balancing.
           </p>
           <p>
             All operational metrics (such as the 60-second scan, 59 reports,

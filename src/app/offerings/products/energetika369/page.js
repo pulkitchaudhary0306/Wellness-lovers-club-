@@ -13,7 +13,7 @@ export const metadata = {
   title:
     "Energetika369 — PEMF Mat, HEXA SENSE AI, Hexa Flow NLS, NeuroPulse rTMS & Bio-Frequency Systems | Wellness Lovers Club",
   description:
-    "Explore the complete Energetika369 wellness technology suite: Beyond PEMF Wellness Mat, HEXA SENSE AI (59 Reports), Hexa Flow Frequency Devices (Hexa Pulse, Hexa Sync, Hexa Lux), NeuroPulse rTMS, Diji-Wave 369, Rife Frequency Pro, DermaVision369, Aligné 369, and Lumicare.",
+    "Explore the complete Energetika369 wellness technology suite: Beyond PEMF Wellness Mat, HEXA SENSE AI (59 Reports), Hexa Flow Frequency Devices (Hexa Pulse, Hexa Sync, Hexa Lux), NeuroPulse rTMS, Diji-Wave 369, Rife Frequency Pro, DermaVision369, and Lumicare.",
   keywords: [
     "Energetika369",
     "Beyond PEMF Wellness Mat",
@@ -26,7 +26,6 @@ export const metadata = {
     "Diji-Wave 369",
     "Rife Frequency Pro",
     "DermaVision369",
-    "Aligne 369",
     "Lumicare",
     "Wellness Lovers Club"
   ],
@@ -134,7 +133,7 @@ export default function EnergetikaPage() {
                 sizes="(max-width: 900px) 100vw, 520px"
               />
               <span className="hero-floating-badge">
-                ✦ 11 Bio-Frequency Systems
+                ✦ 10 Bio-Frequency Systems
               </span>
             </div>
           </div>

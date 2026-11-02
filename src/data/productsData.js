@@ -32,7 +32,7 @@ export const PRODUCT_CATEGORIES = [
     id: "bio-frequency",
     label: "Rife & Bio-Frequency",
     brandId: "energetika369",
-    description: "Multi-modality Rife frequency consoles and wearable botanical bio-frequency formulations."
+    description: "Multi-modality Rife frequency and electro-physical therapy consoles."
   },
   {
     id: "emr-protection",
@@ -175,8 +175,8 @@ export const PRODUCTS_DATA = [
         id: "hexa-sense-ai",
         anchorId: "hexa-sense-ai",
         name: "HEXA SENSE AI",
-        tagline: "AI-Assisted Multi-System Bio-Resonance & Spectral Assessment",
-        category: "AI Bio-Energetic Diagnostics",
+        tagline: "AI-Assisted Multi-System Bio Magnetic Analysis & Spectral Assessment",
+        category: "Bio Magnetic Analysis",
         categoryId: "ai-diagnostics",
         tag: "AI Wellness Intelligence",
         image: "/images/products/hexa-sense-ai-kit.webp",
@@ -203,9 +203,9 @@ export const PRODUCTS_DATA = [
           }
         ],
         shortDesc:
-          "A fast, non-invasive bio-energetic screening platform that captures weak magnetic frequency signals via a tactile hand sensor and generates 59 comprehensive wellness reports in 60 seconds.",
+          "A fast, non-invasive bio magnetic analysis platform that captures subtle frequency signals via a tactile hand sensor and generates 59 comprehensive wellness reports in 60 seconds.",
         overview:
-          "HEXA SENSE AI combines Quantum Resonance Magnetic Analysis with artificial intelligence pattern recognition to provide a rapid, non-invasive overview of functional wellness trends. Without drawing blood or requiring radiation exposure, a client simply holds the stainless-steel tactile sensor for approximately 60 seconds while the system compares subtle bio-electrical signals against an extensive reference spectrum—producing 59 structured wellness reports across cardiovascular, digestive, endocrine, skeletal, and nutritional domains.",
+          "HEXA SENSE AI combines Bio Magnetic Analysis with artificial intelligence pattern recognition to provide a rapid, non-invasive overview of functional wellness trends. Without drawing blood or requiring radiation exposure, a client simply holds the stainless-steel tactile sensor for approximately 60 seconds while the system compares subtle bio-electrical signals against an extensive reference spectrum—producing 59 structured wellness reports across cardiovascular, digestive, endocrine, skeletal, and nutritional domains.",
         purpose:
           "Created to empower wellness practitioners, nutritionists, and health-conscious individuals with rapid baseline screening, nutritional deficiency insights, and clear visual progress tracking.",
         highlights: [
@@ -216,7 +216,7 @@ export const PRODUCTS_DATA = [
         features: [
           {
             title: "60-Second Tactile Signal Capture",
-            desc: "Uses a high-sensitivity hand-held biophoton and weak-magnetic frequency sensor to read cellular resonance patterns comfortably without needles, fasting, or invasive prep."
+            desc: "Uses a high-sensitivity hand-held biophoton and biofeedback frequency sensor to read cellular resonance patterns comfortably without needles, fasting, or invasive prep."
           },
           {
             title: "59 Multi-System Wellness Reports",
@@ -245,7 +245,7 @@ export const PRODUCTS_DATA = [
           {
             step: "01",
             title: "Signal Capture",
-            desc: "The user holds the ergonomic hand sensor for 60 seconds while weak magnetic frequency signals are read."
+            desc: "The user holds the ergonomic hand sensor for 60 seconds while subtle biofeedback frequency signals are read."
           },
           {
             step: "02",
@@ -328,7 +328,7 @@ export const PRODUCTS_DATA = [
           }
         ],
         specs: {
-          "Analysis Method": "Quantum Resonance Magnetic Analysis (QRMA) with AI Spectral Comparison",
+          "Analysis Method": "Bio Magnetic Analysis with AI Spectral Comparison",
           "Scan Duration": "Approx. 60 Seconds",
           "Report Output": "59 Functional, Nutritional, Gender-Specific & Pediatric Reports",
           "Sensor Interface": "High-Sensitivity Stainless Steel Biophoton Hand-Grip Sensor",
@@ -401,7 +401,7 @@ export const PRODUCTS_DATA = [
         features: [
           {
             title: "2-Sensor Bio-Inductor Headset",
-            desc: "Features dual trigger sensors housed in an ergonomic headset to capture and transmit low-intensity bio-magnetic signals comfortably during sessions."
+            desc: "Features dual trigger sensors housed in an ergonomic headset to capture and transmit low-intensity biofeedback signals comfortably during sessions."
           },
           {
             title: "Foundational Organ & Chakra Mapping",
@@ -495,7 +495,7 @@ export const PRODUCTS_DATA = [
         shortDesc:
           "A professional mid-tier NLS bioresonance platform upgraded with a 6-sensor bio-inductor headset, external resonance chamber, and a dedicated Spiral Energy Disc for remote informational sessions.",
         overview:
-          "Hexa Sync elevates the Hexa Flow series for active wellness practitioners and dedicated biohacking households. By upgrading to a 6-sensor bio-inductor headset, Hexa Sync captures higher-density bio-magnetic feedback for deeper organ, tissue, and cellular-level spectral analysis. Crucially, Hexa Sync introduces the Spiral Energy Disc alongside the external resonance chamber—enabling both in-person Meta-Therapy and remote scalar/informational sessions using biological samples.",
+          "Hexa Sync elevates the Hexa Flow series for active wellness practitioners and dedicated biohacking households. By upgrading to a 6-sensor bio-inductor headset, Hexa Sync captures higher-density AI biofeedback for deeper organ, tissue, and cellular-level spectral analysis. Crucially, Hexa Sync introduces the Spiral Energy Disc alongside the external resonance chamber—enabling both in-person Meta-Therapy and remote scalar/informational sessions using biological samples.",
         purpose:
           "Engineered for practitioners and advanced users who require deeper 6-sensor scanning accuracy, supplement/allergen compatibility testing, and remote informational balancing.",
         highlights: [
@@ -1058,108 +1058,7 @@ export const PRODUCTS_DATA = [
       },
 
       /* ==================================================================
-         10. ALIGNÉ 369 — BIO FREQUENCY OILS & PATCHES
-         ================================================================== */
-      {
-        id: "bio-frequency-oils-and-patches",
-        anchorId: "aligne-369",
-        name: "Aligné 369 — Bio Frequency Oils & Patches",
-        tagline: "Where Botanical Intelligence Meets Subtle Frequency Science",
-        category: "Wearable & Botanical Resonance",
-        categoryId: "bio-frequency",
-        tag: "Dual-Modality Daily Ritual",
-        image: "/images/products/aligne-369-oils-hero.webp",
-        gallery: [
-          {
-            src: "/images/products/aligne-369-oils-hero.webp",
-            alt: "Aligné 369 Bio Frequency Oils collection arranged on a velvet cushion",
-            caption: "Aligné 369 Bio-Frequency Botanical Dropper Collection"
-          },
-          {
-            src: "/images/products/aligne-369-patches.webp",
-            alt: "Aligné 369 wearable non-transdermal bio-frequency patch",
-            caption: "Non-Transdermal Wearable Resonance Patches (24–48 Hr Signaling)"
-          },
-          {
-            src: "/images/products/aligne-369-restoration.webp",
-            alt: "Aligné 369 Physical Restoration oil texture and botanical formulation",
-            caption: "Sensory Botanical Oils for Physical & Skin Vitality"
-          },
-          {
-            src: "/images/products/aligne-369-ritual.webp",
-            alt: "The Placement Ritual diagram showing pulse points and acupoint application",
-            caption: "The Layering Ritual: Pulse Points & Meridian Placement"
-          },
-          {
-            src: "/images/products/aligne-369-emblem.webp",
-            alt: "Aligné 369 Bio Frequency Oils and Patches emblem",
-            caption: "Aligné 369 Subtle Frequency Architecture"
-          }
-        ],
-        shortDesc:
-          "A refined dual-pathway wellness collection pairing aromatic Bio-Frequency Botanical Oils for immediate sensory engagement with non-transdermal Wearable Resonance Patches for 24–48 hour support.",
-        overview:
-          "Aligné 369 represents a modern evolution in daily energetic self-care, uniting pure botanical carrier and essential oils with subtle frequency imprinting and non-transdermal wearable patches. Designed as a complementary two-part system, the Bio-Frequency Oils engage the olfactory and dermal pathways immediately when applied to pulse points, while the discreet Bio-Frequency Patches adhere gently to meridian or tension zones—delivering sustained 24-to-48-hour informational resonance with zero drugs, stimulants, or transdermal chemicals entering the bloodstream.",
-        purpose:
-          "Crafted to provide effortless, round-the-clock support for mood balance, mental focus, sleep calm, hormonal harmony, and physical comfort.",
-        highlights: [
-          "Dual-Pathway System: Aromatic Oils (Immediate) + Wearable Patches (24–48 Hours)",
-          "100% Non-Transdermal, Non-Medicated Patches — Nothing Enters the Bloodstream",
-          "6 Targeted Formulations for Mood, Energy, Sleep, Hormonal & Physical Balance"
-        ],
-        features: [
-          {
-            title: "The Sensory Pathway: Bio-Frequency Oils",
-            desc: "Six frequency-imprinted botanical blends—Mood Balance, Energy & Vitality, Hormonal Balance, Body/Joint/Muscle, Skin Repair/Renewal, and Hair Growth/Scalp Care."
-          },
-          {
-            title: "The Sustained Pathway: Wearable Resonance Patches",
-            desc: "Ultra-thin, biocompatible patches encoded with coherent vibrational patterns that interact with the body's bio-field for 24 to 48 hours without transdermal drugs."
-          },
-          {
-            title: "Targeted Patch Editions",
-            desc: "Available in specialized profiles including Calm & Stress Relief, Sleep & Recovery, Energy & Focus, Pain & Tension Support, Immune & Detox, and Hormonal Harmony."
-          },
-          {
-            title: "The Placement & Layering Ritual",
-            desc: "Designed to be layered seamlessly: massage 2–3 drops of oil onto wrists, temples, or neck for instant grounding, and apply a patch to the shoulder, inner arm, or lower abdomen."
-          }
-        ],
-        benefits: [
-          "Offers continuous bio-frequency support during travel, workdays, and sleep without equipment.",
-          "Completely free of synthetic stimulants, pharmaceuticals, or transdermal chemical absorption.",
-          "Elevates daily mindfulness, breathwork, and clinical frequency sessions as a take-home ritual.",
-          "Gentle, skin-friendly materials suitable for sensitive individuals."
-        ],
-        specs: {
-          "System Format": "Dual-Modality Botanical Dropper Oils & Wearable Bio-Frequency Patches",
-          "Patch Mechanism": "Non-Transdermal, Non-Medicated Informational Resonance",
-          "Patch Wear Duration": "24 – 48 Hours per Patch",
-          "Oil Collection (6 Blends)": "Mood Balance | Energy & Vitality | Hormonal Balance | Body, Joint & Muscle | Skin Repair | Hair & Scalp",
-          "Patch Collection (6 Profiles)": "Calm & Stress | Sleep & Recovery | Energy & Focus | Pain & Tension | Immune & Detox | Hormonal Harmony",
-          "Application Zones": "Temples, Neck, Wrists, Shoulders, Inner Arm, Lower Abdomen"
-        },
-        whatsIncluded: [
-          "Aligné 369 Bio-Frequency Botanical Dropper Oils (Selected Blend or Full Collection)",
-          "Aligné 369 Wearable Bio-Frequency Patches (Selected Edition)",
-          "Pulse-Point & Meridian Placement Ritual Guide"
-        ],
-        idealFor: [
-          "Daily Stress, Mood & Sleep Rituals",
-          "Travel & On-the-Go Energetic Support",
-          "Physical Tension & Post-Session Maintenance",
-          "Take-Home Client Care for Wellness Clinics"
-        ],
-        usageSummary:
-          "Apply 2–3 drops of your chosen Aligné 369 Oil to wrists or temples and inhale deeply. Adhere one Aligné 369 Patch to clean, dry skin on the recommended meridian point for 24–48 hours of background resonance.",
-        safetyInfo:
-          "For external use only. Avoid direct contact of oils with eyes; discontinue patch use if localized skin sensitivity occurs.",
-        ctaText: "Enquire About Aligné 369",
-        enquiryDestination: "Energetika369 - Aligne 369 Oils & Patches"
-      },
-
-      /* ==================================================================
-         11. LUMICARE PHOTOBIOMODULATION SERIES
+         10. LUMICARE PHOTOBIOMODULATION SERIES
          ================================================================== */
       {
         id: "lumicare-line",
