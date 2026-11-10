@@ -12,7 +12,7 @@ export const metadata = {
   title:
     "Products & Wellness Technology | Curated E-Commerce Catalogue | Wellness Lovers Club",
   description:
-    "Explore the complete Wellness Lovers Club product catalogue: Energetika369 PEMF Crystal Mats, HEXA SENSE AI Bio Magnetic Analysis, Hexa Flow NLS Frequency Devices, NeuroPulse rTMS, Diji-Wave 369, Rife Frequency Pro, DermaVision369, Lumicare, and Environics EMR Protection (50% OFF for WLC Members).",
+    "Explore the complete Wellness Lovers Club product catalogue: Energetika369 PEMF Crystal Mats, HEXA SENSE AI Biofeedback Analysis, Hexa Flow NLS Frequency Devices, NeuroPulse rTMS, Diji-Wave 369, Rife Frequency Pro, DermaVision369, Lumicare, and Environics EMR Protection (50% OFF for WLC Members).",
   keywords: [
     "Wellness Products",
     "Energetika369",

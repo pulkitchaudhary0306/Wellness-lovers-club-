@@ -96,7 +96,7 @@ export default function Energetika369View({ brand }) {
           <h3>Ten Advanced Technologies Across Curated Disciplines</h3>
           <p>
             Explore Energetika369’s specialized wellness systems designed for
-            cellular rejuvenation, non-invasive bio magnetic analysis,
+            cellular rejuvenation, non-invasive AI biofeedback analysis,
             multi-tier NLS frequency harmonization, transcranial
             neuromodulation, and targeted recovery.
           </p>
@@ -109,7 +109,7 @@ export default function Energetika369View({ brand }) {
               STANDALONE WELLNESS INNOVATIONS
             </span>
             <h4 className="overview-subgroup-title">
-              Cellular Recovery &amp; Bio Magnetic Analysis
+              Cellular Recovery &amp; AI Biofeedback Analysis
             </h4>
           </div>
 
@@ -186,15 +186,15 @@ export default function Energetika369View({ brand }) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
                   priority
                 />
-                <span className="product-card-badge">Bio Magnetic Analysis</span>
+                <span className="product-card-badge">AI Biofeedback Analysis</span>
               </div>
               <div className="product-card-body">
                 <span className="product-card-eyebrow">
-                  Bio Magnetic Analysis
+                  AI Biofeedback Analysis
                 </span>
                 <h4 className="product-card-title">HEXA SENSE AI</h4>
                 <p className="product-card-desc">
-                  Bio magnetic analysis system mapping 59 comprehensive health
+                  AI biofeedback analysis system mapping 59 comprehensive health
                   reports in 60 seconds through an ergonomic solid alloy
                   hand-grip sensor.
                 </p>
@@ -514,8 +514,8 @@ export default function Energetika369View({ brand }) {
           <h4>Wellness Lovers Club — Advisory &amp; Medical Disclaimer</h4>
           <p>
             The bio-frequency devices, quantum wellness systems, thermal mats,
-            optical inspection units, neuromodulation consoles, and bio
-            magnetic analysis instruments featured on this page—including
+            optical inspection units, neuromodulation consoles, and AI
+            biofeedback analysis instruments featured on this page—including
             the Beyond PEMF Wellness Mat, HEXA SENSE AI, Hexa Pulse, Hexa Sync,
             Hexa Lux, Energetika Diji-Wave 369, NeuroPulse™ rTMS, Rife Frequency
             Pro, DermaVision369, and the Lumicare Photobiomodulation

@@ -175,8 +175,8 @@ export const PRODUCTS_DATA = [
         id: "hexa-sense-ai",
         anchorId: "hexa-sense-ai",
         name: "HEXA SENSE AI",
-        tagline: "AI-Assisted Multi-System Bio Magnetic Analysis & Spectral Assessment",
-        category: "Bio Magnetic Analysis",
+        tagline: "AI-Assisted Multi-System Biofeedback Analysis & Spectral Assessment",
+        category: "AI Biofeedback Analysis",
         categoryId: "ai-diagnostics",
         tag: "AI Wellness Intelligence",
         image: "/images/products/hexa-sense-ai-kit.webp",
@@ -203,9 +203,9 @@ export const PRODUCTS_DATA = [
           }
         ],
         shortDesc:
-          "A fast, non-invasive bio magnetic analysis platform that captures subtle frequency signals via a tactile hand sensor and generates 59 comprehensive wellness reports in 60 seconds.",
+          "A fast, non-invasive AI biofeedback analysis platform that captures subtle frequency signals via a tactile hand sensor and generates 59 comprehensive wellness reports in 60 seconds.",
         overview:
-          "HEXA SENSE AI combines Bio Magnetic Analysis with artificial intelligence pattern recognition to provide a rapid, non-invasive overview of functional wellness trends. Without drawing blood or requiring radiation exposure, a client simply holds the stainless-steel tactile sensor for approximately 60 seconds while the system compares subtle bio-electrical signals against an extensive reference spectrum—producing 59 structured wellness reports across cardiovascular, digestive, endocrine, skeletal, and nutritional domains.",
+          "HEXA SENSE AI combines AI Biofeedback Analysis with artificial intelligence pattern recognition to provide a rapid, non-invasive overview of functional wellness trends. Without drawing blood or requiring radiation exposure, a client simply holds the stainless-steel tactile sensor for approximately 60 seconds while the system compares subtle bio-electrical signals against an extensive reference spectrum—producing 59 structured wellness reports across cardiovascular, digestive, endocrine, skeletal, and nutritional domains.",
         purpose:
           "Created to empower wellness practitioners, nutritionists, and health-conscious individuals with rapid baseline screening, nutritional deficiency insights, and clear visual progress tracking.",
         highlights: [
@@ -328,7 +328,7 @@ export const PRODUCTS_DATA = [
           }
         ],
         specs: {
-          "Analysis Method": "Bio Magnetic Analysis with AI Spectral Comparison",
+          "Analysis Method": "AI Biofeedback Analysis with Spectral Comparison",
           "Scan Duration": "Approx. 60 Seconds",
           "Report Output": "59 Functional, Nutritional, Gender-Specific & Pediatric Reports",
           "Sensor Interface": "High-Sensitivity Stainless Steel Biophoton Hand-Grip Sensor",
