@@ -87,7 +87,6 @@ function findPartnerByDestination(rawDest) {
     { key: "iridoscope", partnerSlug: "energetika369" },
     { key: "dijiwave", partnerSlug: "energetika369" },
     { key: "digiwave", partnerSlug: "energetika369" },
-
     { key: "lumicare", partnerSlug: "energetika369" },
     { key: "environics", partnerSlug: "environics" },
     { key: "envirochip", partnerSlug: "environics" },
@@ -133,9 +132,10 @@ function ExploreOfferContent() {
     travelDate: "",
     duration: "Flexible / Recommended Duration",
     guests: "1-2 Guests",
-    message: rawDest && rawDest !== matchedPartner.name
-      ? `I would like to enquire about "${rawDest}" and claim my Wellness Lovers Club member privileges with ${matchedPartner.name}. Please share pricing, availability, and consultation details.`
-      : `I would like to book and claim all member privileges and inclusions at ${matchedPartner.name}. Please share availability and apply club pricing.`,
+    message:
+      rawDest && rawDest !== matchedPartner.name
+        ? `I would like to enquire about "${rawDest}" and claim my Wellness Lovers Club member privileges with ${matchedPartner.name}. Please share pricing, availability, and consultation details.`
+        : `I would like to book and claim all member privileges and inclusions at ${matchedPartner.name}. Please share availability and apply club pricing.`,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -202,7 +202,7 @@ function ExploreOfferContent() {
             <span>📍</span>
             <span>{matchedPartner.location}</span>
           </div>
-          <h2 className="partner-detail-name">Member Privileges & Inclusions</h2>
+          <h2 className="partner-detail-name">Member Privileges &amp; Inclusions</h2>
           <p className="partner-detail-summary">{matchedPartner.shortDesc}</p>
         </div>
 
@@ -220,8 +220,7 @@ function ExploreOfferContent() {
           )}
           <button
             onClick={() => scrollToForm()}
-            className="btn btn-gold"
-            style={{ padding: "12px 22px", fontSize: "12px", borderRadius: "30px", textTransform: "uppercase", letterSpacing: "1px" }}
+            className="btn btn-gold partner-claim-btn"
           >
             Claim All Privileges ↓
           </button>
@@ -248,7 +247,7 @@ function ExploreOfferContent() {
       </div>
 
       {/* ─── Partner-Specific Offers Section ─────────────────────────────── */}
-      <section className="privileges-main-section" style={{ paddingTop: "0px", paddingBottom: "40px" }}>
+      <section className="privileges-main-section">
         <div className="partner-offers-grid">
           {matchedPartner.offers.map((offer) => (
             <div className="partner-offer-card" key={offer.id}>
@@ -256,7 +255,7 @@ function ExploreOfferContent() {
                 <span className="offer-savings-pill">{offer.discount}</span>
                 {offer.badge && <span className="offer-badge">{offer.badge}</span>}
                 {offer.duration && (
-                  <span style={{ fontSize: "11px", color: "#bca374", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <span className="offer-duration-tag">
                     <Clock size={12} /> {offer.duration}
                   </span>
                 )}
@@ -284,25 +283,19 @@ function ExploreOfferContent() {
                 <div className="offer-pricing-block">
                   {offer.originalPrice ? (
                     <div>
-                      <div style={{ fontSize: "10.5px", textTransform: "uppercase", color: "#888", letterSpacing: "0.5px" }}>
-                        Original MRP
-                      </div>
+                      <div className="offer-price-label">Original MRP</div>
                       <div className="offer-mrp">{offer.originalPrice}</div>
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: "10.5px", textTransform: "uppercase", color: "#888", letterSpacing: "0.5px" }}>
-                        Special Rate
-                      </div>
-                      <div style={{ fontSize: "12px", color: "#0d563f", fontWeight: 600 }}>
+                      <div className="offer-price-label">Special Rate</div>
+                      <div className="offer-special-note">
                         {offer.priceNote || "WLC Privilege"}
                       </div>
                     </div>
                   )}
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "10.5px", textTransform: "uppercase", color: "#0d563f", fontWeight: 700, letterSpacing: "0.5px" }}>
-                      WLC Member Price
-                    </div>
+                  <div className="offer-member-price-col">
+                    <div className="offer-member-label">WLC Member Price</div>
                     <div className="offer-member-price-val">{offer.memberPrice}</div>
                   </div>
                 </div>
@@ -310,7 +303,7 @@ function ExploreOfferContent() {
 
               {offer.terms && (
                 <div className="offer-terms-note">
-                  <strong>Terms & Validity:</strong> {offer.terms}
+                  <strong>Terms &amp; Validity:</strong> {offer.terms}
                 </div>
               )}
 
@@ -319,7 +312,7 @@ function ExploreOfferContent() {
                 onClick={() => scrollToForm(offer.title)}
                 className="offer-redeem-btn"
               >
-                Inquire & Claim Privileges ↓
+                Inquire &amp; Claim Privileges ↓
               </button>
             </div>
           ))}
@@ -327,79 +320,40 @@ function ExploreOfferContent() {
       </section>
 
       {/* ─── INLINE LUXURY BOOKING & INQUIRY FORM SECTION ────────────────── */}
-      <section
-        ref={formSectionRef}
-        style={{
-          background: "#ffffff",
-          borderTop: "1px solid #ebdcb9",
-          borderBottom: "1px solid #ebdcb9",
-          padding: "70px 24px 85px 24px",
-        }}
-      >
-        <div style={{ maxWidth: "860px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <span className="eyebrow" style={{ display: "block", color: "#bca374", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>
-              CONCIERGE BOOKING & PRIVILEGE CLAIM
+      <section ref={formSectionRef} className="explore-booking-section">
+        <div className="explore-booking-container">
+          <div className="explore-booking-header">
+            <span className="explore-booking-eyebrow">
+              CONCIERGE BOOKING &amp; PRIVILEGE CLAIM
             </span>
-            <h2 style={{ fontFamily: "Cormorant Garamond, Georgia, serif", fontSize: "clamp(28px, 4vw, 38px)", color: "#0d563f", margin: "0 0 10px 0" }}>
-              Book & Claim Privileges at {matchedPartner.name}
+            <h2 className="explore-booking-title">
+              Book &amp; Claim Privileges at {matchedPartner.name}
             </h2>
-            <p style={{ color: "#666", fontSize: "14.5px", maxWidth: "620px", margin: "0 auto" }}>
-              Submit your preferred dates and details below, or call our official concierge desk at <a href="tel:+919289330103" style={{ color: "#0d563f", fontWeight: 700, textDecoration: "underline" }}>+91 92893 30103</a>. Our member concierge will confirm availability, lock in your exclusive member rates, and ensure all partner inclusions are applied.
+            <p className="explore-booking-sub">
+              Submit your preferred dates and details below, or call our official concierge desk at{" "}
+              <a href="tel:+919289330103" className="explore-concierge-phone">
+                +91 92893 30103
+              </a>
+              . Our member concierge will confirm availability, lock in your exclusive member rates, and ensure all partner inclusions are applied.
             </p>
           </div>
 
           {/* Partner & Privileges Highlight Card */}
-          <div
-            style={{
-              background: "linear-gradient(135deg, rgba(13,86,63,0.06) 0%, rgba(188,163,116,0.14) 100%)",
-              border: "1px solid #bca374",
-              borderRadius: "14px",
-              padding: "18px 24px",
-              marginBottom: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "12px",
-            }}
-          >
-            <div>
-              <span style={{ fontSize: "10.5px", fontWeight: 700, color: "#9c8458", textTransform: "uppercase", letterSpacing: "1px" }}>
-                Selected Sanctuary
-              </span>
-              <div style={{ fontFamily: "Georgia, serif", fontSize: "18px", fontWeight: 600, color: "#0d563f" }}>
-                {matchedPartner.name}
-              </div>
-              <div style={{ fontSize: "12.5px", color: "#666", marginTop: "2px" }}>
-                📍 {matchedPartner.location}
-              </div>
+          <div className="explore-sanctuary-bar">
+            <div className="explore-sanctuary-info">
+              <span className="explore-sanctuary-label">Selected Sanctuary</span>
+              <div className="explore-sanctuary-name">{matchedPartner.name}</div>
+              <div className="explore-sanctuary-loc">📍 {matchedPartner.location}</div>
             </div>
 
-            <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-              <span
-                style={{
-                  background: "#0d563f",
-                  color: "#ffffff",
-                  fontSize: "11.5px",
-                  fontWeight: 700,
-                  padding: "6px 14px",
-                  borderRadius: "20px",
-                }}
-              >
-                All Privileges Included
-              </span>
+            <div className="explore-sanctuary-badges">
+              <span className="explore-privileges-pill">All Privileges Included</span>
               {matchedPartner.website && (
                 <a
                   href={matchedPartner.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: 700,
-                    color: "#0d563f",
-                    textDecoration: "underline",
-                  }}
+                  className="explore-official-link"
                 >
                   Official Website ↗
                 </a>
@@ -408,42 +362,34 @@ function ExploreOfferContent() {
           </div>
 
           {isSubmitted ? (
-            <div
-              style={{
-                background: "rgba(13, 86, 63, 0.04)",
-                border: "1.5px solid #0d563f",
-                borderRadius: "16px",
-                padding: "40px 30px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#0d563f", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto", fontSize: "30px" }}>
-                ✓
-              </div>
-              <h3 style={{ fontFamily: "Georgia, serif", fontSize: "26px", color: "#0d563f", marginBottom: "8px" }}>
+            <div className="explore-submitted-box">
+              <div className="explore-submitted-check">✓</div>
+              <h3 className="explore-submitted-title">
                 Privilege Request Submitted!
               </h3>
-              <p style={{ color: "#555", fontSize: "15px", lineHeight: "1.7", maxWidth: "560px", margin: "0 auto 24px auto" }}>
-                Thank you! Your booking and privileges request for <strong>{matchedPartner.name}</strong> has been received. Our dedicated member concierge will contact you promptly to finalize your itinerary and confirm club pricing.
+              <p className="explore-submitted-desc">
+                Thank you! Your booking and privileges request for{" "}
+                <strong>{matchedPartner.name}</strong> has been received. Our dedicated member concierge will contact you promptly to finalize your itinerary and confirm club pricing.
               </p>
-              <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+              <div className="explore-submitted-actions">
                 <button
                   onClick={() => setIsSubmitted(false)}
                   className="btn btn-gold"
-                  style={{ padding: "12px 24px", fontSize: "12.5px" }}
                 >
                   Submit Another Request
                 </button>
-                <Link href="/destinations" className="btn btn-green" style={{ padding: "12px 24px", fontSize: "12.5px" }}>
+                <Link href="/destinations" className="btn btn-green">
                   Explore All Destinations
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-              <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            <form onSubmit={handleSubmit} className="explore-booking-form">
+              <div className="explore-form-grid">
                 <div className="contact-form-group">
-                  <label htmlFor="firstName" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>First Name *</label>
+                  <label htmlFor="firstName" className="explore-form-label">
+                    First Name *
+                  </label>
                   <input
                     type="text"
                     id="firstName"
@@ -452,11 +398,13 @@ function ExploreOfferContent() {
                     placeholder="e.g. Aria"
                     value={formData.firstName}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
                 <div className="contact-form-group">
-                  <label htmlFor="lastName" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Last Name *</label>
+                  <label htmlFor="lastName" className="explore-form-label">
+                    Last Name *
+                  </label>
                   <input
                     type="text"
                     id="lastName"
@@ -465,14 +413,16 @@ function ExploreOfferContent() {
                     placeholder="e.g. Sharma"
                     value={formData.lastName}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
               </div>
 
-              <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="explore-form-grid">
                 <div className="contact-form-group">
-                  <label htmlFor="email" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Email Address *</label>
+                  <label htmlFor="email" className="explore-form-label">
+                    Email Address *
+                  </label>
                   <input
                     type="email"
                     id="email"
@@ -481,11 +431,13 @@ function ExploreOfferContent() {
                     placeholder="aria@example.com"
                     value={formData.email}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
                 <div className="contact-form-group">
-                  <label htmlFor="phone" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Mobile Number *</label>
+                  <label htmlFor="phone" className="explore-form-label">
+                    Mobile Number *
+                  </label>
                   <input
                     type="tel"
                     id="phone"
@@ -494,62 +446,67 @@ function ExploreOfferContent() {
                     placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
               </div>
 
-              <div className="contact-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="explore-form-grid">
                 <div className="contact-form-group">
-                  <label htmlFor="travelDate" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Preferred Travel / Visit Date</label>
+                  <label htmlFor="travelDate" className="explore-form-label">
+                    Preferred Travel / Visit Date
+                  </label>
                   <input
                     type="date"
                     id="travelDate"
                     name="travelDate"
                     value={formData.travelDate}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
                 <div className="contact-form-group">
-                  <label htmlFor="duration" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Preferred Package / Duration</label>
+                  <label htmlFor="duration" className="explore-form-label">
+                    Preferred Package / Duration
+                  </label>
                   <input
                     type="text"
                     id="duration"
                     name="duration"
-                    placeholder="e.g. 5 Nights / 7 Nights / 14 Nights / Day Session"
+                    placeholder="e.g. 5 Nights / 7 Nights / 14 Nights"
                     value={formData.duration}
                     onChange={handleChange}
-                    style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                    className="explore-form-input"
                   />
                 </div>
               </div>
 
               <div className="contact-form-group">
-                <label htmlFor="message" style={{ color: "#0d563f", fontWeight: 600, fontSize: "12.5px", display: "block", marginBottom: "6px" }}>Special Inquiries or Preferences</label>
+                <label htmlFor="message" className="explore-form-label">
+                  Special Inquiries or Preferences
+                </label>
                 <textarea
                   id="message"
                   name="message"
                   rows="4"
                   value={formData.message}
                   onChange={handleChange}
-                  style={{ width: "100%", background: "#faf8f5", border: "1px solid #ebdcb9", borderRadius: "8px", padding: "12px 14px", fontSize: "13.5px", boxSizing: "border-box" }}
+                  className="explore-form-input explore-form-textarea"
                 ></textarea>
               </div>
 
               {submitError && (
-                <div style={{ color: "#e53e3e", fontSize: "13px", textAlign: "center" }}>
-                  {submitError}
-                </div>
+                <div className="explore-submit-error">{submitError}</div>
               )}
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn btn-green"
-                style={{ width: "100%", padding: "16px 24px", fontSize: "14px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", marginTop: "10px" }}
+                className="btn btn-green explore-submit-btn"
               >
-                {isSubmitting ? "Submitting Request..." : `Submit Privileges Claim for ${matchedPartner.name} →`}
+                {isSubmitting
+                  ? "Submitting Request..."
+                  : `Submit Privileges Claim for ${matchedPartner.name} →`}
               </button>
             </form>
           )}
@@ -557,8 +514,8 @@ function ExploreOfferContent() {
       </section>
 
       {/* Bottom Global Actions */}
-      <section style={{ padding: "50px 24px 70px 24px", textAlign: "center", background: "#fdfbf7" }}>
-        <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+      <section className="explore-bottom-section">
+        <div className="explore-bottom-actions">
           <Link href="/destinations" className="btn btn-green">
             ← Explore Destinations
           </Link>
@@ -573,7 +530,13 @@ function ExploreOfferContent() {
 
 export default function ExploreOfferPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading Offer...</div>}>
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          Loading Offer...
+        </div>
+      }
+    >
       <ExploreOfferContent />
     </Suspense>
   );
